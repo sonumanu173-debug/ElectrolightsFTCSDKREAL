@@ -13,7 +13,7 @@ public class AprilTagDistance extends OpMode {
 
     private Limelight3A limelight3A;
     TestBench bench = new TestBench();
-    private double distance;
+    public double distance;
 
     @Override
     public void init() {
