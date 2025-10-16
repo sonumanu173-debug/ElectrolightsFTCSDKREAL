@@ -59,7 +59,7 @@ public class MechanumDrive {
     }
 
     public void driveFieldRelative(double forward, double strafe, double rotate) {
-        double theta = Math.atan(forward, strafe);
+        double theta = Math.atan2(forward, strafe);
         double r = Math.hypot(strafe, forward);
 
         theta = AngleUnit.normalizeRadians(theta -
