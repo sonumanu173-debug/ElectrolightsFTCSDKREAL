@@ -7,8 +7,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
-
 
 @TeleOp
 public class AprilTagDistance extends OpMode {
@@ -37,17 +35,16 @@ public class AprilTagDistance extends OpMode {
         //get latest limelight result, pipeline 8 for April tag 0
         LLResult llResult = limelight3A.getLatestResult();
         if (llResult != null && llResult.isValid()) {
-            Pose3D botpose = llResult.getBotpose_MT2();
-            distance = getDistanceFromTag(llResult.getTa());
+            Pose30 botpose = llResult.getBotpose_MT2();
+            distance = getDistanceFromTage(llResult.getTa());
 
             telemetry.addData("Distance", distance);
             telemetry.addData("Target X", llResult.getTx());
             telemetry.addData("Target Area", llResult.getTa());
             telemetry.addData("Botpose", botpose.toString());
-            telemetry.update();
         }
     }
-    public double getDistanceFromTag(double ta) {
+    public double getDistanceFromTage(double ta) {
         double scale = 30665; // y - value in graph equation (Ayush FTC yt playlist)
         double distance = scale / ta;
         return distance;
