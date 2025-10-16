@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.IMU;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
@@ -36,7 +37,7 @@ public class AprilTagGeneral extends OpMode {
         limelight.updateRobotOrientation(orientation.getYaw());
         LLResult llResult = limelight.getLatestResult();
         if (llResult != null && llResult.isValid()) {
-            Pose30 botPose = llResult.getBotPose.MT2();
+            Pose3D botPose = llResult.getBotpose_MT2();
             telemetry.addData("Tx", llResult.getTx());
             telemetry.addData("Ty", llResult.getTy());
             telemetry.addData("Ta", llResult.getTa());
