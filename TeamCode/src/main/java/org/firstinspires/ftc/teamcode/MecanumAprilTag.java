@@ -42,7 +42,7 @@ public class MecanumAprilTag extends LinearOpMode {
     private double aimPos = AIM_ZERO_POS;
 
     // Camera mounting pitch (positive = camera tilted UP relative to robot horizon)
-    private static final double CAM_PITCH_DEG = 35.0; // <-- set to your real mount angle
+    private static final double CAM_PITCH_DEG = 75.0; // <-- set to your real mount angle
 
     // --- drive & mechanisms ---
     private DcMotor backRightMotor, backLeftMotor, frontRightMotor, frontLeftMotor;
