@@ -16,7 +16,7 @@ public class ShooterPIDF extends LinearOpMode {
     }
 
     public double PIDControl(double reference, double state) {
-        
+
     }
 
 }
