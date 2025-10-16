@@ -42,8 +42,8 @@ public class AprilTagGeneral extends OpMode {
             telemetry.addData("Tx", llResult.getTx());
             telemetry.addData("Ty", llResult.getTy());
             telemetry.addData("Ta", llResult.getTa());
-            telemetry.addData("BotPose", botpose.toString());
-            telemetry.addData("Yaw", botpose.getOrientation().getYaw());
+            telemetry.addData("BotPose", botPose.toString());
+            telemetry.addData("Yaw", botPose.getOrientation().getYaw());
             //prints out information on location of the April Tags
         }
     }
