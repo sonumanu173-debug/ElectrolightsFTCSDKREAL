@@ -22,9 +22,8 @@ public class ShooterCalculations extends OpMode {
     public void loop() {
         distance = tagDistance.distance;
         numerator = Math.sqrt(9.81 * Math.pow(distance, 2));
-        denominator = (Math.pow(2 * Math.cos(63.2)) * (distance * Math.tan(63.2) - 0.85125));
+        denominator = (Math.pow(2 * Math.cos(63.2) , 2) * (distance * Math.tan(63.2) - 0.85125));
         initalVelocity = numerator / denominator;
-        return initalVelocity;
     }
 
 }
