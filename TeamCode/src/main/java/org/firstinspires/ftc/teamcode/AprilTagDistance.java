@@ -35,7 +35,7 @@ public class AprilTagDistance extends OpMode {
         //get latest limelight result, pipeline 8 for April tag 0
         LLResult llResult = limelight3A.getLatestResult();
         if (llResult != null && llResult.isValid()) {
-            Pose30 botpose = llResult.getBotpose_MT2();
+            Pose3D botpose = llResult.getBotpose_MT2();
             distance = getDistanceFromTage(llResult.getTa());
 
             telemetry.addData("Distance", distance);
