@@ -12,12 +12,11 @@ public class LauncherTesting extends OpMode {
     @Override
     public void init() {
         motor = hardwareMap.get(DcMotor.class, "launchingmotor"); // launching motor is name in control hub
-        motor.setDirection(DcMotor.Direction.REVERSE);
     }
 
     @Override
     public void start() {
-        motor.setPower(1);
+        motor.setPower(0.75);
     }
 
     public void loop() {
