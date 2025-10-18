@@ -13,7 +13,7 @@ public class MechanumFieldOrientatedOpMode extends OpMode {
 
     @Override
     public void init() {
-        drive.init();
+        //drive.init();
     }
 
     @Override

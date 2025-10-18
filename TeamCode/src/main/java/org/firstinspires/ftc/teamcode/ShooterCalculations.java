@@ -7,7 +7,6 @@ public class ShooterCalculations extends OpMode {
 
 
     //create a new class
-    AprilTagDistance tagDistance = new AprilTagDistance();
     double distance;
     double initalVelocity;
     double numerator;
@@ -20,7 +19,7 @@ public class ShooterCalculations extends OpMode {
 
     @Override
     public void loop() {
-        distance = tagDistance.distance;
+        distance = 10;
         numerator = Math.sqrt(9.81 * Math.pow(distance, 2));
         denominator = (Math.pow(2 * Math.cos(63.2) , 2) * (distance * Math.tan(63.2) - 0.85125));
         initalVelocity = numerator / denominator;
