@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name = "Example Auto", group = "Examples")
+@Autonomous(name = "Autonomous Test", group = "Autonomous")
 public class Autotest extends OpMode {
 
     private Follower follower;
@@ -39,6 +39,8 @@ public class Autotest extends OpMode {
         follower.setPose(new Pose(56.000, 8.000, Math.toRadians(90)));
 
         pathState = 0;
+        telemetry.addLine("Fully finished initialization");
+        telemetry.update();
     }
 
     @Override
@@ -46,6 +48,7 @@ public class Autotest extends OpMode {
         opmodeTimer.resetTimer();
         pathTimer.resetTimer();
         follower.followPath(paths.Path1);
+        telemetry.addLine("Path 1 has been succesfully built");
     }
 
     @Override
@@ -57,6 +60,7 @@ public class Autotest extends OpMode {
                 if (!follower.isBusy()) {
                     pathTimer.resetTimer();
                     follower.followPath(paths.Path2);
+                    telemetry.addLine("Path 2 has been succesfully built");
                     pathState++;
                 }
                 break;
