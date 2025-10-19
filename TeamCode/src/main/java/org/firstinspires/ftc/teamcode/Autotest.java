@@ -27,6 +27,9 @@ public class Autotest extends OpMode {
 
         follower = Constants.createFollower(hardwareMap);
 
+        telemetry.addLine("Follower and pinpoint IMU+odo pods have been initialied successfully!");
+        telemetry.update();
+
         paths = new Paths(follower);
 
         pathTimer = new Timer();
