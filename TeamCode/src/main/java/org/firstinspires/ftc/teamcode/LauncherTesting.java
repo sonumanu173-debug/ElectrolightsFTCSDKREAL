@@ -23,7 +23,7 @@ public class LauncherTesting extends OpMode {
 
     @Override
     public void start() {
-        motor.setPower(1);
+        motor.setPower(1); // I WANT TO USE ENABLE COMMAND HERE
     }
 
     @Override
@@ -33,7 +33,6 @@ public class LauncherTesting extends OpMode {
         double rpm = (ticksPerSecond / TICKS_PER_REV) * 60.0;
 
         telemetry.addData("Motor RPM", rpm);
-        telemetry.addData("graph:Motor RPM", rpm); // Panels graph
         telemetry.update();
 
     }
