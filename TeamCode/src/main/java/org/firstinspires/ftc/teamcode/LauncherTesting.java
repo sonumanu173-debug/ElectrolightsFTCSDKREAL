@@ -9,7 +9,30 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.bylazar.telemetry.PanelsTelemetry;
 import org.firstinspires.ftc.teamcode.Flywheel;
 
-@TeleOp
+import dev.nextftc.core.commands.Command;
+import dev.nextftc.ftc.NextFTCOpMode;
+import dev.nextftc.core.components.BindingsComponent;
+import dev.nextftc.core.components.SubsystemComponent;
+import dev.nextftc.ftc.components.BulkReadComponent;
+
+public class LauncherTesting extends NextFTCOpMode {
+    public LauncherTesting() {
+        addComponents(
+                new SubsystemComponent(Flywheel.INSTANCE),
+                BulkReadComponent.INSTANCE,
+                BindingsComponent.INSTANCE
+        );
+    }
+    @Override
+    public void onStartButtonPressed() {
+
+        Flywheel.INSTANCE.enable.schedule();
+
+
+    }
+}
+
+/*@TeleOp
 public class LauncherTesting extends OpMode {
 
     private DcMotorEx motor;
@@ -23,7 +46,9 @@ public class LauncherTesting extends OpMode {
 
     @Override
     public void start() {
-        motor.setPower(1); // I WANT TO USE ENABLE COMMAND HERE
+        //motor.setPower(1); // I WANT TO USE ENABLE COMMAND HERE
+        Flywheel.INSTANCE.enable.start();
+
     }
 
     @Override
@@ -36,4 +61,4 @@ public class LauncherTesting extends OpMode {
         telemetry.update();
 
     }
-}
+}*/

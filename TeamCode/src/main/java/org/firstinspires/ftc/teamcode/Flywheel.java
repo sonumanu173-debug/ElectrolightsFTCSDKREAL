@@ -19,8 +19,8 @@ public class Flywheel implements Subsystem {
             .basicFF(0.01, 0.02, 0.03)
             .build();
 
-    public final Command enable = new RunToVelocity(controller, 0.0).requires(this).named("FlywheelOff");
-    public final Command disable = new RunToVelocity(controller, 5000.0).requires(this).named("FlywheelOn");
+    public final Command enable = new RunToVelocity(controller, 5000.0).requires(this).named("FlywheelOff");
+    public final Command disable = new RunToVelocity(controller, 0000.0).requires(this).named("FlywheelOn");
 
     @Override
     public void periodic() {
