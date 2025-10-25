@@ -22,7 +22,7 @@ public class Flywheel implements Subsystem {
             .build();
 
     public final Command off = new RunToVelocity(controller, 0.0).requires(this).named("FlywheelOff");
-    public final Command on = new RunToVelocity(controller, 500.0).requires(this).named("FlywheelOn");
+    public final Command on = new RunToVelocity(controller, 5500.0).requires(this).named("FlywheelOn");
 
     @Override
     public void periodic() {
