@@ -17,7 +17,7 @@ public class LauncherTesting extends OpMode {
 
     @Override
     public void start() {
-        motor.setPower(0.75);
+        motor.setPower(1);
     }
 
     @Override
@@ -26,7 +26,8 @@ public class LauncherTesting extends OpMode {
         double rpm = (ticksPerSecond / TICKS_PER_REV) * 60.0;
 
         telemetry.addData("Motor RPM", rpm);
+        telemetry.addData("yes", "working");
         telemetry.addData("graph:Motor RPM", rpm); // Panels graph
-        telemetry.update();
+
     }
 }
