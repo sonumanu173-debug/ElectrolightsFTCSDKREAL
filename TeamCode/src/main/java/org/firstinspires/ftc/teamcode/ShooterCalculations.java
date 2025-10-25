@@ -8,9 +8,10 @@ public class ShooterCalculations extends OpMode {
 
     //create a new class
     double distance;
-    double initalVelocity;
+    double v0;
     double numerator;
     double denominator;
+    double requiredRPM;
 
     @Override
     public void init() {
@@ -22,7 +23,8 @@ public class ShooterCalculations extends OpMode {
         distance = 10;
         numerator = Math.sqrt(9.81 * Math.pow(distance, 2));
         denominator = (Math.pow(2 * Math.cos(63.2) , 2) * (distance * Math.tan(63.2) - 0.85125));
-        initalVelocity = numerator / denominator;
+        v0 = numerator / denominator;
+        requiredRPM = 10 * (v0)*(v0) + 10 * v0 + 10;
     }
 
 }
