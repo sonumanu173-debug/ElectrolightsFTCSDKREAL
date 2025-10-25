@@ -23,36 +23,17 @@ public class LauncherTesting extends NextFTCOpMode {
                 BindingsComponent.INSTANCE
         );
     }
-    @Override
-    public void onStartButtonPressed() {
 
-        Flywheel.INSTANCE.enable.schedule();
-
-
-    }
-}
-
-/*@TeleOp
-public class LauncherTesting extends OpMode {
-
-    private DcMotorEx motor;
+    public DcMotorEx motor;
     private static final double TICKS_PER_REV = 28;
 
     @Override
-    public void init() {
+    public void onInit() {
         motor = hardwareMap.get(DcMotorEx.class, "launchingmotor");
-        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     @Override
-    public void start() {
-        //motor.setPower(1); // I WANT TO USE ENABLE COMMAND HERE
-        Flywheel.INSTANCE.enable.start();
-
-    }
-
-    @Override
-    public void loop() {
+    public void onUpdate() {
         double ticksPerSecond = motor.getVelocity();
 
         double rpm = (ticksPerSecond / TICKS_PER_REV) * 60.0;
@@ -61,4 +42,12 @@ public class LauncherTesting extends OpMode {
         telemetry.update();
 
     }
-}*/
+
+    @Override
+    public void onStartButtonPressed() {
+
+        Flywheel.INSTANCE.enable.schedule();
+
+
+    }
+}
