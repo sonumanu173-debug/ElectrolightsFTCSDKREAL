@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.bylazar.configurables.annotations.Configurable;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.subsystems.Subsystem;
@@ -22,7 +20,7 @@ public class Flywheel implements Subsystem {
             .build();
 
     public final Command off = new RunToVelocity(controller, 0.0).requires(this).named("FlywheelOff");
-    public final Command on = new RunToVelocity(controller, 5500.0).requires(this).named("FlywheelOn");
+    public final Command on = new RunToVelocity(controller, 5000.0).requires(this).named("FlywheelOn");
 
     @Override
     public void periodic() {
