@@ -1,12 +1,6 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.ServoImpl;
-
-
-
-
-
 
 
 public class launchertestservo {
@@ -21,5 +15,4 @@ public class launchertestservo {
     public void setServoPos(double angle) {
         servoPos.setPosition(angle);
     }
-}
 }
