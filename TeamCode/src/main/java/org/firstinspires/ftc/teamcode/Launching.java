@@ -10,7 +10,6 @@ import dev.nextftc.ftc.NextFTCOpMode;
 public class Launching extends NextFTCOpMode {
 
     private DcMotorEx launcher;
-    
 
     @Override
     public void onInit() {
