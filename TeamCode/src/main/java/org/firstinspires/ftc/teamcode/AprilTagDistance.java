@@ -15,6 +15,7 @@ public class AprilTagDistance extends OpMode {
     private Limelight3A limelight3A;
     TestBench bench = new TestBench();
     public double distance;
+    double ta;
 
     @Override
     public void init() {
@@ -41,11 +42,12 @@ public class AprilTagDistance extends OpMode {
 
             telemetry.addData("Distance", distance);
             telemetry.addData("Target X", llResult.getTx());
-            telemetry.addData("Target Area", llResult.getTa());
+            ta = llResult.getTa();
+            telemetry.addData("Target Area", ta);
             telemetry.addData("Botpose", botpose.toString());
         }
     }
-    public double getDistanceFromTage(double ta) {
+    public double getDistanceFromTage(public double ta) {
         double scale = 30665; // y - value in graph equation (Ayush FTC yt playlist)
         double distance = scale / ta;
         return distance;
