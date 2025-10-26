@@ -28,9 +28,6 @@ public class LauncherTesting extends NextFTCOpMode {
 
     public DcMotorEx motor;
 
-
-
-
     private static final double TICKS_PER_REV = 28;
 
     @Override
@@ -43,7 +40,7 @@ public class LauncherTesting extends NextFTCOpMode {
         double ticksPerSecond = motor.getVelocity();
 
         double rpm = (ticksPerSecond / TICKS_PER_REV) * -60.0;
-        double goal = Flywheel.RPM;
+        double goal = ShooterCalculations.requiredRPM;
         telemetry.addData("Motor RPM", rpm);
         telemetry.update();
         PanelsTelemetry.INSTANCE.getTelemetry().addData("Motor RPM", rpm);
