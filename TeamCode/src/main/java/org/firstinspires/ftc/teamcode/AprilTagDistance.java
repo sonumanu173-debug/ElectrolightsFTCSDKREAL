@@ -47,7 +47,7 @@ public class AprilTagDistance extends OpMode {
             telemetry.addData("Botpose", botpose.toString());
         }
     }
-    public double getDistanceFromTage(public double ta) {
+    public double getDistanceFromTage(double ta) {
         double scale = 30665; // y - value in graph equation (Ayush FTC yt playlist)
         double distance = scale / ta;
         return distance;
