@@ -83,7 +83,7 @@ public class flywheelpid extends NextFTCOpMode {
         shooter();
         double ticksPerSecond = flywheel.getVelocity();
 
-        double rpm = (ticksPerSecond / 28) * -60.0;
+        double rpm = (ticksPerSecond / 28) * 60.0;
         double goal = ShooterCalculations.requiredRPM;
         PanelsTelemetry.INSTANCE.getTelemetry().addData("Motor RPM", rpm);
         PanelsTelemetry.INSTANCE.getTelemetry().addData("Required RPM", goal);
