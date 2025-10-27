@@ -14,6 +14,8 @@ public class ShooterCalculations extends OpMode {
     double v0;
     double numerator;
     double denominator;
+
+    double yes;
     public static double requiredRPM;
 
 
@@ -25,13 +27,13 @@ public class ShooterCalculations extends OpMode {
 
     @Override
     public void loop() {
-        ta = targetArea.
-        distance = tagDistance.getDistanceFromTage();
+        distance = 10;
         numerator = Math.sqrt(9.81 * Math.pow(distance, 2));
         denominator = (Math.pow(2 * Math.cos(63.2) , 2) * (distance * Math.tan(63.2) - 0.85125));
         v0 = numerator / denominator;
-        requiredRPM = 5500.00;
         //requiredRPM = 10 * (v0)*(v0) + 10 * v0 + 10;
+        yes = 0;
+        requiredRPM = (28*yes)/60;
     }
 
 }

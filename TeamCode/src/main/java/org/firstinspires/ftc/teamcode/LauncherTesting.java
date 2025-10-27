@@ -52,7 +52,7 @@ public class LauncherTesting extends NextFTCOpMode {
     @Override
     public void onStartButtonPressed() {
 
-        Flywheel.INSTANCE.enable.schedule();
+        Flywheel.INSTANCE.disable.schedule();
 
 
     }

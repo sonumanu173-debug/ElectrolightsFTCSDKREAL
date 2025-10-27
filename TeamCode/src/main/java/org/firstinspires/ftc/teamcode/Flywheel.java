@@ -21,7 +21,7 @@ public class  Flywheel implements Subsystem {
 
     private final ControlSystem controller = ControlSystem.builder()
             .velPid(0.01, 0, 0)
-            .basicFF(0.03, 0.02, 0.01)
+            .basicFF(0.01, 0.01, 0.01)
             .build();
 
     public final Command enable = new RunToVelocity(controller, ShooterCalculations.requiredRPM).requires(this).named("FlywheelOn");
