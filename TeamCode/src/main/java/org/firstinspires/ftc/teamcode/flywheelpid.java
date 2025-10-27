@@ -6,6 +6,8 @@ import android.health.connect.datatypes.units.Power;
 
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 
@@ -33,9 +35,10 @@ public class flywheelpid extends NextFTCOpMode {
     public static double flywheelvelocity;
 
 
-    public static MotorEx flywheel = new MotorEx("launchingmotor");
+    public static MotorEx flywheel = new MotorEx("launchingmotor").reversed();
 
-    public static float configvelocity = (float) ShooterCalculations.requiredTPS; //far zone - ~1500. near zone - ~1200-1300
+
+    public static double configvelocity = 1200; //far zone - ~1500. near zone - ~1200-1300
 
 
     public static void velocityControlWithFeedforwardExample(KineticState currentstate) {
@@ -69,7 +72,7 @@ public class flywheelpid extends NextFTCOpMode {
     public static void shooter() {
         BindingManager.update();
         flywheelvelocity = flywheel.getVelocity();
-        KineticState currentState = new KineticState(0, flywheelvelocity, 0.0); //figure out velocity (is it in ticks?!?)
+        KineticState currentState = new KineticState(0, -1*flywheelvelocity, 0.0); //figure out velocity (is it in ticks?!?)
         velocityControlWithFeedforwardExample(currentState);
 
 
@@ -85,8 +88,10 @@ public class flywheelpid extends NextFTCOpMode {
 
         double rpm = (ticksPerSecond / 28) * 60.0;
         double goal = ShooterCalculations.requiredRPM;
+        double goal2 = ShooterCalculations.requiredTPS;
         PanelsTelemetry.INSTANCE.getTelemetry().addData("Motor RPM", rpm);
         PanelsTelemetry.INSTANCE.getTelemetry().addData("Required RPM", goal);
+        PanelsTelemetry.INSTANCE.getTelemetry().addData("Required TPS", goal2);
         PanelsTelemetry.INSTANCE.getTelemetry().update(telemetry);
     }
 
