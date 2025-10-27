@@ -32,7 +32,7 @@ public class ShooterCalculations extends OpMode {
         denominator = (Math.pow(2 * Math.cos(63.2) , 2) * (distance * Math.tan(63.2) - 0.85125));
         v0 = numerator / denominator;
         //yes = 10 * (v0)*(v0) + 10 * v0 + 10; - this is placeholder
-        requiredRPM = 0; //testing, idk why flywheel still rotates when this is 0
+        //requiredRPM = 0; //testing, idk why flywheel still rotates when this is 0
         requiredTPS = (28*requiredRPM)/60;
     }
 
