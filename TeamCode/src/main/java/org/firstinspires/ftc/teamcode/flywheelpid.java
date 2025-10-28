@@ -23,67 +23,45 @@ import dev.nextftc.hardware.impl.ServoEx;
 public class flywheelpid extends NextFTCOpMode {
     public flywheelpid() {
         addComponents(
-
         );
-
-
-
-
     }
-
-
     public static double flywheelvelocity;
-
 
     public static MotorEx flywheel = new MotorEx("launchingmotor").reversed();
 
+    public static float configvelocity = 1750; //far zone - ~1500. near zone - ~1200-1300
 
-    public static double configvelocity = 1200; //far zone - ~1500. near zone - ~1200-1300
-
-
-    public static void velocityControlWithFeedforwardExample(KineticState currentstate) {
+    public static void velocityControlWithFeedforwardExample(KineticState currentstate, float configtps) {
         // Create a velocity controller with PID and feedforward
         ControlSystem controller = ControlSystem.builder()
                 .velPid(0.18, 0.01, 0.05) // Velocity PID with kP=0.1, kI=0.01, kD=0.05
                 .basicFF(0.0067, 0.0, 0.01) // Basic feedforward with kV=0.02, kA=0.0, kS=0.01 //pid tuning
                 .build();
 
-        // Set the goal velocity to 500 units per second
-        controller.setGoal(new KineticState(0.0, configvelocity, 0.0));
+        controller.setGoal(new KineticState(0.0, configtps, 0.0));
 
-        // In a loop (simulated here), you would:
-        // Create a KineticState with current position and velocity
         // In a loop (simulated here), you would:
         // Create a KineticState with current position and velocity
 
         double power = controller.calculate(currentstate);
         flywheel.setPower(power);
-
-        // Apply power to your motor
-        System.out.println("Power to apply: " + power);
     }
-
     @Override public void onInit() { }
     @Override public void onWaitForStart() { }
-    @Override public void onStartButtonPressed() {
-
-    }
-
-    public static void shooter() {
+    @Override public void onStartButtonPressed() {}
+    public static void shooter(float tps) {
         BindingManager.update();
         flywheelvelocity = flywheel.getVelocity();
-        KineticState currentState = new KineticState(0, -1*flywheelvelocity, 0.0); //figure out velocity (is it in ticks?!?)
-        velocityControlWithFeedforwardExample(currentState);
-
-
-//motor.setPower(kP * error + kV * targetVelocity)
-//where error is (targetVelocity - motor.getVelocity())
-//tune kP until error is small enough (graph error)
-
-
+        KineticState currentState = new KineticState(0, -1*flywheelvelocity, 0.0);
+        if(tps-(-1*flywheelvelocity)<7 && tps-(-1*flywheelvelocity)>-7){
+            velocityControlWithFeedforwardExample(currentState, tps);
+        } // if this doesnt work remove if statement
+        //motor.setPower(kP * error + kV * targetVelocity)
+        //where error is (targetVelocity - motor.getVelocity())
+        //tune kP until error is small enough (graph error)
     }
     @Override public void onUpdate() {
-        shooter();
+        shooter(configvelocity);
         double ticksPerSecond = flywheel.getVelocity();
 
         double rpm = (ticksPerSecond / 28) * 60.0;

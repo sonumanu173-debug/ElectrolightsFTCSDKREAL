@@ -17,8 +17,8 @@ public class ShooterCalculations extends NextFTCOpMode {
     double numerator;
     double denominator;
 
-    public static double requiredRPM;
-    public static double requiredTPS;
+    public static double requiredRPM = 4500.00;
+    public static double requiredTPS = (28*requiredRPM)/60;
 
 
 
@@ -35,9 +35,8 @@ public class ShooterCalculations extends NextFTCOpMode {
         v0 = numerator / denominator;
         //yes = 10 * (v0)*(v0) + 10 * v0 + 10; - this is placeholder
         //requiredRPM = 0; //testing, idk why flywheel still rotates when this is 0
-        requiredRPM = 1000.00;
-        //requiredTPS = (28*requiredRPM)/60;
-        requiredTPS= 467.00;
+        requiredRPM = 4500.00;
+        requiredTPS = (28*requiredRPM)/60;
     }
 
 }
