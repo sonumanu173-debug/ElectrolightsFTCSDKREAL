@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.flywheelpid.shooter;
+
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import java.lang.Math;
@@ -37,6 +39,7 @@ public class ShooterCalculations extends NextFTCOpMode {
         //requiredRPM = 0; //testing, idk why flywheel still rotates when this is 0
         requiredRPM = 4500.00;
         requiredTPS = (28*requiredRPM)/60;
+        shooter((float) requiredTPS);
     }
 
 }
