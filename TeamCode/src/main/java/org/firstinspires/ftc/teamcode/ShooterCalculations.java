@@ -1,11 +1,18 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.flywheelpid.shooter;
+
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
 import java.lang.Math;
 
+import dev.nextftc.ftc.NextFTCOpMode;
+
 @Configurable
-public class ShooterCalculations extends OpMode {
+@TeleOp(name = "ShooterCalc")
+public class ShooterCalculations extends NextFTCOpMode {
 
     AprilTagDistance tagDistance = new AprilTagDistance();
     AprilTagDistance targetArea = new AprilTagDistance();
@@ -14,24 +21,27 @@ public class ShooterCalculations extends OpMode {
     double v0;
     double numerator;
     double denominator;
+
     public static double requiredRPM;
+    public static double requiredTPS = (28*requiredRPM)/60;
 
 
 
     @Override
-    public void init() {
+    public void onInit() {
 
     }
 
-    @Override
-    public void loop() {
-        ta = targetArea.
-        distance = tagDistance.getDistanceFromTage();
-        numerator = Math.sqrt(9.81 * Math.pow(distance, 2));
-        denominator = (Math.pow(2 * Math.cos(63.2) , 2) * (distance * Math.tan(63.2) - 0.85125));
-        v0 = numerator / denominator;
-        requiredRPM = 5500.00;
-        //requiredRPM = 10 * (v0)*(v0) + 10 * v0 + 10;
+//    @Override
+    public void onUpdate() {
+        distance = 3.5;
+        numerator = 9.81 * Math.pow(distance, 2);
+        denominator = (2 * Math.pow(Math.cos(1.103048) , 2) * (distance * Math.tan(1.103048) - 0.85125));
+        v0 = Math.sqrt(numerator / denominator);
+        requiredRPM = 26.613*v0*v0 + 576.17*v0 - 1495.9;
+        //requiredRPM = 4500.00;
+        requiredTPS = (28*requiredRPM)/60;
+        shooter((float) requiredTPS);
     }
 
 }

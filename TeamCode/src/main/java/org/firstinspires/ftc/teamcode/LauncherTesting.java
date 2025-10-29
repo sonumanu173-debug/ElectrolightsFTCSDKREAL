@@ -1,18 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.bylazar.telemetry.PanelsTelemetry;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.bylazar.telemetry.PanelsTelemetry;
-import org.firstinspires.ftc.teamcode.Flywheel;
+import static org.firstinspires.ftc.teamcode.flywheelpid.shooter;
 
-import dev.nextftc.core.commands.Command;
+import com.bylazar.telemetry.PanelsTelemetry;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.core.components.BindingsComponent;
-import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
 
@@ -20,7 +15,6 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 public class LauncherTesting extends NextFTCOpMode {
     public LauncherTesting() {
         addComponents(
-                new SubsystemComponent(Flywheel.INSTANCE),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
         );
@@ -38,11 +32,9 @@ public class LauncherTesting extends NextFTCOpMode {
     @Override
     public void onUpdate() {
         double ticksPerSecond = motor.getVelocity();
-
+        shooter(1500);
         double rpm = (ticksPerSecond / TICKS_PER_REV) * -60.0;
         double goal = ShooterCalculations.requiredRPM;
-        telemetry.addData("Motor RPM", rpm);
-        telemetry.update();
         PanelsTelemetry.INSTANCE.getTelemetry().addData("Motor RPM", rpm);
         PanelsTelemetry.INSTANCE.getTelemetry().addData("Required RPM", goal);
         PanelsTelemetry.INSTANCE.getTelemetry().update(telemetry);
@@ -51,8 +43,6 @@ public class LauncherTesting extends NextFTCOpMode {
 
     @Override
     public void onStartButtonPressed() {
-
-        Flywheel.INSTANCE.enable.schedule();
 
 
     }
