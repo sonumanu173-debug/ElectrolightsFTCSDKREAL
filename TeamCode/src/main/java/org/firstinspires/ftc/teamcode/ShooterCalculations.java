@@ -4,11 +4,14 @@ import static org.firstinspires.ftc.teamcode.flywheelpid.shooter;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
 import java.lang.Math;
 
 import dev.nextftc.ftc.NextFTCOpMode;
 
 @Configurable
+@TeleOp(name = "ShooterCalc")
 public class ShooterCalculations extends NextFTCOpMode {
 
     AprilTagDistance tagDistance = new AprilTagDistance();
