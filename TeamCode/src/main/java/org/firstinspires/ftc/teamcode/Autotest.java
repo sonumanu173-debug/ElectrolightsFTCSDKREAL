@@ -8,7 +8,10 @@ import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.IMU;
+import org.firstinspires.ftc.teamcode.AprilTagDistance;
+import org.firstinspires.ftc.teamcode.flywheelpid;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous(name = "Autonomous Test", group = "Autonomous")
@@ -67,7 +70,7 @@ public class Autotest extends OpMode {
 
             case 1:
                 if (!follower.isBusy()) {
-                    telemetry.addLine("✅ Auto complete!");
+                    telemetry.addLine("Auto Completed lol");
                     pathState++;
                 }
                 break;
