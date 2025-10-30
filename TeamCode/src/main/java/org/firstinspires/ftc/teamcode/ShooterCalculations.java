@@ -18,14 +18,24 @@ public class ShooterCalculations extends NextFTCOpMode {
     AprilTagDistance targetArea = new AprilTagDistance();
     double ta;
     double distance;
-    double v0;
-    double numerator;
-    double denominator;
+    public static double v0;
+    public static double numerator;
+    public static double denominator;
+
+    double dist;
+
 
     public static double requiredRPM;
     public static double requiredTPS = (28*requiredRPM)/60;
 
-
+    public static float findTPS(double dist){
+        numerator = 9.81 * Math.pow(dist, 2);
+        denominator = (2 * Math.pow(Math.cos(1.103048) , 2) * (dist * Math.tan(1.103048) - 0.85125));
+        v0 = Math.sqrt(numerator / denominator);
+        requiredRPM = -39.357*v0*v0*v0 + 730.79*v0*v0 - 3907.4*v0 + 8555.9;
+        requiredTPS = (28*requiredRPM)/60;
+        return (float) requiredTPS;
+    }
 
     @Override
     public void onInit() {
@@ -35,13 +45,8 @@ public class ShooterCalculations extends NextFTCOpMode {
 //    @Override
     public void onUpdate() {
         distance = 3.5;
-        numerator = 9.81 * Math.pow(distance, 2);
-        denominator = (2 * Math.pow(Math.cos(1.103048) , 2) * (distance * Math.tan(1.103048) - 0.85125));
-        v0 = Math.sqrt(numerator / denominator);
-        requiredRPM = 26.613*v0*v0 + 576.17*v0 - 1495.9;
-        //requiredRPM = 4500.00;
-        requiredTPS = (28*requiredRPM)/60;
-        shooter((float) requiredTPS);
+        float TPS=findTPS(distance);
+        shooter(TPS);
     }
 
 }
