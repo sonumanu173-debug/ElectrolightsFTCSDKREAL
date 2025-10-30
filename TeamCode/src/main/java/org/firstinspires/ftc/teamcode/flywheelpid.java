@@ -62,7 +62,7 @@ public class flywheelpid extends NextFTCOpMode {
         //tune kP until error is small enough (graph error)
     }
     @Override public void onUpdate() {
-        configvelocity=findTPS(0.86);
+        configvelocity=findTPS(3.66);
         shooter(configvelocity);
         double ticksPerSecond = flywheel.getVelocity();
 

@@ -32,7 +32,7 @@ public class ShooterCalculations extends NextFTCOpMode {
         numerator = 9.81 * Math.pow(dist, 2);
         denominator = (2 * Math.pow(Math.cos(1.103048) , 2) * (dist * Math.tan(1.103048) - 0.85125));
         v0 = Math.sqrt(numerator / denominator);
-        requiredRPM = -39.357*v0*v0*v0 + 730.79*v0*v0 - 3907.4*v0 + 8555.9;
+        requiredRPM = -39.357*v0*v0*v0 + 730.79*v0*v0 - 3907.4*v0 + 8580.9;
         requiredTPS = (28*requiredRPM)/60;
         return (float) requiredTPS;
     }
