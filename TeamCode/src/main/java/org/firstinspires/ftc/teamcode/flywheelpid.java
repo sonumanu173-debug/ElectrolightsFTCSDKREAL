@@ -17,6 +17,7 @@ import dev.nextftc.control.ControlSystem;
 
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.hardware.impl.MotorEx;
+import static org.firstinspires.ftc.teamcode.ShooterCalculations.findTPS;
 import dev.nextftc.hardware.impl.ServoEx;
 
 @TeleOp(name = "Flywheel PID")
@@ -29,7 +30,7 @@ public class flywheelpid extends NextFTCOpMode {
 
     public static MotorEx flywheel = new MotorEx("launchingmotor").reversed();
 
-    public static float configvelocity = 1750; //far zone - ~1500. near zone - ~1200-1300
+    public static float configvelocity = 1400; //far zone - ~1500. near zone - ~1200-1300
 
     public static void velocityControlWithFeedforwardExample(KineticState currentstate, float configtps) {
         // Create a velocity controller with PID and feedforward
@@ -53,14 +54,15 @@ public class flywheelpid extends NextFTCOpMode {
         BindingManager.update();
         flywheelvelocity = flywheel.getVelocity();
         KineticState currentState = new KineticState(0, -1*flywheelvelocity, 0.0);
-        if(tps-(-1*flywheelvelocity)<7 && tps-(-1*flywheelvelocity)>-7){
+        //if(tps-(-1*flywheelvelocity)<7 && tps-(-1*flywheelvelocity)>-7){
             velocityControlWithFeedforwardExample(currentState, tps);
-        } // if this doesnt work remove if statement
+        //} // if this doesnt work remove if statement
         //motor.setPower(kP * error + kV * targetVelocity)
         //where error is (targetVelocity - motor.getVelocity())
         //tune kP until error is small enough (graph error)
     }
     @Override public void onUpdate() {
+        configvelocity=findTPS(4.03);
         shooter(configvelocity);
         double ticksPerSecond = flywheel.getVelocity();
 
