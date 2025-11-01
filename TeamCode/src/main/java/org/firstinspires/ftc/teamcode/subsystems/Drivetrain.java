@@ -70,8 +70,8 @@ public class Drivetrain implements Subsystem {
 
     @Override
     public Command getDefaultCommand() {
-        Button myButton = button(() -> gamepad1.triangle);
-        myButton.whenTrue(() -> autolocktrue())
+        Button Autoaim = button(() -> gamepad1.triangle);
+        Autoaim.whenTrue(() -> autolocktrue())
                 .whenFalse(() -> autolockfalse());
         if(autolock==true){
             limelight.pipelineSwitch(APRILTAG_PIPELINE);
