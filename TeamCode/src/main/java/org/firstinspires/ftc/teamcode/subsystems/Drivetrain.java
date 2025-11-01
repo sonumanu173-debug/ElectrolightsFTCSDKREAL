@@ -25,7 +25,7 @@ public class Drivetrain implements Subsystem {
                 backLeftMotor,
                 backRightMotor,
                 Gamepads.gamepad1().leftStickY().negate(),
-                Gamepads.gamepad1().leftStickX(),
+                Gamepads.gamepad1().leftStickX(),//THIS IS FOR HEADING - PID OUTPUT GOES HERE
                 Gamepads.gamepad1().rightStickX(),
                 new FieldCentric(imu)
         );

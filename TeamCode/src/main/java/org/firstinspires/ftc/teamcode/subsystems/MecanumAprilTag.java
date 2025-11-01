@@ -65,7 +65,6 @@ public class MecanumAprilTag extends LinearOpMode {
 
         limelight.start();
 
-        double wristPos = .5;
         double powerMultiplier = 1.0;
 
         while (opModeIsActive()) {
@@ -84,10 +83,6 @@ public class MecanumAprilTag extends LinearOpMode {
             // else: keep last aimPos (or park to AIM_ZERO_POS if you prefer)
 
             // --- Driver 2 slow nudge controls ---
-            if (gamepad2.dpad_down)  moveRobot(.5,  0,   0);
-            if (gamepad2.dpad_up)    moveRobot(-.5, 0,   0);
-            if (gamepad2.dpad_right) moveRobot(0,  -.5,  0);
-            if (gamepad2.dpad_left)  moveRobot(0,   .5,  0);
 
             // --- Driver 1 inputs ---
             double y  = -gamepad1.left_stick_y;       // forward/back
@@ -97,24 +92,15 @@ public class MecanumAprilTag extends LinearOpMode {
             // Vision yaw assist while holding RT
             if (gamepad1.right_trigger > 0.5 && hasTag) {
                 rx = visionYawCommand(tx);
-                y += visionForwardCommand(ta); // optional distance hold
             }
 
             // Turn-in-place dampening
             if (y == 0 || x == 0) rx *= 0.6;
 
             // Speed toggle (RB)
-            if (toggleButton(gamepad1.right_bumper, "g1RightBumper")) powerMultiplier = 0.6;
-            else powerMultiplier = 1.0;
 
-            // Claw toggle on driver 2 RB
-//            if (toggleButton(gamepad2.right_bumper, "g2RightBumper")) claw.setPosition(0.4); // open
-//            else claw.setPosition(0.17); // closed
+            powerMultiplier = 1.0;
 
-            // Wrist quick positions
-            if (gamepad2.x) wristPos = .25;
-            if (gamepad2.y) wristPos = .5;
-            if (gamepad2.b) wristPos = .75;
 
             // --- Mecanum mixing ---
             double denominator     = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1.0);
@@ -187,30 +173,8 @@ public class MecanumAprilTag extends LinearOpMode {
         return clip(YAW_KP * txDeg, -YAW_MAX, YAW_MAX);
     }
 
-    private double visionForwardCommand(double taNow) {
-        if (!HOLD_DISTANCE) return 0.0;
-        double err = TARGET_TA - taNow; // positive => we're too far
-        return clip(FWD_KP * err, -FWD_MAX, FWD_MAX);
-    }
 
     // Map an angle in degrees (relative to robot HORIZON) -> servo position [0..1]
 
-    // Toggle helper
-    private boolean toggleButton(boolean buttonInput, String buttonName) {
-        boolean previousState = previousStates.getOrDefault(buttonName, false);
-        boolean toggleState   = toggleStates.getOrDefault(buttonName, false);
 
-        if (buttonInput && !previousState) {
-            toggleState = !toggleState;
-            toggleStates.put(buttonName, toggleState);
-
-            if (buttonName.equals("g1RightBumper")) {
-                gamepad1.rumbleBlips(rumbleNum % 2 + 1);
-                rumbleNum++;
-            }
-        }
-
-        previousStates.put(buttonName, buttonInput);
-        return toggleState;
-    }
 }
