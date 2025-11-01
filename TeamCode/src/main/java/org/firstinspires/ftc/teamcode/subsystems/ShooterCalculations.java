@@ -1,10 +1,11 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.subsystems;
 
-import static org.firstinspires.ftc.teamcode.flywheelpid.shooter;
+import static org.firstinspires.ftc.teamcode.subsystems.flywheelpid.shooter;
 
 import com.bylazar.configurables.annotations.Configurable;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import org.firstinspires.ftc.teamcode.AprilTagDistance;
 
 import java.lang.Math;
 
@@ -32,7 +33,7 @@ public class ShooterCalculations extends NextFTCOpMode {
         numerator = 9.81 * Math.pow(dist, 2);
         denominator = (2 * Math.pow(Math.cos(1.103048) , 2) * (dist * Math.tan(1.103048) - 0.85125));
         v0 = Math.sqrt(numerator / denominator);
-        requiredRPM = -39.357*v0*v0*v0 + 730.79*v0*v0 - 3907.4*v0 + 8580.9;
+        requiredRPM = -39.357*v0*v0*v0 + 730.79*v0*v0 - 3915.4*v0 + 8565.9;
         requiredTPS = (28*requiredRPM)/60;
         return (float) requiredTPS;
     }

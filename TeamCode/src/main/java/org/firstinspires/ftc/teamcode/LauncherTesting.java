@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.flywheelpid.shooter;
+import static org.firstinspires.ftc.teamcode.subsystems.flywheelpid.shooter;
 
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+
+import org.firstinspires.ftc.teamcode.subsystems.ShooterCalculations;
 
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.core.components.BindingsComponent;

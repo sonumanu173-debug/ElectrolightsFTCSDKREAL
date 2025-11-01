@@ -1,14 +1,7 @@
-package org.firstinspires.ftc.teamcode;
-
-import static dev.nextftc.bindings.Bindings.button;
-
-import android.health.connect.datatypes.units.Power;
+package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 
 
 import dev.nextftc.bindings.*;
@@ -17,8 +10,7 @@ import dev.nextftc.control.ControlSystem;
 
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.hardware.impl.MotorEx;
-import static org.firstinspires.ftc.teamcode.ShooterCalculations.findTPS;
-import dev.nextftc.hardware.impl.ServoEx;
+import static org.firstinspires.ftc.teamcode.subsystems.ShooterCalculations.findTPS;
 
 @TeleOp(name = "Flywheel PID")
 public class flywheelpid extends NextFTCOpMode {
