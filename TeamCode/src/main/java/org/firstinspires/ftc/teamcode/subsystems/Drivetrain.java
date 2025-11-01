@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -9,6 +10,7 @@ import com.qualcomm.robotcore.util.SerialNumber;
 import dev.nextftc.bindings.Button;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.subsystems.Subsystem;
+import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.ftc.Gamepads;
 import dev.nextftc.hardware.driving.FieldCentric;
 import dev.nextftc.hardware.driving.MecanumDriverControlled;
@@ -23,8 +25,8 @@ public class Drivetrain implements Subsystem {
     public static final Drivetrain INSTANCE = new Drivetrain();
     private Drivetrain() { }
 
-    SerialNumber LLSerialNumber = SerialNumber.fromString("ye");
-    private Limelight3A limelight; /*=new Limelight3A(LLSerialNumber,"limelight");*/
+    private Limelight3A limelight;
+
     private double tx, ty, ta;
     private boolean hasTag;
 
@@ -67,7 +69,10 @@ public class Drivetrain implements Subsystem {
         autolock = false;
     }
 
-
+    @Override
+    public void initialize() {
+        limelight = ActiveOpMode.hardwareMap().get(Limelight3A.class, "limelight");
+    }
     @Override
     public Command getDefaultCommand() {
         Button Autoaim = button(() -> gamepad1.triangle);

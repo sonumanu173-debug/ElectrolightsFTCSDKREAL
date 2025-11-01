@@ -16,7 +16,7 @@ import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Main TeleOp")
 public class TeleOp extends NextFTCOpMode {
     public TeleOp() {
         addComponents(
