@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.mechanisms;
+package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -21,10 +21,10 @@ public class MechanumDrive extends OpMode { // Public class for opmode because t
     public void init() {// This is the initialization process, everything here initializes when ypou press it on the driver hub
         telemetry.addLine("Initializing the teleop...");
 
-        frontLeftMotor = hardwareMap.get(DcMotor.class, "front_left_motor"); // Setting motors to hardwaremap and specific locations
-        backLeftMotor = hardwareMap.get(DcMotor.class, "back_left_motor"); //Bro i dont think ur slow so im not even going to explain this
-        frontRightMotor = hardwareMap.get(DcMotor.class, "front_right_motor");
-        backRightMotor = hardwareMap.get(DcMotor.class, "back_right_motor");
+        frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeft"); // Setting motors to hardwaremap and specific locations
+        backLeftMotor = hardwareMap.get(DcMotor.class, "backLeft"); //Bro i dont think ur slow so im not even going to explain this
+        frontRightMotor = hardwareMap.get(DcMotor.class, "frontRight");
+        backRightMotor = hardwareMap.get(DcMotor.class, "backRight");
 
         frontLeftMotor.setDirection(DcMotor.Direction.REVERSE); // Pretty straightforward imo, setting motor directions to reverse
         backLeftMotor.setDirection(DcMotor.Direction.REVERSE);

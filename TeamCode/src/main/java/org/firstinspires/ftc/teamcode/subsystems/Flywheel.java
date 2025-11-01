@@ -1,23 +1,19 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.bylazar.telemetry.PanelsTelemetry;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
 
 import dev.nextftc.bindings.*;
 import dev.nextftc.control.KineticState;
 import dev.nextftc.control.ControlSystem;
 
-import dev.nextftc.ftc.NextFTCOpMode;
+import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.hardware.impl.MotorEx;
-import static org.firstinspires.ftc.teamcode.subsystems.ShooterCalculations.findTPS;
 
-@TeleOp(name = "Flywheel PID")
-public class flywheelpid extends NextFTCOpMode {
-    public flywheelpid() {
-        addComponents(
-        );
+public class Flywheel implements Subsystem {
+    public Flywheel() {
+
     }
+
+    public static final Flywheel INSTANCE = new Flywheel();
     public static double flywheelvelocity;
 
     public static MotorEx flywheel = new MotorEx("launchingmotor").reversed();
@@ -39,9 +35,6 @@ public class flywheelpid extends NextFTCOpMode {
         double power = controller.calculate(currentstate);
         flywheel.setPower(power);
     }
-    @Override public void onInit() { }
-    @Override public void onWaitForStart() { }
-    @Override public void onStartButtonPressed() {}
     public static void shooter(float tps) {
         BindingManager.update();
         flywheelvelocity = flywheel.getVelocity();
@@ -53,7 +46,10 @@ public class flywheelpid extends NextFTCOpMode {
         //where error is (targetVelocity - motor.getVelocity())
         //tune kP until error is small enough (graph error)
     }
-    @Override public void onUpdate() {
+    @Override public void initialize() {
+        flywheel.setPower(0.1);
+    }
+    /*@Override public void onUpdate() {
         configvelocity=findTPS(4.03);
         shooter(configvelocity);
         double ticksPerSecond = flywheel.getVelocity();
@@ -64,7 +60,6 @@ public class flywheelpid extends NextFTCOpMode {
         PanelsTelemetry.INSTANCE.getTelemetry().addData("Motor RPM", rpm);
         PanelsTelemetry.INSTANCE.getTelemetry().addData("Required RPM", goal);
         PanelsTelemetry.INSTANCE.getTelemetry().addData("Required TPS", goal2);
-        PanelsTelemetry.INSTANCE.getTelemetry().update(telemetry);
-    }
-
+        PanelsTelemetry.INSTANCE.getTelemetry().update(telemetry);*/
 }
+

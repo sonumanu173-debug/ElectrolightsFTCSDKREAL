@@ -31,16 +31,6 @@ public class MecanumAprilTag extends LinearOpMode {
     private static final double FWD_KP = 0.02;
     private static final double FWD_MAX = 0.35;
 
-    // --- Simple AprilTag aimer (servo points up/down) ---
-    private Servo aimServo;                           // add "aimServo" in RC config
-    private static final double AIM_MIN_POS = 0.10;   // mechanical lower limit
-    private static final double AIM_MAX_POS = 0.90;   // mechanical upper limit
-    private static final double AIM_ZERO_POS = 0.50;  // servo when angle == 0°
-    private static final double AIM_DEG_PER_POS = 60.0; // degrees per 1.0 servo position change
-    private static final boolean AIM_REVERSED = false;   // flip if motion is inverted
-    private static final double AIM_ALPHA = 0.25;        // smoothing (0..1); lower = smoother
-    private double aimPos = AIM_ZERO_POS;
-
     // Camera mounting pitch (positive = camera tilted UP relative to robot horizon)
     private static final double CAM_PITCH_DEG = 75.0; // <-- set to your real mount angle
 
@@ -65,11 +55,6 @@ public class MecanumAprilTag extends LinearOpMode {
         frontRightMotor = hardwareMap.dcMotor.get("frontRight"); // Port 2
         frontLeftMotor  = hardwareMap.dcMotor.get("frontLeft");  // Port 3
 
-        // Servos
-        //Servo claw  = hardwareMap.servo.get("clawServo");   // Port 0
-        Servo wrist = hardwareMap.servo.get("wristServo");  // Port 1
-        aimServo    = hardwareMap.servo.get("aimServo");    // NEW: aiming servo
-        aimServo.setPosition(AIM_ZERO_POS);
 
         // Reverse right side (matches your original)
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -95,16 +80,6 @@ public class MecanumAprilTag extends LinearOpMode {
                 gamepad1.rumbleBlips(1);
             } else {
                 tx = ty = ta = 0.0;
-            }
-
-            // --- Aim servo update (accounts for camera UP pitch) ---
-            if (hasTag) {
-                // Effective vertical angle relative to robot horizon:
-                // camera's fixed upward pitch + measured vertical offset
-                double angleToTagDeg = CAM_PITCH_DEG + (AIM_REVERSED ? -ty : ty);
-                double desiredPos    = aimFromAngle(angleToTagDeg);
-                aimPos = AIM_ALPHA * desiredPos + (1.0 - AIM_ALPHA) * aimPos; // smoothing
-                aimServo.setPosition(aimPos);
             }
             // else: keep last aimPos (or park to AIM_ZERO_POS if you prefer)
 
@@ -140,7 +115,6 @@ public class MecanumAprilTag extends LinearOpMode {
             if (gamepad2.x) wristPos = .25;
             if (gamepad2.y) wristPos = .5;
             if (gamepad2.b) wristPos = .75;
-            wrist.setPosition(wristPos);
 
             // --- Mecanum mixing ---
             double denominator     = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1.0);
@@ -160,7 +134,6 @@ public class MecanumAprilTag extends LinearOpMode {
             telemetry.addData("tx (deg)", tx);
             telemetry.addData("ty (deg)", ty);
             telemetry.addData("ta (%)",  ta);
-            telemetry.addData("Aim pos", aimPos);
             telemetry.addData("Cam pitch (deg)", CAM_PITCH_DEG);
             telemetry.addData("Speed: ", powerMultiplier);
             telemetry.addData("\nFront Left Motor ", frontLeftPower * powerMultiplier * 100);
@@ -221,12 +194,6 @@ public class MecanumAprilTag extends LinearOpMode {
     }
 
     // Map an angle in degrees (relative to robot HORIZON) -> servo position [0..1]
-    private double aimFromAngle(double angleDeg) {
-        double slope = 1.0 / AIM_DEG_PER_POS;   // servo pos change per degree
-        double pos   = AIM_ZERO_POS + slope * angleDeg;
-        pos = Math.max(AIM_MIN_POS, Math.min(AIM_MAX_POS, pos));
-        return clip01(pos);
-    }
 
     // Toggle helper
     private boolean toggleButton(boolean buttonInput, String buttonName) {

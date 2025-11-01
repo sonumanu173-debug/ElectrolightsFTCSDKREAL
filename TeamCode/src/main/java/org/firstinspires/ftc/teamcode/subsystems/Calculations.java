@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static org.firstinspires.ftc.teamcode.subsystems.flywheelpid.shooter;
+import static org.firstinspires.ftc.teamcode.subsystems.Flywheel.shooter;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -9,11 +9,11 @@ import org.firstinspires.ftc.teamcode.AprilTagDistance;
 
 import java.lang.Math;
 
+import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.NextFTCOpMode;
 
 @Configurable
-@TeleOp(name = "ShooterCalc")
-public class ShooterCalculations extends NextFTCOpMode {
+public class Calculations implements Subsystem {
 
     AprilTagDistance tagDistance = new AprilTagDistance();
     AprilTagDistance targetArea = new AprilTagDistance();
@@ -38,16 +38,5 @@ public class ShooterCalculations extends NextFTCOpMode {
         return (float) requiredTPS;
     }
 
-    @Override
-    public void onInit() {
-
-    }
-
-//    @Override
-    public void onUpdate() {
-        distance = 3.5;
-        float TPS=findTPS(distance);
-        shooter(TPS);
-    }
 
 }
