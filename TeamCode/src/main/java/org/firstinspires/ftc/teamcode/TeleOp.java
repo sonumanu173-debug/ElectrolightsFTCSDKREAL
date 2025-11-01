@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import static org.firstinspires.ftc.teamcode.subsystems.Flywheel.shooter;
 
 import com.bylazar.telemetry.PanelsTelemetry;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.subsystems.Calculations;
@@ -28,9 +29,12 @@ public class TeleOp extends NextFTCOpMode {
     /*public DcMotorEx motor;
 
     private static final double TICKS_PER_REV = 28;*/
-
+    private static final int APRILTAG_PIPELINE = 8;
     @Override
     public void onInit() {
+        Limelight3A limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        limelight.pipelineSwitch(APRILTAG_PIPELINE);
+        limelight.start();
         //motor = hardwareMap.get(DcMotorEx.class, "launchingmotor");
     }
 

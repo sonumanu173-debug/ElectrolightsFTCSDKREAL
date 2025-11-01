@@ -166,8 +166,6 @@ public class MecanumAprilTag extends LinearOpMode {
         return Math.max(lo, Math.min(hi, v));
     }
 
-    private double clip01(double v) { return clip(v, 0.0, 1.0); }
-
     private double visionYawCommand(double txDeg) {
         if (Math.abs(txDeg) < YAW_DEADBAND_DEG) return 0.0;
         return clip(YAW_KP * txDeg, -YAW_MAX, YAW_MAX);
