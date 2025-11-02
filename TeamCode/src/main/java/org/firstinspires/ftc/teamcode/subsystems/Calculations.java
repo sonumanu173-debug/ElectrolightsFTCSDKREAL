@@ -1,16 +1,10 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static org.firstinspires.ftc.teamcode.subsystems.Flywheel.shooter;
-
 import com.bylazar.configurables.annotations.Configurable;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
-import org.firstinspires.ftc.teamcode.AprilTagDistance;
 
 import java.lang.Math;
 
 import dev.nextftc.core.subsystems.Subsystem;
-import dev.nextftc.ftc.NextFTCOpMode;
 
 @Configurable
 public class Calculations implements Subsystem {
