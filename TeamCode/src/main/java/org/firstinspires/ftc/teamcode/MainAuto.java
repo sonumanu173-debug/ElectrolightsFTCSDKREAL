@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 @Autonomous(name = "Autonomous Test (NextFTC)", group = "Autonomous")
-public class Autotest extends NextFTCOpMode {
+public class MainAuto extends NextFTCOpMode {
 
     private Follower follower;
     private Timer pathTimer, actionTimer, opmodeTimer;
