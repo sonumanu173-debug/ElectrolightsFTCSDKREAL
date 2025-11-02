@@ -88,5 +88,6 @@ public class MechanumFieldOrientatedOpMode extends NextFTCOpMode {
         yPressedLast = yPressed;
 
         telemetry.addData("Drive Mode", fieldCentric ? "Field Centric" : "Robot Centric");
+        telemetry.update();
     }
 }
