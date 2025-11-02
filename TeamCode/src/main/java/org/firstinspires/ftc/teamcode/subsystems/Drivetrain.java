@@ -25,7 +25,7 @@ public class Drivetrain implements Subsystem {
     public static final Drivetrain INSTANCE = new Drivetrain();
     private Drivetrain() { }
 
-    private Limelight3A limelight;
+    //private Limelight3A limelight;
 
     private double tx, ty, ta;
     private boolean hasTag;
@@ -50,7 +50,7 @@ public class Drivetrain implements Subsystem {
     private MotorEx frontRightMotor = new MotorEx("frontRight").brakeMode();
     private MotorEx backLeftMotor = new MotorEx("backLeft").brakeMode().reversed();
     private MotorEx backRightMotor = new MotorEx("backRight").brakeMode();
-    private IMUEx imu = new IMUEx("imu", Direction.UP, Direction.FORWARD).zeroed();
+    //private IMUEx imu = new IMUEx("imu", Direction.UP, Direction.FORWARD).zeroed();
 
     private double clip(double v, double lo, double hi) {
         return Math.max(lo, Math.min(hi, v));
@@ -71,19 +71,19 @@ public class Drivetrain implements Subsystem {
 
     @Override
     public void initialize() {
-        limelight = ActiveOpMode.hardwareMap().get(Limelight3A.class, "limelight");
+        //limelight = ActiveOpMode.hardwareMap().get(Limelight3A.class, "limelight");
     }
     @Override
     public Command getDefaultCommand() {
         Button Autoaim = button(() -> gamepad1.triangle);
         Autoaim.whenTrue(() -> autolocktrue())
                 .whenFalse(() -> autolockfalse());
-        if(autolock==true){
-            limelight.pipelineSwitch(APRILTAG_PIPELINE);
-            LLResult result = limelight.getLatestResult();
-            hasTag = (result != null) && result.isValid() && !result.getFiducialResults().isEmpty();
+        //if(autolock==true){
+            //limelight.pipelineSwitch(APRILTAG_PIPELINE);
+            //LLResult result = limelight.getLatestResult();
+            //hasTag = (result != null) && result.isValid() && !result.getFiducialResults().isEmpty();
 
-            if (hasTag) {
+            /*if (hasTag) {
                 tx = result.getTx(); // deg
                 ty = result.getTy(); // deg (positive = tag above crosshair)
                 ta = result.getTa(); // %
@@ -91,7 +91,7 @@ public class Drivetrain implements Subsystem {
             } else {
                 tx = ty = ta = 0.0;
             }
-            Supplier<Double> yVCtx = () -> visionYawCommand(tx);
+            Supplier<Double> yVCtx = () -> visionYawCommand(tx);*/
 
             // Get the double value from the supplier
             return new MecanumDriverControlled(
@@ -101,11 +101,12 @@ public class Drivetrain implements Subsystem {
                     backRightMotor,
                     Gamepads.gamepad1().leftStickY().negate(),
                     Gamepads.gamepad1().leftStickX(),
-                    yVCtx,//THIS IS FOR HEADING
-                    new FieldCentric(imu)
+                    Gamepads.gamepad1().rightStickX()//,//THIS IS FOR HEADING - PID OUTPUT GOES HERE
+                    //yVCtx//,//THIS IS FOR HEADING
+                    //new FieldCentric(imu)
             );
-        }
-        else
+        //}
+        /*else
         {
             return new MecanumDriverControlled(
                     frontLeftMotor,
@@ -114,9 +115,9 @@ public class Drivetrain implements Subsystem {
                     backRightMotor,
                     Gamepads.gamepad1().leftStickY().negate(),
                     Gamepads.gamepad1().leftStickX(),
-                    Gamepads.gamepad1().rightStickX(),//THIS IS FOR HEADING - PID OUTPUT GOES HERE
-                    new FieldCentric(imu)
+                    Gamepads.gamepad1().rightStickX()//,//THIS IS FOR HEADING - PID OUTPUT GOES HERE
+                    //new FieldCentric(imu)
             );
-        }
+        }*/
     }
 }
