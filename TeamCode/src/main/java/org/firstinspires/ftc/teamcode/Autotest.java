@@ -1,17 +1,18 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.BezierLine;
-import com.pedropathing.geometry.BezierCurve;
-import com.pedropathing.geometry.Pose;
-import com.pedropathing.paths.PathChain;
-import com.pedropathing.util.Timer;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.pedropathing.follower.Follower; // tells robot about tge path it follows
+import com.pedropathing.geometry.BezierLine; //2 points
+import com.pedropathing.geometry.BezierCurve; //3 points
+import com.pedropathing.geometry.Pose; // location
+import com.pedropathing.paths.PathChain; // Continious paths composed into one smooth motion
+import com.pedropathing.util.Timer; // timing for everything in pedro
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous; // Imports auto
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name = "Autonomous Test", group = "Autonomous")
+@Autonomous(name = "Autonomous Test", group = "Autonomous") // Defines autonomous to the ftc sdk
+
 public class Autotest extends OpMode {
 
     private Follower follower;
@@ -82,6 +83,11 @@ public class Autotest extends OpMode {
 
     public static class Paths {
         public PathChain Path1;
+        //path = create new path for robot to follow
+        //stage = think of three stage rocket
+        //state = variable containing stage
+        //case = stage
+        //! = not
         public PathChain Path2;
 
         public Paths(Follower follower) {
