@@ -1,31 +1,28 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+/*import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
+import static dev.nextftc.bindings.Bindings.button;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
-import com.qualcomm.robotcore.util.SerialNumber;
+
+import java.util.function.Supplier;
 
 import dev.nextftc.bindings.Button;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.subsystems.Subsystem;
-import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.ftc.Gamepads;
 import dev.nextftc.hardware.driving.FieldCentric;
 import dev.nextftc.hardware.driving.MecanumDriverControlled;
 import dev.nextftc.hardware.impl.Direction;
 import dev.nextftc.hardware.impl.IMUEx;
 import dev.nextftc.hardware.impl.MotorEx;
-import static dev.nextftc.bindings.Bindings.*;
 
-import java.util.function.Supplier;
+public class DriveTrain implements Subsystem {
+    public static final DriveTrain INSTANCE = new DriveTrain();
+    private DriveTrain() { }
 
-public class Drivetrain implements Subsystem {
-    public static final Drivetrain INSTANCE = new Drivetrain();
-    private Drivetrain() { }
-
-    //private Limelight3A limelight;
+    private Limelight3A limelight;
 
     private double tx, ty, ta;
     private boolean hasTag;
@@ -50,7 +47,7 @@ public class Drivetrain implements Subsystem {
     private MotorEx frontRightMotor = new MotorEx("frontRight").brakeMode();
     private MotorEx backLeftMotor = new MotorEx("backLeft").brakeMode().reversed();
     private MotorEx backRightMotor = new MotorEx("backRight").brakeMode();
-    //private IMUEx imu = new IMUEx("imu", Direction.UP, Direction.FORWARD).zeroed();
+    private IMUEx imu = new IMUEx("imu", Direction.FORWARD, Direction.UP).zeroed();
 
     private double clip(double v, double lo, double hi) {
         return Math.max(lo, Math.min(hi, v));
@@ -72,18 +69,19 @@ public class Drivetrain implements Subsystem {
     @Override
     public void initialize() {
         //limelight = ActiveOpMode.hardwareMap().get(Limelight3A.class, "limelight");
+        imu = new IMUEx("imu", Direction.UP, Direction.FORWARD).zeroed();
     }
     @Override
     public Command getDefaultCommand() {
         Button Autoaim = button(() -> gamepad1.triangle);
         Autoaim.whenTrue(() -> autolocktrue())
                 .whenFalse(() -> autolockfalse());
-        //if(autolock==true){
-            //limelight.pipelineSwitch(APRILTAG_PIPELINE);
-            //LLResult result = limelight.getLatestResult();
-            //hasTag = (result != null) && result.isValid() && !result.getFiducialResults().isEmpty();
+        if(autolock==true){
+            limelight.pipelineSwitch(APRILTAG_PIPELINE);
+            LLResult result = limelight.getLatestResult();
+            hasTag = (result != null) && result.isValid() && !result.getFiducialResults().isEmpty();
 
-            /*if (hasTag) {
+            if (hasTag) {
                 tx = result.getTx(); // deg
                 ty = result.getTy(); // deg (positive = tag above crosshair)
                 ta = result.getTa(); // %
@@ -91,7 +89,7 @@ public class Drivetrain implements Subsystem {
             } else {
                 tx = ty = ta = 0.0;
             }
-            Supplier<Double> yVCtx = () -> visionYawCommand(tx);*/
+            Supplier<Double> yVCtx = () -> visionYawCommand(tx);
 
             // Get the double value from the supplier
             return new MecanumDriverControlled(
@@ -101,13 +99,12 @@ public class Drivetrain implements Subsystem {
                     backRightMotor,
                     Gamepads.gamepad1().leftStickY().negate(),
                     Gamepads.gamepad1().leftStickX(),
-                    Gamepads.gamepad1().rightStickX()//,//THIS IS FOR HEADING - PID OUTPUT GOES HERE
-                    //yVCtx//,//THIS IS FOR HEADING
-                    //new FieldCentric(imu)
+                    yVCtx,//THIS IS FOR HEADING
+                    new FieldCentric(imu)
             );
-        //}
-        /*else
-        {
+        }
+        //else
+        //{
             return new MecanumDriverControlled(
                     frontLeftMotor,
                     frontRightMotor,
@@ -115,9 +112,53 @@ public class Drivetrain implements Subsystem {
                     backRightMotor,
                     Gamepads.gamepad1().leftStickY().negate(),
                     Gamepads.gamepad1().leftStickX(),
-                    Gamepads.gamepad1().rightStickX()//,//THIS IS FOR HEADING - PID OUTPUT GOES HERE
-                    //new FieldCentric(imu)
+                    Gamepads.gamepad1().rightStickX(),//,//THIS IS FOR HEADING - PID OUTPUT GOES HERE
+                    new FieldCentric(imu)
             );
-        }*/
+        //}
     }
+}*/
+
+import com.bylazar.configurables.annotations.Configurable;
+import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.subsystems.Subsystem;
+import dev.nextftc.ftc.Gamepads;
+import dev.nextftc.hardware.driving.MecanumDriverControlled;
+import dev.nextftc.hardware.impl.MotorEx;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+
+@Configurable
+public class DriveTrain implements Subsystem {
+
+    public static final DriveTrain INSTANCE = new DriveTrain();
+    private DriveTrain() { }
+    public static final MotorEx fL = new MotorEx("frontLeft");
+    public static final MotorEx fR = new MotorEx("frontRight").reversed();
+    public static final MotorEx bL = new MotorEx("backLeft");
+    public static final MotorEx bR = new MotorEx("backRight").reversed();
+
+    public static double sensistivity = 0.1;
+
+    @Override
+    public Command getDefaultCommand() {
+        return new MecanumDriverControlled(
+                fL,
+                fR,
+                bL,
+                bR,
+                Gamepads.gamepad1().leftStickY().map(it -> it * sensistivity),
+                Gamepads.gamepad1().leftStickX().map(it -> -it * sensistivity),
+                Gamepads.gamepad1().rightStickX().map(it -> -it * sensistivity)
+        );
+    }
+
+    /*@Override
+    public void initialize() {
+        follower.startTeleopDrive();
+    }
+
+    @Override
+    public void periodic() {
+        follower.update();
+    }*/
 }
