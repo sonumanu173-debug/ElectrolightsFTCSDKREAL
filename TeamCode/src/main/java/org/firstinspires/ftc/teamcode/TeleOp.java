@@ -1,13 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.subsystems.Flywheel.shooter;
-
-import com.bylazar.telemetry.PanelsTelemetry;
-import com.qualcomm.hardware.limelightvision.Limelight3A;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-
-import org.firstinspires.ftc.teamcode.subsystems.Calculations;
-import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
 
 import dev.nextftc.core.components.SubsystemComponent;
@@ -20,9 +13,10 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 public class TeleOp extends NextFTCOpMode {
     public TeleOp() {
         addComponents(
+                new SubsystemComponent(Flywheel.INSTANCE, DriveTrain.INSTANCE),
                 BulkReadComponent.INSTANCE,
-                BindingsComponent.INSTANCE,
-                new SubsystemComponent(Flywheel.INSTANCE, Drivetrain.INSTANCE)
+                BindingsComponent.INSTANCE
+
         );
     }
 
