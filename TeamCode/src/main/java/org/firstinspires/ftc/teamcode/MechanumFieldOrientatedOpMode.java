@@ -25,10 +25,10 @@ public class MechanumFieldOrientatedOpMode extends NextFTCOpMode {
         );
     }
 
-    private final MotorEx frontLeftMotor = new MotorEx("front_left").reversed();
-    private final MotorEx frontRightMotor = new MotorEx("front_right");
-    private final MotorEx backLeftMotor = new MotorEx("back_left").reversed();
-    private final MotorEx backRightMotor = new MotorEx("back_right");
+    private final MotorEx frontLeftMotor = new MotorEx("frontLeft").reversed();
+    private final MotorEx frontRightMotor = new MotorEx("frontRight");
+    private final MotorEx backLeftMotor = new MotorEx("backLeft").reversed();
+    private final MotorEx backRightMotor = new MotorEx("backRight");
 
     private IMUEx imu;
     private boolean fieldCentric = true;

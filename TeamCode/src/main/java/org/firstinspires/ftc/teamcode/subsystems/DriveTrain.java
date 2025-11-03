@@ -120,24 +120,74 @@ public class DriveTrain implements Subsystem {
 }*/
 
 import com.bylazar.configurables.annotations.Configurable;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
+
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.subsystems.Subsystem;
+import dev.nextftc.core.units.Angle;
 import dev.nextftc.ftc.Gamepads;
+import dev.nextftc.hardware.driving.FieldCentric;
 import dev.nextftc.hardware.driving.MecanumDriverControlled;
+import dev.nextftc.hardware.impl.Direction;
+import dev.nextftc.hardware.impl.IMUEx;
 import dev.nextftc.hardware.impl.MotorEx;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+
+import java.util.function.Supplier;
+
 
 @Configurable
 public class DriveTrain implements Subsystem {
 
     public static final DriveTrain INSTANCE = new DriveTrain();
     private DriveTrain() { }
-    public static final MotorEx fL = new MotorEx("frontLeft");
-    public static final MotorEx fR = new MotorEx("frontRight").reversed();
-    public static final MotorEx bL = new MotorEx("backLeft");
-    public static final MotorEx bR = new MotorEx("backRight").reversed();
 
-    public static double sensistivity = 0.1;
+    private Limelight3A limelight;
+
+    private double tx, ty, ta;
+    private boolean hasTag;
+
+    private boolean autolock;
+
+    // === AprilTag/Limelight align tuning ===
+    private static final int APRILTAG_PIPELINE = 8;   // <-- set to your AprilTag pipeline index
+    private static final double YAW_KP = 0.050;      // deg -> yaw power (flip sign if turning wrong way)
+    private static final double YAW_MAX = 0.7;        // yaw cap
+    private static final double YAW_DEADBAND_DEG = 1.0;
+
+    // Optional crude distance hold using target area (leave false to disable)
+    private static final boolean HOLD_DISTANCE = false;
+    private static final double TARGET_TA = 2.0;
+    private static final double FWD_KP = 0.02;
+    private static final double FWD_MAX = 0.35;
+
+    // Camera mounting pitch (positive = camera tilted UP relative to robot horizon)
+    private static final double CAM_PITCH_DEG = 75.0;
+
+    private double clip(double v, double lo, double hi) {
+        return Math.max(lo, Math.min(hi, v));
+    }
+
+    private double visionYawCommand(double txDeg) {
+        if (Math.abs(txDeg) < YAW_DEADBAND_DEG) return 0.0;
+        return clip(YAW_KP * txDeg, -YAW_MAX, YAW_MAX);
+    }
+
+    private void autolocktrue(){
+        autolock = true;
+    }
+
+    private void autolockfalse(){
+        autolock = false;
+    }
+    public static final MotorEx fL = new MotorEx("frontLeft").brakeMode();
+    public static final MotorEx fR = new MotorEx("frontRight").brakeMode().reversed();
+    public static final MotorEx bL = new MotorEx("backLeft").brakeMode();
+    public static final MotorEx bR = new MotorEx("backRight").brakeMode().reversed();
+
+    public static double sensistivity = 1;
+
+    private IMUEx imu;
 
     @Override
     public Command getDefaultCommand() {
@@ -148,15 +198,17 @@ public class DriveTrain implements Subsystem {
                 bR,
                 Gamepads.gamepad1().leftStickY().map(it -> it * sensistivity),
                 Gamepads.gamepad1().leftStickX().map(it -> -it * sensistivity),
-                Gamepads.gamepad1().rightStickX().map(it -> -it * sensistivity)
+                Gamepads.gamepad1().rightStickX().map(it -> -it * sensistivity),
+                new FieldCentric(imu)
         );
     }
 
-    /*@Override
+    @Override
     public void initialize() {
-        follower.startTeleopDrive();
+        //follower.startTeleopDrive();
+        imu = new IMUEx("imu", Direction.RIGHT, Direction.FORWARD).zeroed();
     }
-
+/*
     @Override
     public void periodic() {
         follower.update();
