@@ -35,7 +35,7 @@ public class MainAuto extends NextFTCOpMode {
     }
 
 
-    public void onStart() {
+    public void onStartButtonPressed() {
         opmodeTimer.resetTimer();
         pathTimer.resetTimer();
         follower.followPath(paths.Path1);
@@ -44,7 +44,7 @@ public class MainAuto extends NextFTCOpMode {
     }
 
 
-    public void onRun() {
+    public void onUpdate() {
         follower.update();
         switch (pathState) {
             case 0:
