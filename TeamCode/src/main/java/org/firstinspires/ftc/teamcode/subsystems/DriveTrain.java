@@ -130,9 +130,9 @@ public class DriveTrain implements Subsystem {
                         fR,
                         bL,
                         bR,
-                        Gamepads.gamepad1().leftStickY().map(it -> it * 0.5),
-                        Gamepads.gamepad1().leftStickX().map(it -> -it * 0.5),
-                        Gamepads.gamepad1().rightStickX().map(it -> -it * 0.5),
+                        Gamepads.gamepad1().leftStickY().map(it -> it * 0.4),
+                        Gamepads.gamepad1().leftStickX().map(it -> -it * 0.4),
+                        Gamepads.gamepad1().rightStickX().map(it -> -it * 0.4),
                         new FieldCentric(imu)
                 );
             }
