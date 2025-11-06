@@ -1,30 +1,37 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.mechanisms.launchertestservo;
 
+import dev.nextftc.ftc.NextFTCOpMode;
+
 @TeleOp(name = "Servo Test", group = "TeleOp")
-public class ServoControls extends OpMode{
+public class ServoControls extends NextFTCOpMode{
     launchertestservo bench = new launchertestservo();
     @Override
-    public void init() {
+    public void onInit() {
         bench.init(hardwareMap);
     }
 
     @Override
-    public void loop() {
-        if (gamepad1.a) {
-            bench.setServoPos(-1.0);
+    public void onUpdate() {
+        if (gamepad1.right_trigger > 0) {
+           double S = 0;
+           while (S < 0.05) {
+               bench.setServoPos(S);
+
+               S = S + 0.005;
+
+           }
+           bench.setServoPos(0.0);
+
+
         }
 
-        else if (gamepad1.b) {
-            bench.setServoPos(1.0);
-         }
-        else {
-            bench.setServoPos(0.0);
-        }
+
+
 
 
 
