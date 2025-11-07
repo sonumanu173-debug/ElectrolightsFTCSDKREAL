@@ -9,8 +9,11 @@ import com.pedropathing.util.Timer;
 import dev.nextftc.ftc.NextFTCOpMode;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-
+import com.bylazar.configurables.annotations.Configurable;
+import com.bylazar.telemetry.PanelsTelemetry;
+import com.bylazar.telemetry.TelemetryManager;
 @Autonomous(name = "Autonomous Test (NextFTC)", group = "Autonomous")
+@Configurable
 public class MainAuto extends NextFTCOpMode {
 
     private Follower follower;
@@ -27,6 +30,7 @@ public class MainAuto extends NextFTCOpMode {
         pathTimer = new Timer();
         actionTimer = new Timer();
         opmodeTimer = new Timer();
+        follower.setStartingPose(new Pose(72, 8, Math.toRadians(90)));
         follower.setPose(new Pose(56.000, 8.000, Math.toRadians(90)));
         pathState = 0;
         telemetry.addLine("Follower + IMU + Odo Pods initialized successfully!");
@@ -50,7 +54,8 @@ public class MainAuto extends NextFTCOpMode {
             case 0:
                 if (!follower.isBusy()) {
                     pathTimer.resetTimer();
-                    follower.followPath(paths.Path2);
+                    // WIhs follower.followPath(paths.Path2);
+
                     telemetry.addLine("Started Path 2");
                     pathState++;
                 }
@@ -80,19 +85,19 @@ public class MainAuto extends NextFTCOpMode {
         public PathChain Path2;
 
         public Paths(Follower follower) {
-            Path1 = follower.pathBuilder()
-                    .addPath(new BezierLine(
-                            new Pose(56.000, 8.000),
-                            new Pose(57.078, 32.451)
-                    ))
-                    .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(180))
-                    .build();
+            //Path1 = follower.pathBuilder()
+                    //.addPath(new BezierLine(
+                           // new Pose(56.000, 8.000),
+                           // new Pose(57.078, 32.451)
+                    //))
+                    //.setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(180))
+                    //.build();
 
-            Path2 = follower.pathBuilder()
+            Path1 = follower.pathBuilder()
                     .addPath(new BezierCurve(
-                            new Pose(57.078, 32.451),
-                            new Pose(58.527, 41.433),
-                            new Pose(14.487, 35.348)
+                            new Pose(56.000, 8.000),
+                            new Pose(57.046, 38.585),
+                            new Pose(15.323, 35.815)
                     ))
                     .setTangentHeadingInterpolation()
                     .build();
