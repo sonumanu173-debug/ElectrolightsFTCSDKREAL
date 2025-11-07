@@ -8,6 +8,8 @@ import dev.nextftc.hardware.impl.MotorEx;
 
 public class Intake implements Subsystem{
     public static final Subsystem INSTANCE = new Intake();
+
+    private Intake() { }
     private MotorEx intakeMotor;
 
     public Command getDefaultCommand() {
