@@ -52,6 +52,5 @@ public class TeleOp extends NextFTCOpMode {
 
     @Override
     public void onStartButtonPressed() {
-
     }
 }

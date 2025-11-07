@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import dev.nextftc.control.ControlSystem;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.Gamepads;
+import dev.nextftc.hardware.controllable.RunToPosition;
 import dev.nextftc.hardware.impl.MotorEx;
+import dev.nextftc.hardware.powerable.SetPower;
 
 
 public class Intake implements Subsystem{
@@ -11,12 +14,9 @@ public class Intake implements Subsystem{
 
     private Intake() { }
     private MotorEx intakeMotor;
+    public Command intakeOff = new SetPower(intakeMotor, 0).requires(this);
+    public Command intakeOn = new SetPower(intakeMotor, 1).requires(this);
 
-    public Command getDefaultCommand() {
-        Gamepads.gamepad1().triangle().whenBecomesTrue(() -> intakeMotor.setPower(1))
-                .whenFalse(() -> intakeMotor.setPower(0));
-        return null;
-    }
     @Override
     public void initialize(){
         intakeMotor = new MotorEx("intake");
