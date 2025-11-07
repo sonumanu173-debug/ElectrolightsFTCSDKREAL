@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
+import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
@@ -22,8 +23,8 @@ import com.bylazar.configurables.annotations.Configurable;
 
 @Autonomous(name = "Autonomous Test (NextFTC)", group = "Autonomous")
 @Configurable
-public class MainAuto extends NextFTCOpMode {
-    public MainAuto(){
+public class AutoBlue extends NextFTCOpMode {
+    public AutoBlue(){
         addComponents(
                 new SubsystemComponent(Flywheel.INSTANCE, DriveTrain.INSTANCE, Intake.INSTANCE, MotifScanning.INSTANCE),
                 BulkReadComponent.INSTANCE,
@@ -35,18 +36,20 @@ public class MainAuto extends NextFTCOpMode {
     private Timer pathTimer, actionTimer, opmodeTimer;
     private int pathState;
     private Paths paths;
-
+    public Pose start = new Pose(28,120, Math.toRadians(110));
+    public Pose PreloadLaunch = new Pose(54.871, 97.258, Math.toRadians(130));
 
     public void onInit() {
         telemetry.addLine("Initializing Follower...");
         telemetry.update();
         follower = Constants.createFollower(hardwareMap);
         paths = new Paths(follower);
+
         pathTimer = new Timer();
         actionTimer = new Timer();
         opmodeTimer = new Timer();
-        follower.setStartingPose(new Pose(72, 8, Math.toRadians(90)));
-        follower.setPose(new Pose(56.000, 8.000, Math.toRadians(90)));
+        follower.setStartingPose(start);
+
         pathState = 0;
         telemetry.addLine("Follower + IMU + Odo Pods initialized successfully!");
         telemetry.addLine("Initialization complete!");
@@ -72,7 +75,7 @@ public class MainAuto extends NextFTCOpMode {
                     pathTimer.resetTimer();
                     // WIhs follower.followPath(paths.Path2);
 
-                    telemetry.addLine("Started Path 2");
+                    telemetry.addLine("Path 1 has been completed btw, that means it's going to launch in a couple of seconds");
                     pathState++;
                 }
                 break;
@@ -96,7 +99,7 @@ public class MainAuto extends NextFTCOpMode {
         telemetry.update();
     }
 
-    public static class Paths {
+    public class Paths {
         public PathChain Path1;
         public PathChain Path2;
 
@@ -110,10 +113,9 @@ public class MainAuto extends NextFTCOpMode {
                     //.build();
 
             Path1 = follower.pathBuilder()
-                    .addPath(new BezierCurve(
-                            new Pose(56.000, 8.000),
-                            new Pose(57.046, 38.585),
-                            new Pose(15.323, 35.815)
+                    .addPath(new BezierLine(
+                            start,
+                            PreloadLaunch
                     ))
                     .setTangentHeadingInterpolation()
                     .build();
