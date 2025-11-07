@@ -1,22 +1,18 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-
 import dev.nextftc.ftc.NextFTCOpMode;
-import dev.nextftc.hardware.impl.Direction;
-import dev.nextftc.hardware.impl.IMUEx;
 
 public class MotifScanning extends NextFTCOpMode {
 
     private Limelight3A limelight;
-    private IMUEx imu;
+    LLResult llResult;
     public int tagID;
 
     @Override
     public void onInit() {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        limelight.pipelineSwitch(7); //motif april tag pipeline
     }
 
     public void onStartButtonPressed() {
@@ -25,7 +21,28 @@ public class MotifScanning extends NextFTCOpMode {
 
     @Override
     public void onUpdate() {
+        llResult = limelight.getLatestResult();
+    }
 
+    public int Motif() {
+        limelight.pipelineSwitch(1);
+        if (llResult.isValid() && llResult != null) {
+            tagID = 23;
+        }
+        limelight.pipelineSwitch(2);
+        if (llResult.isValid() && llResult != null) {
+            tagID = 22;
+        }
+        limelight.pipelineSwitch(3);
+        if (llResult.isValid() && llResult != null) {
+            tagID = 21;
+        }
+        return tagID;
+    }
+
+    @Override
+    public void onStop() {
+        limelight.stop();
     }
 
 }
