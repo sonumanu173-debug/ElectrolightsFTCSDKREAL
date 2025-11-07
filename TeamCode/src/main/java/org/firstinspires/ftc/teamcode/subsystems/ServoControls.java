@@ -7,6 +7,8 @@ import org.firstinspires.ftc.teamcode.mechanisms.launchertestservo;
 
 import dev.nextftc.ftc.NextFTCOpMode;
 
+
+
 @TeleOp(name = "Servo Test", group = "TeleOp")
 public class ServoControls extends NextFTCOpMode{
     launchertestservo bench = new launchertestservo();
@@ -18,7 +20,8 @@ public class ServoControls extends NextFTCOpMode{
     @Override
     public void onUpdate() {
         if (gamepad1.right_trigger > 0) {
-           double S = 0;
+
+            double S = 0;
            while (S < 0.05) {
                bench.setServoPos(S);
 
