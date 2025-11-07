@@ -31,7 +31,7 @@ public class DriveTrain implements Subsystem {
 
     private Limelight3A limelight;
 
-    private double tx, ty, ta;
+    private double tx;
     private boolean hasTag;
 
     private boolean autolock;
@@ -92,11 +92,9 @@ public class DriveTrain implements Subsystem {
 
             if (hasTag) {
                 tx = result.getTx(); // deg
-                ty = result.getTy(); // deg (positive = tag above crosshair)
-                ta = result.getTa(); // %
                 ActiveOpMode.telemetry().addData("Tx", tx);
             } else {
-                tx = ty = ta = 0.0;
+                tx = 0.0;
             }
             yVCtx = () -> visionYawCommand(tx);
             return new MecanumDriverControlled(
@@ -159,7 +157,7 @@ public class DriveTrain implements Subsystem {
         hasTag = (result != null) && result.isValid() && !result.getFiducialResults().isEmpty();
 
         if (hasTag) {
-            tx = result.getTx(); // deg
+            tx = result.getTx();
             ActiveOpMode.telemetry().addData("Tx", tx);
         } else {
             tx = 0.0;
