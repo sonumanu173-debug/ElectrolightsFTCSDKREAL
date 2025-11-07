@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 import static org.firstinspires.ftc.teamcode.TeleOp.startingPose;
 import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
 import static org.firstinspires.ftc.teamcode.subsystems.Calculations.findTPS;
@@ -57,7 +58,7 @@ public class DriveTrain implements Subsystem {
 
     private double visionYawCommand(double txDeg) {
         if (Math.abs(txDeg) < YAW_DEADBAND_DEG) return 0.0;
-        return clip(YAW_KP * txDeg, -YAW_MAX, YAW_MAX);
+        return -0.5*clip(YAW_KP * txDeg, -YAW_MAX, YAW_MAX);
     }
 
     private void autolocktrue(){
@@ -84,13 +85,40 @@ public class DriveTrain implements Subsystem {
 
     private IMUEx imu;
 
+    public Supplier<Double> yVCtx;
+
+    public Command slow(){
+        return new MecanumDriverControlled(
+                fL,
+                fR,
+                bL,
+                bR,
+                Gamepads.gamepad1().leftStickY().map(it -> it * 0.8),
+                Gamepads.gamepad1().leftStickX().map(it -> -it * 0.8),
+                Gamepads.gamepad1().rightStickX().map(it -> -it * 0.8),
+                new FieldCentric(imu)
+        );
+    }
+
+    public Command autoaim(){
+        return new MecanumDriverControlled(
+                fL,
+                fR,
+                bL,
+                bR,
+                Gamepads.gamepad1().leftStickY().map(it -> it * 0.4),
+                Gamepads.gamepad1().leftStickX().map(it -> -it * 0.4),
+                yVCtx,
+                new FieldCentric(imu)
+        );
+    }
+
     @Override
     public Command getDefaultCommand() {
-        Button Slowmode = button(() -> gamepad1.left_bumper);
-        Button Autoaim = button(() -> gamepad1.triangle);
-        Autoaim.whenTrue(() -> autolocktrue())
+
+        Gamepads.gamepad1().triangle().whenBecomesTrue(() -> autolocktrue())
                 .whenFalse(() -> autolockfalse());
-        Slowmode.whenTrue(() -> slowtrue())
+        Gamepads.gamepad1().leftBumper().whenBecomesTrue(() -> slowtrue())
                 .whenFalse(() -> slowfalse());
         if(autolock==true){
             limelight.pipelineSwitch(APRILTAG_PIPELINE);
@@ -102,53 +130,37 @@ public class DriveTrain implements Subsystem {
                 tx = result.getTx(); // deg
                 ty = result.getTy(); // deg (positive = tag above crosshair)
                 ta = result.getTa(); // %
-                gamepad1.rumbleBlips(1);
+                //telemetry.addData("Tx", tx);
             }
             else
             {
                 tx = ty = ta = 0.0;
             }
-            Supplier<Double> yVCtx = () -> visionYawCommand(tx);
-
-            // Get the double value from the supplier
+            yVCtx = () -> visionYawCommand(tx);
             return new MecanumDriverControlled(
                     fL,
                     fR,
                     bL,
                     bR,
-                    Gamepads.gamepad1().leftStickY().map(it -> it * sensistivity),
-                    Gamepads.gamepad1().leftStickX().map(it -> -it * sensistivity),
-                    yVCtx,//THIS IS FOR HEADING
+                    Gamepads.gamepad1().leftStickY().map(it -> it * 0.4),
+                    Gamepads.gamepad1().leftStickX().map(it -> -it * 0.4),
+                    yVCtx,
                     new FieldCentric(imu)
             );
-        }
-        else {
-            if(slow==true)
-            {
-                return new MecanumDriverControlled(
-                        fL,
-                        fR,
-                        bL,
-                        bR,
-                        Gamepads.gamepad1().leftStickY().map(it -> it * 0.4),
-                        Gamepads.gamepad1().leftStickX().map(it -> -it * 0.4),
-                        Gamepads.gamepad1().rightStickX().map(it -> -it * 0.4),
-                        new FieldCentric(imu)
-                );
+
+            // Get the double value from the supplier
             }
-            else
-            {
-                return new MecanumDriverControlled(
+        else {//if doesnt work, remove else here
+            return new MecanumDriverControlled(
                     fL,
                     fR,
                     bL,
                     bR,
-                    Gamepads.gamepad1().leftStickY().map(it -> it * sensistivity),
-                    Gamepads.gamepad1().leftStickX().map(it -> -it * sensistivity),
-                    Gamepads.gamepad1().rightStickX().map(it -> -it * sensistivity),
+                    Gamepads.gamepad1().leftStickY().map(it -> it),
+                    Gamepads.gamepad1().leftStickX().map(it -> -it),
+                    Gamepads.gamepad1().rightStickX().map(it -> -it),
                     new FieldCentric(imu)
             );
-            }
         }
     }
 
@@ -158,22 +170,43 @@ public class DriveTrain implements Subsystem {
         limelight = ActiveOpMode.hardwareMap().get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(APRILTAG_PIPELINE);
         limelight.start();
-        follower.setStartingPose(startingPose == null ? new Pose() : startingPose);
-        follower.update();
-        follower = Constants.createFollower(ActiveOpMode.hardwareMap());
+        //follower.setStartingPose(new Pose(72, 8, Math.toRadians(90)));
+        //follower.setPose(new Pose(56.000, 8.000, Math.toRadians(90)));
+        //follower.update();
+        //follower = Constants.createFollower(ActiveOpMode.hardwareMap());
     }
 
     @Override
     public void periodic() {
-        follower.update();
-        double x = follower.getPose().getX();
-        double y = follower.getPose().getY();
-        double distinch = Math.sqrt(Math.pow((x-0), 2)*Math.pow((y-144), 2));
-        double dist = distinch / 39.37;
+
+            //limelight.pipelineSwitch(APRILTAG_PIPELINE);
+            LLResult result = limelight.getLatestResult();
+            hasTag = (result != null) && result.isValid() && !result.getFiducialResults().isEmpty();
+
+            if (hasTag) {
+                tx = result.getTx(); // deg
+                ty = result.getTy(); // deg (positive = tag above crosshair)
+                ta = result.getTa(); // %
+                //telemetry.addData("Tx", tx);
+            } else {
+                tx = ty = ta = 0.0;
+            }
+            yVCtx = () -> visionYawCommand(tx);
+            //telemetry.addData("yVCtx", yVCtx);
+            //telemetry.update();
+
+
+        //follower.update();
+        //double x = follower.getPose().getX();
+        //double y = follower.getPose().getY();
+        //double distinch = Math.sqrt(Math.pow((x-0), 2)*Math.pow((y-144), 2));
+        //double dist = distinch / 39.37;
+        //telemetry.addData("Distance", dist);
+        //telemetry.update();
         if(autolock==true)
         {
-            float tps = findTPS((float) dist);
-            shooter(tps);
+            //float tps = findTPS((float) dist);
+            //shooter(tps);
         }
     }
 }

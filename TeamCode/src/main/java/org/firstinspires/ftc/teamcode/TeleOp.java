@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
 
 import dev.nextftc.core.components.SubsystemComponent;
+import dev.nextftc.ftc.Gamepads;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.ftc.components.BulkReadComponent;
@@ -37,10 +38,10 @@ public class TeleOp extends NextFTCOpMode {
         Limelight3A limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(APRILTAG_PIPELINE);
         limelight.start();
-        follower.setStartingPose(startingPose == null ? new Pose() : startingPose);
-        follower.update();
-        DcMotorEx motor = hardwareMap.get(DcMotorEx.class, "launchingmotor");
-        follower = Constants.createFollower(hardwareMap);
+        //follower.setStartingPose(new Pose(72, 8, Math.toRadians(90)));
+        //follower.update();
+        //DcMotorEx motor = hardwareMap.get(DcMotorEx.class, "launchingmotor");
+        //follower = Constants.createFollower(hardwareMap);
     }
 
     @Override
@@ -57,7 +58,6 @@ public class TeleOp extends NextFTCOpMode {
 
     @Override
     public void onStartButtonPressed() {
-
 
     }
 }
