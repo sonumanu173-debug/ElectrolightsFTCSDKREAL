@@ -8,6 +8,7 @@ public class MotifScanning extends NextFTCOpMode {
 
     private Limelight3A limelight;
     LLResult llResult;
+    public int tagID;
 
     @Override
     public void onInit() {
@@ -23,12 +24,24 @@ public class MotifScanning extends NextFTCOpMode {
         llResult = limelight.getLatestResult();
     }
 
-    public Motif() {
-        
+    public int Motif() {
+        limelight.pipelineSwitch(1);
+        if (llResult.isValid() && llResult != null) {
+            tagID = 23;
+        }
+        limelight.pipelineSwitch(2);
+        if (llResult.isValid() && llResult != null) {
+            tagID = 22;
+        }
+        limelight.pipelineSwitch(3);
+        if (llResult.isValid() && llResult != null) {
+            tagID = 21;
+        }
+        return tagID;
     }
 
     @Override
-    public void onDisable() {
+    public void onStop() {
         limelight.stop();
     }
 
