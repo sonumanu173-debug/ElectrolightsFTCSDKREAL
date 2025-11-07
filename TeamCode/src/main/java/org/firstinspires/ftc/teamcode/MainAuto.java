@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.MotifScanning;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.bylazar.configurables.annotations.Configurable;
@@ -24,7 +25,7 @@ import com.bylazar.configurables.annotations.Configurable;
 public class MainAuto extends NextFTCOpMode {
     public MainAuto(){
         addComponents(
-                new SubsystemComponent(Flywheel.INSTANCE, DriveTrain.INSTANCE, Intake.INSTANCE),
+                new SubsystemComponent(Flywheel.INSTANCE, DriveTrain.INSTANCE, Intake.INSTANCE, MotifScanning.INSTANCE),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
 
@@ -56,6 +57,7 @@ public class MainAuto extends NextFTCOpMode {
     public void onStartButtonPressed() {
         opmodeTimer.resetTimer();
         pathTimer.resetTimer();
+        int tag=MotifScanning.INSTANCE.findMotif();
         follower.followPath(paths.Path1);
         telemetry.addLine("Started Path 1");
         telemetry.update();
