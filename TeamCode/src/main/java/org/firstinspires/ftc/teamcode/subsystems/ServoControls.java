@@ -19,7 +19,7 @@ public class ServoControls extends NextFTCOpMode{
 
     @Override
     public void onUpdate() {
-        if (gamepad1.circle > 0) {
+        if (gamepad1.circle) {
 
             double S = 0;
            while (S < 0.05) {
