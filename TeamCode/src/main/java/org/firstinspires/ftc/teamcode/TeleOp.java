@@ -1,5 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.Pose;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
 
@@ -19,6 +25,8 @@ public class TeleOp extends NextFTCOpMode {
 
         );
     }
+    private Follower follower;
+    public static Pose startingPose;
 
     /*public DcMotorEx motor;
 
@@ -26,10 +34,13 @@ public class TeleOp extends NextFTCOpMode {
     private static final int APRILTAG_PIPELINE = 8;
     @Override
     public void onInit() {
-        //Limelight3A limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        //limelight.pipelineSwitch(APRILTAG_PIPELINE);
-        //limelight.start();
-        //motor = hardwareMap.get(DcMotorEx.class, "launchingmotor");
+        Limelight3A limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        limelight.pipelineSwitch(APRILTAG_PIPELINE);
+        limelight.start();
+        follower.setStartingPose(startingPose == null ? new Pose() : startingPose);
+        follower.update();
+        DcMotorEx motor = hardwareMap.get(DcMotorEx.class, "launchingmotor");
+        follower = Constants.createFollower(hardwareMap);
     }
 
     @Override
