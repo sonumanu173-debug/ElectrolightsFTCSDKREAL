@@ -1,24 +1,16 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
-import static org.firstinspires.ftc.teamcode.TeleOp.startingPose;
 import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
 import static org.firstinspires.ftc.teamcode.subsystems.Calculations.findTPS;
 import static org.firstinspires.ftc.teamcode.subsystems.Flywheel.shooter;
-
-import static dev.nextftc.bindings.Bindings.button;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-import dev.nextftc.bindings.Button;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.subsystems.Subsystem;
-import dev.nextftc.core.units.Angle;
 import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.ftc.Gamepads;
 import dev.nextftc.hardware.driving.FieldCentric;
@@ -87,53 +79,23 @@ public class DriveTrain implements Subsystem {
 
     public Supplier<Double> yVCtx;
 
-    public Command slow(){
-        return new MecanumDriverControlled(
-                fL,
-                fR,
-                bL,
-                bR,
-                Gamepads.gamepad1().leftStickY().map(it -> it * 0.8),
-                Gamepads.gamepad1().leftStickX().map(it -> -it * 0.8),
-                Gamepads.gamepad1().rightStickX().map(it -> -it * 0.8),
-                new FieldCentric(imu)
-        );
-    }
-
-    public Command autoaim(){
-        return new MecanumDriverControlled(
-                fL,
-                fR,
-                bL,
-                bR,
-                Gamepads.gamepad1().leftStickY().map(it -> it * 0.4),
-                Gamepads.gamepad1().leftStickX().map(it -> -it * 0.4),
-                yVCtx,
-                new FieldCentric(imu)
-        );
-    }
-
     @Override
     public Command getDefaultCommand() {
-
         Gamepads.gamepad1().triangle().whenBecomesTrue(() -> autolocktrue())
                 .whenFalse(() -> autolockfalse());
         Gamepads.gamepad1().leftBumper().whenBecomesTrue(() -> slowtrue())
                 .whenFalse(() -> slowfalse());
-        if(autolock==true){
+        if (autolock == true) {
             limelight.pipelineSwitch(APRILTAG_PIPELINE);
             LLResult result = limelight.getLatestResult();
             hasTag = (result != null) && result.isValid() && !result.getFiducialResults().isEmpty();
 
-            if (hasTag)
-            {
+            if (hasTag) {
                 tx = result.getTx(); // deg
                 ty = result.getTy(); // deg (positive = tag above crosshair)
                 ta = result.getTa(); // %
-                //telemetry.addData("Tx", tx);
-            }
-            else
-            {
+                ActiveOpMode.telemetry().addData("Tx", tx);
+            } else {
                 tx = ty = ta = 0.0;
             }
             yVCtx = () -> visionYawCommand(tx);
@@ -142,25 +104,40 @@ public class DriveTrain implements Subsystem {
                     fR,
                     bL,
                     bR,
-                    Gamepads.gamepad1().leftStickY().map(it -> it * 0.4),
-                    Gamepads.gamepad1().leftStickX().map(it -> -it * 0.4),
+                    Gamepads.gamepad1().leftStickY().map(it -> it),
+                    Gamepads.gamepad1().leftStickX().map(it -> -it),
                     yVCtx,
                     new FieldCentric(imu)
             );
-
-            // Get the double value from the supplier
+        }
+        else // IF AUTOLOCK IS NOT ON
+        {
+            if (slow == true) {
+                return new MecanumDriverControlled(
+                        fL,
+                        fR,
+                        bL,
+                        bR,
+                        Gamepads.gamepad1().leftStickY().map(it -> it * 0.4),
+                        Gamepads.gamepad1().leftStickX().map(it -> -it *0.4),
+                        Gamepads.gamepad1().rightStickX().map(it -> -it * 0.4 * 0.75),
+                        new FieldCentric(imu)
+                );
             }
-        else {//if doesnt work, remove else here
-            return new MecanumDriverControlled(
-                    fL,
-                    fR,
-                    bL,
-                    bR,
-                    Gamepads.gamepad1().leftStickY().map(it -> it),
-                    Gamepads.gamepad1().leftStickX().map(it -> -it),
-                    Gamepads.gamepad1().rightStickX().map(it -> -it),
-                    new FieldCentric(imu)
-            );
+            else //IF SLOW IS OFF
+            {
+                //if doesnt work, remove else here
+                return new MecanumDriverControlled(
+                        fL,
+                        fR,
+                        bL,
+                        bR,
+                        Gamepads.gamepad1().leftStickY().map(it -> it),
+                        Gamepads.gamepad1().leftStickX().map(it -> -it),
+                        Gamepads.gamepad1().rightStickX().map(it -> -it * 0.75),
+                        new FieldCentric(imu)
+                );
+            }
         }
     }
 
@@ -170,43 +147,38 @@ public class DriveTrain implements Subsystem {
         limelight = ActiveOpMode.hardwareMap().get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(APRILTAG_PIPELINE);
         limelight.start();
-        //follower.setStartingPose(new Pose(72, 8, Math.toRadians(90)));
-        //follower.setPose(new Pose(56.000, 8.000, Math.toRadians(90)));
-        //follower.update();
-        //follower = Constants.createFollower(ActiveOpMode.hardwareMap());
+        follower = Constants.createFollower(ActiveOpMode.hardwareMap());
+        follower.setStartingPose(new Pose(72, 8, Math.toRadians(90)));
+        follower.update();
     }
 
     @Override
     public void periodic() {
 
-            //limelight.pipelineSwitch(APRILTAG_PIPELINE);
-            LLResult result = limelight.getLatestResult();
-            hasTag = (result != null) && result.isValid() && !result.getFiducialResults().isEmpty();
+        LLResult result = limelight.getLatestResult();
+        hasTag = (result != null) && result.isValid() && !result.getFiducialResults().isEmpty();
 
-            if (hasTag) {
-                tx = result.getTx(); // deg
-                ty = result.getTy(); // deg (positive = tag above crosshair)
-                ta = result.getTa(); // %
-                //telemetry.addData("Tx", tx);
-            } else {
-                tx = ty = ta = 0.0;
-            }
-            yVCtx = () -> visionYawCommand(tx);
-            //telemetry.addData("yVCtx", yVCtx);
-            //telemetry.update();
+        if (hasTag) {
+            tx = result.getTx(); // deg
+            ActiveOpMode.telemetry().addData("Tx", tx);
+        } else {
+            tx = 0.0;
+        }
+        yVCtx = () -> visionYawCommand(tx);
+        ActiveOpMode.telemetry().addData("yVCtx", yVCtx);
+        ActiveOpMode.telemetry().update();
 
-
-        //follower.update();
-        //double x = follower.getPose().getX();
-        //double y = follower.getPose().getY();
-        //double distinch = Math.sqrt(Math.pow((x-0), 2)*Math.pow((y-144), 2));
-        //double dist = distinch / 39.37;
-        //telemetry.addData("Distance", dist);
-        //telemetry.update();
+        follower.update();
+        double x = follower.getPose().getX();
+        double y = follower.getPose().getY();
+        double distinch = Math.sqrt(Math.pow((x-0), 2)*Math.pow((y-144), 2));
+        double dist = distinch / 39.37;
+        ActiveOpMode.telemetry().addData("Distance", dist);
+        ActiveOpMode.telemetry().update();
         if(autolock==true)
         {
-            //float tps = findTPS((float) dist);
-            //shooter(tps);
+            float tps = findTPS((float) dist);
+            shooter(tps);
         }
     }
 }
