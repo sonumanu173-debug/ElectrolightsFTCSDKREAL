@@ -28,11 +28,7 @@ public class TeleOp extends NextFTCOpMode {
         );
     }
     private Follower follower;
-    public static Pose startingPose;
 
-    /*public DcMotorEx motor;
-
-    private static final double TICKS_PER_REV = 28;*/
     private static final int APRILTAG_PIPELINE = 8;
     @Override
     public void onInit() {
@@ -47,7 +43,6 @@ public class TeleOp extends NextFTCOpMode {
 
     @Override
     public void onUpdate() {
-
     }
 
     @Override
