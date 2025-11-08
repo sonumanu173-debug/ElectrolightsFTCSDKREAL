@@ -25,7 +25,7 @@ public class Intake implements Subsystem{
 
     }
     public void periodic(){
-        follower.update();
+        //follower.update();
     }
 }
 
