@@ -26,7 +26,7 @@ import com.bylazar.configurables.annotations.Configurable;
 public class AutoBlue extends NextFTCOpMode {
     public AutoBlue(){
         addComponents(
-                new SubsystemComponent(Flywheel.INSTANCE, DriveTrain.INSTANCE, Intake.INSTANCE, MotifScanning.INSTANCE),
+                new SubsystemComponent(Flywheel.INSTANCE,  Intake.INSTANCE, MotifScanning.INSTANCE),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
 
