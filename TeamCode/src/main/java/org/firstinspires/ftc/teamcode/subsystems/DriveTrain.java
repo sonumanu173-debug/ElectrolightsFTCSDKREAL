@@ -148,9 +148,9 @@ public class DriveTrain implements Subsystem {
         limelight = ActiveOpMode.hardwareMap().get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(APRILTAG_PIPELINE);
         limelight.start();
-        /*follower = Constants.createFollower(ActiveOpMode.hardwareMap());
-        follower.setStartingPose(new Pose(25, -4, Math.toRadians(90)));
-        follower.update();*/
+        //follower = Constants.createFollower(ActiveOpMode.hardwareMap());
+        //follower.setStartingPose(new Pose(25, -4, Math.toRadians(90)));
+        //follower.update();
     }
 
     @Override
@@ -161,25 +161,26 @@ public class DriveTrain implements Subsystem {
 
         if (hasTag) {
             tx = result.getTx();
-            ActiveOpMode.telemetry().addData("Tx", tx);
         } else {
             tx = 0.0;
         }
         yVCtx = () -> visionYawCommand(tx);
-        ActiveOpMode.telemetry().addData("yVCtx", yVCtx);
-        ActiveOpMode.telemetry().update();
 
-        /*follower.update();
-        double x = follower.getPose().getX();
-        double y = follower.getPose().getY();
-        double distinch = Math.sqrt(Math.pow((x-0), 2)*Math.pow((y-144), 2));
-        double dist = distinch / 39.37;
-        ActiveOpMode.telemetry().addData("Distance", dist);
-        ActiveOpMode.telemetry().update();
+
+        //follower.update();
+        //double x = follower.getPose().getX();
+        //double y = follower.getPose().getY();
+        //double distinch = Math.sqrt(Math.pow((x-0), 2)*Math.pow((y-144), 2));
+        //double dist = distinch / 39.37;
+        //ActiveOpMode.telemetry().addData("Distance", dist);
+        //ActiveOpMode.telemetry().update();
         if(autolock==true)
         {
-            float tps = findTPS((float) dist);
-            shooter(tps);
-        }*/
+            //float tps = findTPS((float) dist);
+            //shooter(tps);
+        }
+        else{
+            shooter(900);
+        }
     }
 }
