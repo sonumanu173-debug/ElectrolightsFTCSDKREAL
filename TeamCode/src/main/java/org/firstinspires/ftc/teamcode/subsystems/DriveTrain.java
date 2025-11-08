@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.teamcode.subsystems.Calculations.findTPS;
 import static org.firstinspires.ftc.teamcode.subsystems.Flywheel.shooter;
 
 import com.bylazar.configurables.annotations.Configurable;
+import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -30,6 +31,8 @@ public class DriveTrain implements Subsystem {
     private DriveTrain() { }
 
     private Limelight3A limelight;
+
+    private Follower follower;
 
     private double tx;
     private boolean hasTag;
@@ -145,9 +148,9 @@ public class DriveTrain implements Subsystem {
         limelight = ActiveOpMode.hardwareMap().get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(APRILTAG_PIPELINE);
         limelight.start();
-        follower = Constants.createFollower(ActiveOpMode.hardwareMap());
+        /*follower = Constants.createFollower(ActiveOpMode.hardwareMap());
         follower.setStartingPose(new Pose(25, -4, Math.toRadians(90)));
-        follower.update();
+        follower.update();*/
     }
 
     @Override
@@ -166,7 +169,7 @@ public class DriveTrain implements Subsystem {
         ActiveOpMode.telemetry().addData("yVCtx", yVCtx);
         ActiveOpMode.telemetry().update();
 
-        follower.update();
+        /*follower.update();
         double x = follower.getPose().getX();
         double y = follower.getPose().getY();
         double distinch = Math.sqrt(Math.pow((x-0), 2)*Math.pow((y-144), 2));
@@ -177,6 +180,6 @@ public class DriveTrain implements Subsystem {
         {
             float tps = findTPS((float) dist);
             shooter(tps);
-        }
+        }*/
     }
 }

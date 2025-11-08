@@ -21,7 +21,7 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 public class TeleOp extends NextFTCOpMode {
     public TeleOp() {
         addComponents(
-                new SubsystemComponent(Flywheel.INSTANCE, DriveTrain.INSTANCE, Intake.INSTANCE),
+                new SubsystemComponent(Flywheel.INSTANCE, DriveTrain.INSTANCE),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
 
