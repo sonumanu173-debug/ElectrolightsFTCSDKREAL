@@ -6,28 +6,50 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
+
+import dev.nextftc.core.components.BindingsComponent;
+import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
+import dev.nextftc.ftc.components.BulkReadComponent;
+
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
+import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.MotifScanning;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.bylazar.configurables.annotations.Configurable;
 
 @Autonomous(name = "Autonomous Test (NextFTC)", group = "Autonomous")
-public class MainAuto extends NextFTCOpMode {
+@Configurable
+public class AutoBlue extends NextFTCOpMode {
+    public AutoBlue(){
+        addComponents(
+                new SubsystemComponent(Flywheel.INSTANCE, DriveTrain.INSTANCE, Intake.INSTANCE, MotifScanning.INSTANCE),
+                BulkReadComponent.INSTANCE,
+                BindingsComponent.INSTANCE
 
+        );
+    }
     private Follower follower;
     private Timer pathTimer, actionTimer, opmodeTimer;
     private int pathState;
     private Paths paths;
-
+    public Pose start = new Pose(28,120, Math.toRadians(110));
+    public Pose PreloadLaunch = new Pose(54.871, 97.258, Math.toRadians(130));
 
     public void onInit() {
         telemetry.addLine("Initializing Follower...");
         telemetry.update();
         follower = Constants.createFollower(hardwareMap);
         paths = new Paths(follower);
+
         pathTimer = new Timer();
         actionTimer = new Timer();
         opmodeTimer = new Timer();
-        follower.setPose(new Pose(56.000, 8.000, Math.toRadians(90)));
+        follower.setStartingPose(start);
+
         pathState = 0;
         telemetry.addLine("Follower + IMU + Odo Pods initialized successfully!");
         telemetry.addLine("Initialization complete!");
@@ -38,6 +60,7 @@ public class MainAuto extends NextFTCOpMode {
     public void onStartButtonPressed() {
         opmodeTimer.resetTimer();
         pathTimer.resetTimer();
+        int tag=MotifScanning.INSTANCE.findMotif();
         follower.followPath(paths.Path1);
         telemetry.addLine("Started Path 1");
         telemetry.update();
@@ -50,8 +73,9 @@ public class MainAuto extends NextFTCOpMode {
             case 0:
                 if (!follower.isBusy()) {
                     pathTimer.resetTimer();
-                    follower.followPath(paths.Path2);
-                    telemetry.addLine("Started Path 2");
+                    // WIhs follower.followPath(paths.Path2);
+
+                    telemetry.addLine("Path 1 has been completed btw, that means it's going to launch in a couple of seconds");
                     pathState++;
                 }
                 break;
@@ -75,24 +99,23 @@ public class MainAuto extends NextFTCOpMode {
         telemetry.update();
     }
 
-    public static class Paths {
+    public class Paths {
         public PathChain Path1;
         public PathChain Path2;
 
         public Paths(Follower follower) {
+            //Path1 = follower.pathBuilder()
+                    //.addPath(new BezierLine(
+                           // new Pose(56.000, 8.000),
+                           // new Pose(57.078, 32.451)
+                    //))
+                    //.setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(180))
+                    //.build();
+
             Path1 = follower.pathBuilder()
                     .addPath(new BezierLine(
-                            new Pose(56.000, 8.000),
-                            new Pose(57.078, 32.451)
-                    ))
-                    .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(180))
-                    .build();
-
-            Path2 = follower.pathBuilder()
-                    .addPath(new BezierCurve(
-                            new Pose(57.078, 32.451),
-                            new Pose(58.527, 41.433),
-                            new Pose(14.487, 35.348)
+                            start,
+                            PreloadLaunch
                     ))
                     .setTangentHeadingInterpolation()
                     .build();
