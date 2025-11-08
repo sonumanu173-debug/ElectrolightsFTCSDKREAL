@@ -34,9 +34,9 @@ public class DriveTrain implements Subsystem {
     private double tx;
     private boolean hasTag;
 
-    private boolean autolock;
+    private boolean autolock = false;
 
-    private boolean slow;
+    private boolean slow = false;
 
     // === AprilTag/Limelight align tuning ===
     private static final int APRILTAG_PIPELINE = 8;   // <-- set to your AprilTag pipeline index
