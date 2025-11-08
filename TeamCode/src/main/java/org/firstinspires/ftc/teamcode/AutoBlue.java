@@ -39,11 +39,6 @@ public class AutoBlue extends NextFTCOpMode {
     public Pose start = new Pose(28,120, Math.toRadians(110));
     public Pose PreloadLaunch = new Pose(54.871, 97.258, Math.toRadians(130));
 
-    public Pose ControlPointIntake = new Pose(57.774,82.161);
-
-    public Pose intake1 = new Pose(14.864,83.981);
-
-
     public void onInit() {
         telemetry.addLine("Initializing Follower...");
         telemetry.update();
@@ -110,12 +105,12 @@ public class AutoBlue extends NextFTCOpMode {
 
         public Paths(Follower follower) {
             //Path1 = follower.pathBuilder()
-                    //.addPath(new BezierLine(
-                           // new Pose(56.000, 8.000),
-                           // new Pose(57.078, 32.451)
-                    //))
-                    //.setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(180))
-                    //.build();
+            //.addPath(new BezierLine(
+            // new Pose(56.000, 8.000),
+            // new Pose(57.078, 32.451)
+            //))
+            //.setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(180))
+            //.build();
 
             Path1 = follower.pathBuilder()
                     .addPath(new BezierLine(
