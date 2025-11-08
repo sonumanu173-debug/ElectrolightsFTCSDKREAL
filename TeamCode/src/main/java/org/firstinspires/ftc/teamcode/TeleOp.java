@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.Spindexer;
 
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.Gamepads;
@@ -38,11 +39,14 @@ public class TeleOp extends NextFTCOpMode {
     }
 
     @Override
-    public void onUpdate() {
+    public void onUpdate() {m
     }
 
     @Override
     public void onStartButtonPressed() {
-
+        Gamepads.gamepad1().rightTrigger().greaterThan(0.2).whenTrue(() -> Spindexer.shootingtrue())
+                .whenFalse(() -> Spindexer.shootingfalse());
+        Gamepads.gamepad1().leftTrigger().greaterThan(0.2).whenTrue(() -> Spindexer.indextrue())
+                .whenFalse(() -> Spindexer.indexfalse());
     }
 }
