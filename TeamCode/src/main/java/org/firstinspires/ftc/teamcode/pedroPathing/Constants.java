@@ -18,7 +18,7 @@ public class Constants {
             .useSecondaryTranslationalPIDF(true)
             .useSecondaryHeadingPIDF(true)
             .useSecondaryDrivePIDF(true)
-            .forwardZeroPowerAcceleration(-40);
+            .forwardZeroPowerAcceleration(40);
 
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
 
