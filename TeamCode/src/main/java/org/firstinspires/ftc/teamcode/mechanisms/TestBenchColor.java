@@ -10,11 +10,12 @@ import java.nio.charset.CharacterCodingException;
 
 public class TestBenchColor {
     NormalizedColorSensor colorSensor;
+    boolean isGreen;
+    boolean isBlue;
 
     public enum detectedColor {
         PURPLE,
         GREEN,
-        UNKNOWN,
         ERROR
     }
 
@@ -35,16 +36,21 @@ public class TestBenchColor {
         telemetry.addData("green", normGreen);
         telemetry.addData("blue", normBlue);
 
-        if (normRed > 0.1) {
-            return detectedColor.ERROR;
-        } else if (normGreen < 0.1) {
-            return detectedColor.PURPLE;
-        } else if (normGreen > 0.1) {
-            return detectedColor.GREEN;
-        } else {
-            return detectedColor.UNKNOWN;
+        //Green
+        if (normRed > 0.025 && normRed < 0.04 && normGreen > 0.12 && normGreen < 0.14 && normBlue > 0.09 && normBlue < 0.11) {
+            isGreen = true;
+        } else if (normRed > 0.04 && normRed < 0.06 && normGreen > 0.04 && normGreen < 0.07 && normBlue > 0.09 && normBlue < 0.13) { //Purple
+            isBlue = true;
         }
 
+        if (isGreen) {
+            return detectedColor.GREEN;
+        } else if (isBlue) {
+            return detectedColor.PURPLE;
+        } else {
+            return detectedColor.ERROR;
+        }
+        
     }
 
 }
