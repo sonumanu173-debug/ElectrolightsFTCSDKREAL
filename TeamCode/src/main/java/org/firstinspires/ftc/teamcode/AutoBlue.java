@@ -39,6 +39,11 @@ public class AutoBlue extends NextFTCOpMode {
     public Pose start = new Pose(28,120, Math.toRadians(110));
     public Pose PreloadLaunch = new Pose(54.871, 97.258, Math.toRadians(130));
 
+    public Pose ControlPointIntake = new Pose(57.774,82.161);
+
+    public Pose intake1 = new Pose(14.864,83.981);
+
+
     public void onInit() {
         telemetry.addLine("Initializing Follower...");
         telemetry.update();

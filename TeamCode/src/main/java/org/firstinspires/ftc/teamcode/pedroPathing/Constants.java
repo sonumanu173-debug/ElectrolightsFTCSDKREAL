@@ -17,7 +17,8 @@ public class Constants {
             .mass(12.1)
             .useSecondaryTranslationalPIDF(true)
             .useSecondaryHeadingPIDF(true)
-            .useSecondaryDrivePIDF(true);
+            .useSecondaryDrivePIDF(true)
+            .forwardZeroPowerAcceleration(-40);
 
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
 
@@ -27,6 +28,7 @@ public class Constants {
                 .mecanumDrivetrain(driveConstants)
                 .pinpointLocalizer(localizerConstants)
                 .build();
+
     }
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)
@@ -40,6 +42,7 @@ public class Constants {
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
             .xVelocity(78)
             .yVelocity(61);
+
     public static PinpointConstants localizerConstants = new PinpointConstants()
             .forwardPodY(5.5)
             .strafePodX(4.5)
