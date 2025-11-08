@@ -14,7 +14,8 @@ public class TestBenchColor {
     public enum detectedColor {
         PURPLE,
         GREEN,
-        UNKNOWN
+        UNKNOWN,
+        ERROR
     }
 
     public void init(HardwareMap hwMap) {
@@ -34,20 +35,16 @@ public class TestBenchColor {
         telemetry.addData("green", normGreen);
         telemetry.addData("blue", normBlue);
 
-        // TODO ADD IF STATEMENTS FOR SPECIFIC COLORS ADDED
-        /*
-
-        if (normRed > 0.35 && normGreen < 0.3 && normBlue < 0.3) {
+        if (normRed > 0.1) {
+            return detectedColor.ERROR;
+        } else if (normGreen < 0.1) {
             return detectedColor.PURPLE;
-        } else if (normRed > 0.5 && normGreen < 0.5 && normBlue < 0.5) {
+        } else if (normGreen > 0.1) {
             return detectedColor.GREEN;
         } else {
             return detectedColor.UNKNOWN;
         }
 
-
-         */
-        return detectedColor.UNKNOWN;
     }
 
 }
