@@ -21,13 +21,12 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 public class TeleOp extends NextFTCOpMode {
     public TeleOp() {
         addComponents(
-                new SubsystemComponent(Flywheel.INSTANCE, DriveTrain.INSTANCE, Intake.INSTANCE),
+                new SubsystemComponent(Flywheel.INSTANCE, DriveTrain.INSTANCE),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
 
         );
     }
-    private Follower follower;
 
     private static final int APRILTAG_PIPELINE = 8;
     @Override
@@ -35,9 +34,6 @@ public class TeleOp extends NextFTCOpMode {
         Limelight3A limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(APRILTAG_PIPELINE);
         limelight.start();
-        follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(25, -4, Math.toRadians(90)));
-        follower.update();
 
     }
 
