@@ -1,14 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
-import static org.firstinspires.ftc.teamcode.subsystems.Calculations.findTPS;
-import static org.firstinspires.ftc.teamcode.subsystems.Flywheel.shooter;
-
 import com.bylazar.configurables.annotations.Configurable;
-import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.Pose;
-import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.Limelight3A;
 
 import dev.nextftc.bindings.BindingManager;
 import dev.nextftc.control.ControlSystem;
@@ -16,15 +8,11 @@ import dev.nextftc.control.KineticState;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.ActiveOpMode;
-import dev.nextftc.ftc.Gamepads;
-import dev.nextftc.hardware.driving.FieldCentric;
-import dev.nextftc.hardware.driving.MecanumDriverControlled;
-import dev.nextftc.hardware.impl.Direction;
-import dev.nextftc.hardware.impl.IMUEx;
 import dev.nextftc.hardware.impl.MotorEx;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import dev.nextftc.hardware.impl.ServoEx;
 
-import java.util.function.Supplier;
+import org.firstinspires.ftc.teamcode.subsystems.ColorSense1;
+import org.firstinspires.ftc.teamcode.subsystems.ColorSense2;
 
 
 @Configurable
@@ -77,17 +65,19 @@ public class Spindexer implements Subsystem {
         velocityControlWithFeedforwardExample(currentState, tps);
     }
 
+    public static final ServoEx servoPos = new ServoEx("servoPos");
 
     @Override
     public Command getDefaultCommand() {
         if(shooting==true){
             if(indexing==true){
-                if(ColorSensorTest.SenseBall1()=="purple" && ColorSensorTest.SenseBall2()=="green"){
+                if(ColorSense1.getDetectedColor(ActiveOpMode.telemetry())== ColorSense1.detectedColor.PURPLE && ColorSense2.getDetectedColor(ActiveOpMode.telemetry())==ColorSense2.detectedColor.GREEN){
                     //raise servo
+                    servoPos.setPosition(0.1);
                 }
             }
             else{
-                //raise servo
+                servoPos.setPosition(0.1);
             }
         }
         return null;
@@ -96,6 +86,8 @@ public class Spindexer implements Subsystem {
     @Override
     public void initialize() {
         spin(17);
+
+
 
     }
 

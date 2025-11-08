@@ -6,6 +6,8 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.subsystems.ColorSense1;
+import org.firstinspires.ftc.teamcode.subsystems.ColorSense2;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
@@ -22,7 +24,7 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 public class TeleOp extends NextFTCOpMode {
     public TeleOp() {
         addComponents(
-                new SubsystemComponent(Flywheel.INSTANCE, DriveTrain.INSTANCE),
+                new SubsystemComponent(Flywheel.INSTANCE, DriveTrain.INSTANCE, Intake.INSTANCE, Spindexer.INSTANCE, ColorSense1.INSTANCE, ColorSense2.INSTANCE),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
 
@@ -39,7 +41,7 @@ public class TeleOp extends NextFTCOpMode {
     }
 
     @Override
-    public void onUpdate() {m
+    public void onUpdate() {
     }
 
     @Override

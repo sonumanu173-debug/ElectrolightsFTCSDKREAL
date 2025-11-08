@@ -14,11 +14,11 @@ public class Intake implements Subsystem{
     private Intake() { }
     private MotorEx intakeMotor;
 
-    /*public Command getDefaultCommand() {
-        Gamepads.gamepad1().triangle().whenBecomesTrue(() -> intakeMotor.setPower(1))
+    public Command getDefaultCommand() {
+        Gamepads.gamepad1().rightBumper().whenBecomesTrue(() -> intakeMotor.setPower(1))
                 .whenFalse(() -> intakeMotor.setPower(0));
         return null;
-    }*/
+    }
     @Override
     public void initialize(){
         intakeMotor = new MotorEx("intake");

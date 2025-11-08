@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.mechanisms;
+package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
@@ -6,10 +6,15 @@ import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public class ColorSense1 {
-    NormalizedColorSensor colorSensor;
-    boolean isGreen;
-    boolean isPurple;
+import dev.nextftc.core.subsystems.Subsystem;
+
+public class ColorSense2 implements Subsystem {
+    static NormalizedColorSensor colorSensor;
+
+    public static final ColorSense2 INSTANCE = new ColorSense2();
+    private ColorSense2() { }
+    static boolean isGreen;
+    static boolean isPurple;
 
     public enum detectedColor {
         PURPLE,
@@ -22,7 +27,7 @@ public class ColorSense1 {
         colorSensor.setGain(8);
     }
 
-    public detectedColor getDetectedColor(Telemetry telemetry) {
+    public static detectedColor getDetectedColor(Telemetry telemetry) {
         NormalizedRGBA colors = colorSensor.getNormalizedColors(); //return 4 values
 
         float normRed, normGreen, normBlue;
