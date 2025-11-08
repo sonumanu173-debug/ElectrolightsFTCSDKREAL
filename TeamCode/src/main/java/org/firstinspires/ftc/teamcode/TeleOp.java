@@ -36,7 +36,7 @@ public class TeleOp extends NextFTCOpMode {
         limelight.pipelineSwitch(APRILTAG_PIPELINE);
         limelight.start();
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(72, 8, Math.toRadians(90)));
+        follower.setStartingPose(new Pose(25, -4, Math.toRadians(90)));
         follower.update();
 
     }

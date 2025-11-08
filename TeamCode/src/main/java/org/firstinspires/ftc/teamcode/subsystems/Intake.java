@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
+
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.Gamepads;
@@ -12,18 +14,18 @@ public class Intake implements Subsystem{
     private Intake() { }
     private MotorEx intakeMotor;
 
-    public Command getDefaultCommand() {
+    /*public Command getDefaultCommand() {
         Gamepads.gamepad1().triangle().whenBecomesTrue(() -> intakeMotor.setPower(1))
                 .whenFalse(() -> intakeMotor.setPower(0));
         return null;
-    }
+    }*/
     @Override
     public void initialize(){
         intakeMotor = new MotorEx("intake");
 
     }
     public void periodic(){
-
+        follower.update();
     }
 }
 

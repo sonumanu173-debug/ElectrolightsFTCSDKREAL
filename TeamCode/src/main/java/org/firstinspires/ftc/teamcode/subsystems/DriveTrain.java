@@ -146,7 +146,7 @@ public class DriveTrain implements Subsystem {
         limelight.pipelineSwitch(APRILTAG_PIPELINE);
         limelight.start();
         follower = Constants.createFollower(ActiveOpMode.hardwareMap());
-        follower.setStartingPose(new Pose(72, 8, Math.toRadians(90)));
+        follower.setStartingPose(new Pose(25, -4, Math.toRadians(90)));
         follower.update();
     }
 
