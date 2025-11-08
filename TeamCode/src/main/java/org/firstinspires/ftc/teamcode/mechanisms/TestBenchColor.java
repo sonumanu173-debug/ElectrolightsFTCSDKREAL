@@ -12,15 +12,14 @@ public class TestBenchColor {
     NormalizedColorSensor colorSensor;
 
     public enum detectedColor {
-        RED,
+        PURPLE,
         GREEN,
-        BLUE,
         UNKNOWN
     }
 
     public void init(HardwareMap hwMap) {
-        colorSensor = hwMap.get(NormalizedColorSensor.class, "sensor_color_distance");
-        colorSensor.setGain(8);
+        colorSensor = hwMap.get(NormalizedColorSensor.class, "colorSensor1");
+        //colorSensor.setGain(1);
     }
 
     public detectedColor getDetectedColor(Telemetry telemetry) {
@@ -36,7 +35,7 @@ public class TestBenchColor {
         telemetry.addData("blue", normBlue);
 
         // TODO ADD IF STATEMENTS FOR SPECIFIC COLORS ADDED
-
+        /*
         if (normRed > 0.35 && normGreen < 0.3 && normBlue < 0.3) {
             return detectedColor.RED
         } else if (normRed > 0.5 && normGreen < 0.5 && normBlue < 0.5) {
@@ -46,6 +45,8 @@ public class TestBenchColor {
         } else {
             return detectedColor.UNKNOWN
         }
+         */
+        return detectedColor.UNKNOWN;
     }
 
 }

@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode.subsystems;
+package org.firstinspires.ftc.teamcode.mechanisms;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.mechanisms.TestBenchColor;
-
+@TeleOp
 public class ColorSensorTest extends OpMode {
     TestBenchColor bench = new TestBenchColor();
     TestBenchColor.detectedColor detectedColor;
