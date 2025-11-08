@@ -19,7 +19,7 @@ public class TestBenchColor {
 
     public void init(HardwareMap hwMap) {
         colorSensor = hwMap.get(NormalizedColorSensor.class, "colorSensor1");
-        //colorSensor.setGain(1);
+        colorSensor.setGain(8);
     }
 
     public detectedColor getDetectedColor(Telemetry telemetry) {
@@ -36,15 +36,16 @@ public class TestBenchColor {
 
         // TODO ADD IF STATEMENTS FOR SPECIFIC COLORS ADDED
         /*
+
         if (normRed > 0.35 && normGreen < 0.3 && normBlue < 0.3) {
-            return detectedColor.RED
+            return detectedColor.PURPLE;
         } else if (normRed > 0.5 && normGreen < 0.5 && normBlue < 0.5) {
-            return detectedColor.GREEN)
-        } else if (normRed < 0.3 && normGreen < 0.3 && normBlue > 0.3) {
-            return detectedColor.BLUE)
+            return detectedColor.GREEN;
         } else {
-            return detectedColor.UNKNOWN
+            return detectedColor.UNKNOWN;
         }
+
+
          */
         return detectedColor.UNKNOWN;
     }
