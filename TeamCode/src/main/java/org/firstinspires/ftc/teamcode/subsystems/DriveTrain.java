@@ -10,6 +10,9 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 
+import dev.nextftc.bindings.BindingManager;
+import dev.nextftc.control.ControlSystem;
+import dev.nextftc.control.KineticState;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.ActiveOpMode;
@@ -19,6 +22,8 @@ import dev.nextftc.hardware.driving.MecanumDriverControlled;
 import dev.nextftc.hardware.impl.Direction;
 import dev.nextftc.hardware.impl.IMUEx;
 import dev.nextftc.hardware.impl.MotorEx;
+import dev.nextftc.hardware.impl.ServoEx;
+
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 import java.util.function.Supplier;
@@ -51,6 +56,52 @@ public class DriveTrain implements Subsystem {
         return Math.max(lo, Math.min(hi, v));
     }
 
+    public static boolean shooting = false;
+
+    public static boolean indexing = true;
+
+    public static void shootingtrue(){
+        shooting = true;
+    }
+
+    public static void shootingfalse(){
+        shooting = false;
+    }
+
+    public static void indextrue(){
+        indexing = true;
+    }
+
+    public static void indexfalse(){
+        indexing = false;
+    }
+
+    public static double spindexvelocity;
+    public static final MotorEx spindex = new MotorEx("spindexer");
+
+
+    public static float configvelocity = 1400; //far zone - ~1500. near zone - ~1200-1300
+
+    public static void velocityControlWithFeedforwardExample(KineticState currentstate, float configtps) {
+        ControlSystem controller = ControlSystem.builder()
+                .velPid(0.1, 0.01, 0.05) // Velocity PID with kP=0.1, kI=0.01, kD=0.05
+                .basicFF(0.0067, 0.0, 0.01) // Basic feedforward with kV=0.02, kA=0.0, kS=0.01 //pid tuning
+                .build();
+
+        controller.setGoal(new KineticState(0.0, configtps, 0.0));
+
+        double power = controller.calculate(currentstate);
+        spindex.setPower(power);
+    }
+    public static void spin(float tps) {
+        BindingManager.update();
+        spindexvelocity = spindex.getVelocity();
+        KineticState currentState = new KineticState(0, spindexvelocity, 0.0);
+        velocityControlWithFeedforwardExample(currentState, tps);
+    }
+
+    public static final ServoEx servoPos = new ServoEx("servoPos");
+
     private double visionYawCommand(double txDeg) {
         if (Math.abs(txDeg) < YAW_DEADBAND_DEG) return 0.0;
         return -0.5*clip(YAW_KP * txDeg, -YAW_MAX, YAW_MAX);
@@ -72,9 +123,9 @@ public class DriveTrain implements Subsystem {
         slow = false;
     }
     public static final MotorEx fL = new MotorEx("frontLeft").brakeMode();
-    public static final MotorEx fR = new MotorEx("frontRight").brakeMode().reversed();
+    public static final MotorEx fR = new MotorEx("frontRight").brakeMode();
     public static final MotorEx bL = new MotorEx("backLeft").brakeMode();
-    public static final MotorEx bR = new MotorEx("backRight").brakeMode().reversed();
+    public static final MotorEx bR = new MotorEx("backRight").brakeMode();
 
     public static double sensistivity = 1;
 
@@ -84,6 +135,29 @@ public class DriveTrain implements Subsystem {
 
     @Override
     public Command getDefaultCommand() {
+        if(shooting==true){
+            if(indexing==true){
+                if(ColorSense1.getDetectedColor(ActiveOpMode.telemetry())== ColorSense1.detectedColor.PURPLE && ColorSense2.getDetectedColor(ActiveOpMode.telemetry())==ColorSense2.detectedColor.GREEN){
+                    //raise servo
+                    servoPos.setPosition(0.1);
+                    try {
+                        Thread.sleep(1500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    servoPos.setPosition(0.0);
+                }
+            }
+            else{
+                servoPos.setPosition(0.1);
+                try {
+                    Thread.sleep(1500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                servoPos.setPosition(0.0);
+            }
+        }
         Gamepads.gamepad1().triangle().whenBecomesTrue(() -> autolocktrue())
                 .whenFalse(() -> autolockfalse());
         Gamepads.gamepad1().leftBumper().whenBecomesTrue(() -> slowtrue())
@@ -148,9 +222,10 @@ public class DriveTrain implements Subsystem {
         limelight = ActiveOpMode.hardwareMap().get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(APRILTAG_PIPELINE);
         limelight.start();
-        //follower = Constants.createFollower(ActiveOpMode.hardwareMap());
-        //follower.setStartingPose(new Pose(25, -4, Math.toRadians(90)));
-        //follower.update();
+        spin(3);
+        follower = Constants.createFollower(ActiveOpMode.hardwareMap());
+        follower.setStartingPose(new Pose(25, -4, Math.toRadians(90)));
+        follower.update();
     }
 
     @Override
@@ -165,22 +240,22 @@ public class DriveTrain implements Subsystem {
             tx = 0.0;
         }
         yVCtx = () -> visionYawCommand(tx);
+        double spinvel = spindex.getVelocity();
+        double rpm = (spinvel / 28) * 60.0;
+        ActiveOpMode.telemetry().addData("Spin RPM", rpm);
+        ActiveOpMode.telemetry().update();
 
-
-        //follower.update();
-        //double x = follower.getPose().getX();
-        //double y = follower.getPose().getY();
-        //double distinch = Math.sqrt(Math.pow((x-0), 2)*Math.pow((y-144), 2));
-        //double dist = distinch / 39.37;
-        //ActiveOpMode.telemetry().addData("Distance", dist);
-        //ActiveOpMode.telemetry().update();
+        follower.update();
+        double x = follower.getPose().getX();
+        double y = follower.getPose().getY();
+        double distinch = Math.sqrt(Math.pow((x-0), 2)*Math.pow((y-144), 2));
+        double dist = distinch / 39.37;
+        ActiveOpMode.telemetry().addData("Distance", dist);
+        ActiveOpMode.telemetry().update();
         if(autolock==true)
         {
-            //float tps = findTPS((float) dist);
-            //shooter(tps);
-        }
-        else{
-            shooter(900);
+            float tps = findTPS((float) dist);
+            shooter(tps);
         }
     }
 }

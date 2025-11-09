@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import dev.nextftc.bindings.*;
 import dev.nextftc.control.KineticState;
 import dev.nextftc.control.ControlSystem;
 
 import dev.nextftc.core.subsystems.Subsystem;
+import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.impl.MotorEx;
 
 public class Flywheel implements Subsystem {
@@ -38,9 +41,12 @@ public class Flywheel implements Subsystem {
     public static void shooter(float tps) {
         BindingManager.update();
         flywheelvelocity = flywheel.getVelocity();
-        KineticState currentState = new KineticState(0, flywheelvelocity, 0.0);
+        KineticState currentState = new KineticState(0, -1*flywheelvelocity, 0.0);
         //if(tps-(-1*flywheelvelocity)<7 && tps-(-1*flywheelvelocity)>-7){
             velocityControlWithFeedforwardExample(currentState, tps);
+        double rpm = (flywheelvelocity / 28) * 60.0;
+        ActiveOpMode.telemetry().addData("Flywheel RPM", rpm);
+
         //} // if this doesnt work remove if statement
         //motor.setPower(kP * error + kV * targetVelocity)
         //where error is (targetVelocity - motor.getVelocity())

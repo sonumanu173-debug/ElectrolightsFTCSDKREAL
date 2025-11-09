@@ -23,7 +23,7 @@ public class ColorSense2 implements Subsystem {
     }
 
     public void init(HardwareMap hwMap) {
-        colorSensor = hwMap.get(NormalizedColorSensor.class, "colorSensor1");
+        colorSensor = hwMap.get(NormalizedColorSensor.class, "colorSensor2");
         colorSensor.setGain(8);
     }
 
