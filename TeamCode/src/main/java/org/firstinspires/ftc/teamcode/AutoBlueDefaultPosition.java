@@ -47,7 +47,7 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
 
     public Pose controlPoint1 = new Pose(50.263, 76.015);
 
-    public Pose intake1 = new Pose(6.963, 81.9);
+    public Pose intake1 = new Pose(10.44396, 85.767033);
 
     public Pose ControlPose2 = new Pose(2.8484, 88.932);
     public Pose ControlPose3 = new Pose(3.48132, 113.934);
