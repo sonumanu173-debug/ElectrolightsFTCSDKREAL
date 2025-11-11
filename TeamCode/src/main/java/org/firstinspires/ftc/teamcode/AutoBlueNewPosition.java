@@ -24,7 +24,7 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 import dev.nextftc.hardware.impl.MotorEx;
 
 
-@Autonomous(name = "Autonomous Test (NextFTC)", group = "Autonomous")
+@Autonomous(name = "Autonomous Test New Position", group = "Autonomous")
 @Configurable
 public class AutoBlueNewPosition extends NextFTCOpMode {
     public AutoBlueNewPosition(){
