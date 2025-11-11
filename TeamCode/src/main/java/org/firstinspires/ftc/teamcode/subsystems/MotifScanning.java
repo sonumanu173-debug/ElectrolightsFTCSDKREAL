@@ -28,17 +28,35 @@ public class MotifScanning implements Subsystem{
 
     public int findMotif(){
         tagID = -1;
+        llResult = limelight.getLatestResult();
         limelight.pipelineSwitch(1);
-        if (llResult.isValid() && llResult != null) {
+        try {
+            Thread.sleep(333);
+            } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if (llResult != null && llResult.isValid()) {
+            tagID = 21;
+        }
+        llResult = limelight.getLatestResult();
+        limelight.pipelineSwitch(2);
+        try {
+            Thread.sleep(333);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if (llResult != null && llResult.isValid()) {
             tagID = 23;
         }
-        limelight.pipelineSwitch(2);
-        if (llResult.isValid() && llResult != null) {
-            tagID = 22;
-        }
+        llResult = limelight.getLatestResult();
         limelight.pipelineSwitch(3);
-        if (llResult.isValid() && llResult != null) {
-            tagID = 21;
+        try {
+            Thread.sleep(333);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if (llResult != null && llResult.isValid()) {
+            tagID = 22;
         }
         return tagID;
 
