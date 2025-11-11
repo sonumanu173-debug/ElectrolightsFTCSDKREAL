@@ -80,7 +80,7 @@ public class AutoBlue extends NextFTCOpMode {
         follower = Constants.createFollower(hardwareMap);
         paths = new Paths(follower);
         intakeMotor = new MotorEx("intake");
-        spindexerMotor = new MotorEx("spindexerMotor");
+        spindexerMotor = new MotorEx("spindexer");
         pathTimer = new Timer();
         actionTimer = new Timer();
         opmodeTimer = new Timer();
@@ -108,6 +108,7 @@ public class AutoBlue extends NextFTCOpMode {
     public void onUpdate() {
         follower.update();
         switch (pathState) {
+
             case 0:
                 if (!follower.isBusy()) {
                     pathTimer.resetTimer();
@@ -136,10 +137,27 @@ public class AutoBlue extends NextFTCOpMode {
                     }
 
                     telemetry.addLine("Moving onto path 3 momentarily");
+                    telemetry.update();
+                    follower.followPath(paths.Path3);
                     pathState++;
                 }
                 break;
+            case 2:
+                if (!follower.isBusy()) {
+                    pathTimer.resetTimer();
+                    try {
+                        Thread.sleep(300);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    telemetry.addLine("UHH YES");
+
+
+                }
+
         }
+
         telemetry.addData("State", pathState);
         telemetry.addData("Pose", follower.getPose());
         telemetry.addData("Path Timer", pathTimer.getElapsedTime());
