@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(8)
+            .mass(9.95)
             .forwardZeroPowerAcceleration(-42)
             .lateralZeroPowerAcceleration(-69)
             .translationalPIDFCoefficients(new PIDFCoefficients(
@@ -72,12 +72,7 @@ public class Constants {
             .strafePodX(4.5)
             .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD)
             .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED);
-    /**
-     These are the PathConstraints in order:
-     tValueConstraint, velocityConstraint, translationalConstraint, headingConstraint, timeoutConstraint,
-     brakingStrength, BEZIER_CURVE_SEARCH_LIMIT, brakingStart
-     The BEZIER_CURVE_SEARCH_LIMIT should typically be left at 10 and shouldn't be changed.
-     */
+
     public static PathConstraints pathConstraints = new PathConstraints(
             0.98,
             0.1,
@@ -88,7 +83,7 @@ public class Constants {
             10,
             1
     );
-    //Add custom localizers or drivetrains here
+
     public static Follower createFollower(HardwareMap hardwareMap) {
         return new FollowerBuilder(followerConstants, hardwareMap)
                 .mecanumDrivetrain(driveConstants)
