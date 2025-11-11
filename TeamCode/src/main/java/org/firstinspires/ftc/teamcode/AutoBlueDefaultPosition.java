@@ -1,7 +1,6 @@
 
 
 package org.firstinspires.ftc.teamcode;
-import java.util.concurrent.TimeUnit;
 
 
 import com.pedropathing.follower.Follower;
@@ -18,7 +17,6 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 import dev.nextftc.hardware.impl.MotorEx;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.MotifScanning;
@@ -30,8 +28,8 @@ import com.bylazar.configurables.annotations.Configurable;
 
 @Autonomous(name = "Autonomous Test (NextFTC)", group = "Autonomous")
 @Configurable
-public class AutoBlue extends NextFTCOpMode {
-    public AutoBlue(){
+public class AutoBlueDefaultPosition extends NextFTCOpMode {
+    public AutoBlueDefaultPosition(){
         addComponents(
                 new SubsystemComponent(Flywheel.INSTANCE,  Intake.INSTANCE, MotifScanning.INSTANCE),
                 BulkReadComponent.INSTANCE,
@@ -80,7 +78,7 @@ public class AutoBlue extends NextFTCOpMode {
         follower = Constants.createFollower(hardwareMap);
         paths = new Paths(follower);
         intakeMotor = new MotorEx("intake");
-        spindexerMotor = new MotorEx("spindexerMotor");
+        spindexerMotor = new MotorEx("spindexer");
         pathTimer = new Timer();
         actionTimer = new Timer();
         opmodeTimer = new Timer();
@@ -108,14 +106,21 @@ public class AutoBlue extends NextFTCOpMode {
     public void onUpdate() {
         follower.update();
         switch (pathState) {
+
             case 0:
                 if (!follower.isBusy()) {
                     pathTimer.resetTimer();
                     // WIhs follower.followPath(paths.Path2);
 
                     telemetry.addLine("Path 1 has been completed btw, that means it's going to launch in a couple of seconds");
+                        // Im going to add spindexer logic here once its been done and spin the flywheel, we r so cooked
+                    follower.turnToDegrees(75);
 
-
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     intakeMotor.setPower(-1);
                     telemetry.addLine("The intake has started btw");
                     spindexerMotor.setPower(-1);
@@ -136,10 +141,28 @@ public class AutoBlue extends NextFTCOpMode {
                     }
 
                     telemetry.addLine("Moving onto path 3 momentarily");
+                    telemetry.update();
+                    follower.followPath(paths.Path3);
                     pathState++;
                 }
                 break;
+            case 2:
+                if (!follower.isBusy()) {
+                    pathTimer.resetTimer();
+                    try {
+                        Thread.sleep(300);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    Flywheel.shooter(1500);
+
+                    telemetry.addLine("UHH YES");
+
+
+                }
+
         }
+
         telemetry.addData("State", pathState);
         telemetry.addData("Pose", follower.getPose());
         telemetry.addData("Path Timer", pathTimer.getElapsedTime());
@@ -182,7 +205,7 @@ public class AutoBlue extends NextFTCOpMode {
 
                             PreloadLaunch
                     ))
-                    .setTangentHeadingInterpolation()
+                    .setLinearHeadingInterpolation(Math.toRadians(110), Math.toRadians(130))
 
                     .build();
             Path2 = follower.pathBuilder()
