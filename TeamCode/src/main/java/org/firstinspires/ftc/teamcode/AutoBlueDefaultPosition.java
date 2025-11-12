@@ -114,16 +114,18 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
 
                     telemetry.addLine("Path 1 has been completed btw, that means it's going to launch in a couple of seconds");
                         // Im going to add spindexer logic here once its been done and spin the flywheel, we r so cooked
-                    follower.turnToDegrees(75);
+                    //follower.turnToDegrees(75);
 
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(300);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+                    Flywheel.shooter(0);
+                    telemetry.addLine("The shooter has started btw");
                     intakeMotor.setPower(-1);
                     telemetry.addLine("The intake has started btw");
-                    spindexerMotor.setPower(-1);
+                    spindexerMotor.setPower(0.4);
                     telemetry.addLine("The spindexer motor has started btw");
                     telemetry.update();
                     follower.followPath(paths.Path2);
