@@ -34,7 +34,7 @@ public class TeleOp extends NextFTCOpMode {
         Limelight3A limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(APRILTAG_PIPELINE);
         limelight.start();
-        intakeMotor = new MotorEx("intake");
+        intakeMotor = new MotorEx("intake").reversed();
         Gamepads.gamepad1().rightBumper().whenBecomesTrue(() -> intakeMotor.setPower(1))
                 .whenFalse(() -> intakeMotor.setPower(0));
 

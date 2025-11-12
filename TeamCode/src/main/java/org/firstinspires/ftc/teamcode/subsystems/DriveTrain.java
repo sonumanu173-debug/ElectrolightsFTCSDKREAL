@@ -104,7 +104,7 @@ public class DriveTrain implements Subsystem {
 
     private double visionYawCommand(double txDeg) {
         if (Math.abs(txDeg) < YAW_DEADBAND_DEG) return 0.0;
-        return -0.5*clip(YAW_KP * txDeg, -YAW_MAX, YAW_MAX);
+        return 0.5*clip(YAW_KP * txDeg, -YAW_MAX, YAW_MAX);
     }
 
     private void autolocktrue(){
@@ -179,8 +179,8 @@ public class DriveTrain implements Subsystem {
                     fR,
                     bL,
                     bR,
-                    Gamepads.gamepad1().leftStickY().map(it -> it),
-                    Gamepads.gamepad1().leftStickX().map(it -> -it),
+                    Gamepads.gamepad1().leftStickY().map(it -> -it),
+                    Gamepads.gamepad1().leftStickX().map(it -> it),
                     yVCtx,
                     new FieldCentric(imu)
             );
@@ -193,9 +193,9 @@ public class DriveTrain implements Subsystem {
                         fR,
                         bL,
                         bR,
-                        Gamepads.gamepad1().leftStickY().map(it -> it * 0.4),
-                        Gamepads.gamepad1().leftStickX().map(it -> -it *0.4),
-                        Gamepads.gamepad1().rightStickX().map(it -> -it * 0.4 * 0.75),
+                        Gamepads.gamepad1().leftStickY().map(it -> -it * 0.4),
+                        Gamepads.gamepad1().leftStickX().map(it -> it *0.4),
+                        Gamepads.gamepad1().rightStickX().map(it -> it * 0.4 * 0.75),
                         new FieldCentric(imu)
                 );
             }
@@ -207,9 +207,9 @@ public class DriveTrain implements Subsystem {
                         fR,
                         bL,
                         bR,
-                        Gamepads.gamepad1().leftStickY().map(it -> it),
-                        Gamepads.gamepad1().leftStickX().map(it -> -it),
-                        Gamepads.gamepad1().rightStickX().map(it -> -it * 0.75),
+                        Gamepads.gamepad1().leftStickY().map(it -> -it),
+                        Gamepads.gamepad1().leftStickX().map(it -> it),
+                        Gamepads.gamepad1().rightStickX().map(it -> it * 0.75),
                         new FieldCentric(imu)
                 );
             }
