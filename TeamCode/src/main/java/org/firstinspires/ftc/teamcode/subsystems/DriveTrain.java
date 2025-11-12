@@ -222,7 +222,7 @@ public class DriveTrain implements Subsystem {
         limelight = ActiveOpMode.hardwareMap().get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(APRILTAG_PIPELINE);
         limelight.start();
-        spin(3);
+        spin(2);
         follower = Constants.createFollower(ActiveOpMode.hardwareMap());
         follower.setStartingPose(new Pose(25, -4, Math.toRadians(90)));
         follower.update();
@@ -241,22 +241,20 @@ public class DriveTrain implements Subsystem {
             tx = 0.0;
         }
         yVCtx = () -> visionYawCommand(tx);
-        double spinvel = spindex.getVelocity();
-        double rpm = (spinvel / 28) * 60.0;
-        ActiveOpMode.telemetry().addData("Spin RPM", rpm);
         //ActiveOpMode.telemetry().update();
 
         follower.update();
         double x = follower.getPose().getX();
         double y = follower.getPose().getY();
-        double distinch = Math.sqrt(Math.pow((x-0), 2)*Math.pow((y-144), 2));
+        double distinch = Math.sqrt(Math.pow(x, 2)+Math.pow((y-144), 2));
         double dist = distinch / 39.37;
-        ActiveOpMode.telemetry().addData("Distance", dist);
+        ActiveOpMode.telemetry().addData("Distance", distinch);
+        ActiveOpMode.telemetry().addData("X", x);
+        ActiveOpMode.telemetry().addData("Y", y);
         if(autolock==true)
         {
             float tps = findTPS((float) dist);
             shooter(tps);
-            ActiveOpMode.telemetry().addData("shooter rpm", (tps / 28) * 60);
         }
         ActiveOpMode.telemetry().update();
     }
