@@ -38,7 +38,7 @@ public class DriveTrain implements Subsystem {
     private Limelight3A limelight;
 
     private Follower follower;
-
+    public static boolean spinstop;
     private double tx;
     private boolean hasTag;
 
@@ -75,7 +75,8 @@ public class DriveTrain implements Subsystem {
     public static void indexfalse(){
         indexing = false;
     }
-
+    public static void spinstoptrue() {spinstop = true;}
+    public static void spinstopfalse() {spinstop = false;}
     public static double spindexvelocity;
     public static final MotorEx spindex = new MotorEx("spindexer");
 
@@ -162,6 +163,19 @@ public class DriveTrain implements Subsystem {
                 .whenFalse(() -> autolockfalse());
         Gamepads.gamepad1().leftBumper().whenBecomesTrue(() -> slowtrue())
                 .whenFalse(() -> slowfalse());
+        Gamepads.gamepad1().circle().whenBecomesTrue(() -> spinstoptrue())
+                .whenFalse(() -> spinstopfalse());
+        if (spinstop == true) {
+            if (ColorSense1.getDetectedColor(ActiveOpMode.telemetry())!= ColorSense1.detectedColor.ERROR && ColorSense2.getDetectedColor(ActiveOpMode.telemetry())!=ColorSense2.detectedColor.ERROR) {
+                spindex.setPower(0);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                spin(2);
+            }
+        }
         if (autolock == true) {
             limelight.pipelineSwitch(APRILTAG_PIPELINE);
             LLResult result = limelight.getLatestResult();
