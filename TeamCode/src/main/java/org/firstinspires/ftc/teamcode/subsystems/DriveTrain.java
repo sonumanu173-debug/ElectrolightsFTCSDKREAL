@@ -45,6 +45,7 @@ public class DriveTrain implements Subsystem {
     private boolean autolock = false;
 
     private boolean slow = false;
+    private static boolean intakeReverse = false;
 
     // === AprilTag/Limelight align tuning ===
     private static final int APRILTAG_PIPELINE = 8;   // <-- set to your AprilTag pipeline index
@@ -77,8 +78,12 @@ public class DriveTrain implements Subsystem {
     }
     public static void spinstoptrue() {spinstop = true;}
     public static void spinstopfalse() {spinstop = false;}
+    public static void intakeReverseTrue() {intakeReverse = true;}
+    public static void intakeReverseFalse() {intakeReverse = false;}
     public static double spindexvelocity;
     public static MotorEx spindex = new MotorEx("spindexer");
+
+    private MotorEx intakeMotor;
 
 
     public static float configvelocity = 1400; //far zone - ~1500. near zone - ~1200-1300
@@ -163,8 +168,14 @@ public class DriveTrain implements Subsystem {
                 .whenFalse(() -> autolockfalse());
         Gamepads.gamepad1().leftBumper().whenBecomesTrue(() -> slowtrue())
                 .whenFalse(() -> slowfalse());
-        Gamepads.gamepad1().circle().whenBecomesTrue(() -> spinstoptrue())
+        Gamepads.gamepad1().rightBumper().whenBecomesTrue(() -> spinstoptrue())
                 .whenFalse(() -> spinstopfalse());
+        Gamepads.gamepad2().leftBumper().whenBecomesTrue(()-> intakeReverseTrue())
+                .whenFalse(()-> intakeReverseFalse());
+        //if(ColorSense1)
+        if (intakeReverse == true) {
+            intakeMotor.setPower(-1);
+        }
         if (spinstop == true) {
             if (ColorSense1.getDetectedColor(ActiveOpMode.telemetry())!= ColorSense1.detectedColor.ERROR && ColorSense2.getDetectedColor(ActiveOpMode.telemetry())!=ColorSense2.detectedColor.ERROR) {
                 spindex.setPower(0);
@@ -234,6 +245,7 @@ public class DriveTrain implements Subsystem {
     public void initialize() {
         imu = new IMUEx("imu", Direction.LEFT, Direction.FORWARD).zeroed();
         spindex = new MotorEx("spindexer");
+        intakeMotor = new MotorEx("intake");
         limelight = ActiveOpMode.hardwareMap().get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(APRILTAG_PIPELINE);
         limelight.start();
