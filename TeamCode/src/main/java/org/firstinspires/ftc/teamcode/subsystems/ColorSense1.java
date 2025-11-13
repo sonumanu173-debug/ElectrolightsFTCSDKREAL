@@ -11,7 +11,7 @@ import dev.nextftc.core.subsystems.Subsystem;
 public class ColorSense1 implements Subsystem {
 
     public static final ColorSense1 INSTANCE = new ColorSense1();
-    private ColorSense1() { }
+    public ColorSense1() { }
     static NormalizedColorSensor colorSensor;
     static boolean isGreen;
     static boolean isPurple;
