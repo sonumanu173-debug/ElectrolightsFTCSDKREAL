@@ -78,7 +78,7 @@ public class DriveTrain implements Subsystem {
     public static void spinstoptrue() {spinstop = true;}
     public static void spinstopfalse() {spinstop = false;}
     public static double spindexvelocity;
-    public static final MotorEx spindex = new MotorEx("spindexer");
+    public static MotorEx spindex = new MotorEx("spindexer");
 
 
     public static float configvelocity = 1400; //far zone - ~1500. near zone - ~1200-1300
@@ -233,6 +233,7 @@ public class DriveTrain implements Subsystem {
     @Override
     public void initialize() {
         imu = new IMUEx("imu", Direction.LEFT, Direction.FORWARD).zeroed();
+        spindex = new MotorEx("spindexer");
         limelight = ActiveOpMode.hardwareMap().get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(APRILTAG_PIPELINE);
         limelight.start();
