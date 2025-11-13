@@ -27,8 +27,11 @@ public class ColorSense1 implements Subsystem {
         colorSensor.setGain(8);
     }
 
+
+
     public static detectedColor getDetectedColor(Telemetry telemetry) {
-        NormalizedRGBA colors = colorSensor.getNormalizedColors(); //return 4 values
+        NormalizedRGBA colors = colorSensor.getNormalizedColors();
+
 
         float normRed, normGreen, normBlue;
         normRed = colors.red / colors.alpha;

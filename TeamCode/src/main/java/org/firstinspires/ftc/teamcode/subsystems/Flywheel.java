@@ -19,7 +19,7 @@ public class Flywheel implements Subsystem {
     public static final Flywheel INSTANCE = new Flywheel();
     public static double flywheelvelocity;
 
-    public static MotorEx flywheel = new MotorEx("launchingmotor");
+    public static MotorEx flywheel = new MotorEx("launchingmotor").reversed();
 
     public static float configvelocity = 1400; //far zone - ~1500. near zone - ~1200-1300
 
@@ -41,7 +41,7 @@ public class Flywheel implements Subsystem {
     public static void shooter(float tps) {
         BindingManager.update();
         flywheelvelocity = flywheel.getVelocity();
-        KineticState currentState = new KineticState(0, flywheelvelocity, 0.0);
+        KineticState currentState = new KineticState(0, -1*flywheelvelocity, 0.0);
         //if(tps-(-1*flywheelvelocity)<7 && tps-(-1*flywheelvelocity)>-7){
             velocityControlWithFeedforwardExample(currentState, tps);
         double rpm = (flywheelvelocity / 28) * 60.0;

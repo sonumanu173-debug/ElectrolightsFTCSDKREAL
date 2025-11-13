@@ -139,6 +139,10 @@ public class DriveTrain implements Subsystem {
 
     public Supplier<Double> yVCtx;
 
+    ColorSense1 bench = new ColorSense1();
+    ColorSense2 bench2 = new ColorSense2();
+
+
     @Override
     public Command getDefaultCommand() {
         if(shooting==true){
@@ -174,10 +178,20 @@ public class DriveTrain implements Subsystem {
                 .whenFalse(()-> intakeReverseFalse());
         //if(ColorSense1)
         if (intakeReverse == true) {
-            intakeMotor.setPower(-1);
+            intakeMotor.setPower(1);
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+
+            }
+            intakeReverse = false;
+            intakeMotor.setPower(0);
         }
         if (spinstop == true) {
-            if (ColorSense1.getDetectedColor(ActiveOpMode.telemetry())!= ColorSense1.detectedColor.ERROR && ColorSense2.getDetectedColor(ActiveOpMode.telemetry())!=ColorSense2.detectedColor.ERROR) {
+            ColorSense1.detectedColor yes = bench.getDetectedColor(ActiveOpMode.telemetry());
+            ColorSense2.detectedColor ye = bench2.getDetectedColor(ActiveOpMode.telemetry());
+            if (yes!= ColorSense1.detectedColor.ERROR && ye!=ColorSense2.detectedColor.ERROR) {
                 spindex.setPower(0);
                 try {
                     Thread.sleep(1000);
@@ -254,6 +268,8 @@ public class DriveTrain implements Subsystem {
         follower.setStartingPose(new Pose(25, -4, Math.toRadians(90)));
         follower.update();
         servoPos.setPosition(0.0);
+        bench.init(ActiveOpMode.hardwareMap());
+        bench2.init(ActiveOpMode.hardwareMap());
     }
 
     @Override
