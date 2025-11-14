@@ -317,6 +317,7 @@ public class DriveTrain implements Subsystem {
         {
             float tps = findTPS((float) dist);
             shooter(tps);
+            limelight.pipelineSwitch(APRILTAG_PIPELINE);
         }
         ActiveOpMode.telemetry().update();
     }

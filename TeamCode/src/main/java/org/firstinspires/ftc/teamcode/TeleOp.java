@@ -34,6 +34,18 @@ public class TeleOp extends NextFTCOpMode {
     public static int ball1Color = 0; //green = 1, purple = 2
     public static int ball2Color = 0;
     public static int ball3Color = 0;
+
+    public static int getBall1Color() {
+        return ball1Color;
+    }
+
+    public static int getBall2Color() {
+        return ball2Color;
+    }
+    public static int getBall3Color() {
+        return ball3Color;
+    }
+
     private static final int APRILTAG_PIPELINE = 8;
     @Override
     public void onInit() {

@@ -43,9 +43,9 @@ public class ColorSense2 implements Subsystem {
         isPurple = false;
 
         //Green
-        if (normRed > 0.02 && normRed < 0.04 && normGreen > 0.09 && normGreen < 0.14 && normBlue > 0.07 && normBlue < 0.11) {
+        if (normRed > 0.01 && normRed < 0.05 && normGreen > 0.08 && normGreen < 0.15 && normBlue > 0.06 && normBlue < 0.12) {
             isGreen = true;
-        } else if (normRed > 0.04 && normRed < 0.07 && normGreen > 0.04 && normGreen < 0.07 && normBlue > 0.09 && normBlue < 0.13) { //Purple
+        } else if (normRed > 0.03 && normRed < 0.08 && normGreen > 0.03 && normGreen < 0.08 && normBlue > 0.08 && normBlue < 0.14) { //Purple
             isPurple = true;
         }
 
