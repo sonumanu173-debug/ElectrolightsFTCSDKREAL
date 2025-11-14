@@ -3,19 +3,12 @@
 package org.firstinspires.ftc.teamcode;
 
 
-import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
-import org.firstinspires.ftc.teamcode.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.subsystems.MotifScanning;
 
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
@@ -23,8 +16,17 @@ import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 import dev.nextftc.hardware.impl.MotorEx;
 
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.MotifScanning;
 
-@Autonomous(name = "Autonomous Test New Position", group = "Autonomous")
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.bylazar.configurables.annotations.Configurable;
+
+
+
+@Autonomous(name = "Autonomous Test (NextFTC)", group = "Autonomous")
 @Configurable
 public class AutoBlueNewPosition extends NextFTCOpMode {
     public AutoBlueNewPosition(){
@@ -45,7 +47,7 @@ public class AutoBlueNewPosition extends NextFTCOpMode {
 
     public Pose controlPoint1 = new Pose(50.263, 76.015);
 
-    public Pose intake1 = new Pose(6.963, 81.9);
+    public Pose intake1 = new Pose(10.44396, 85.767033);
 
     public Pose ControlPose2 = new Pose(2.8484, 88.932);
     public Pose ControlPose3 = new Pose(3.48132, 113.934);
@@ -58,6 +60,11 @@ public class AutoBlueNewPosition extends NextFTCOpMode {
     public Pose Intake3ControlPoint = new Pose(85.1341, 25.635165);
 
     public Pose Intake3 = new Pose(9.81099, 35.4462);
+
+    public Pose ClassifierRampControl = new Pose(35.1297,72.474725374);
+
+    public Pose ClassifierRamp = new Pose(10.127473,69.94286);
+
 
 
 
@@ -111,17 +118,19 @@ public class AutoBlueNewPosition extends NextFTCOpMode {
                     // WIhs follower.followPath(paths.Path2);
 
                     telemetry.addLine("Path 1 has been completed btw, that means it's going to launch in a couple of seconds");
-                        // Im going to add spindexer logic here once its been done and spin the flywheel, we r so cooked
+                    // Im going to add spindexer logic here once its been done and spin the flywheel, we r so cooked
                     follower.turnToDegrees(75);
 
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+                    Flywheel.shooter(0);
+                    telemetry.addLine("The shooter has started btw");
                     intakeMotor.setPower(-1);
                     telemetry.addLine("The intake has started btw");
-                    spindexerMotor.setPower(-1);
+                    spindexerMotor.setPower(0.4);
                     telemetry.addLine("The spindexer motor has started btw");
                     telemetry.update();
                     follower.followPath(paths.Path2);
@@ -138,9 +147,12 @@ public class AutoBlueNewPosition extends NextFTCOpMode {
                         e.printStackTrace();
                     }
 
-                    telemetry.addLine("Moving onto path 3 momentarily");
+                    telemetry.addLine("Moving onto path 8 momentarily");
                     telemetry.update();
-                    follower.followPath(paths.Path3);
+                    intakeMotor.setPower(0);
+
+                    Flywheel.shooter(0);
+                    follower.followPath(paths.Path8);
                     pathState++;
                 }
                 break;
@@ -153,11 +165,73 @@ public class AutoBlueNewPosition extends NextFTCOpMode {
                         e.printStackTrace();
                     }
                     Flywheel.shooter(1500);
-
+                    // Flywheel and spindexer logic here momentarily
                     telemetry.addLine("UHH YES");
+                    follower.followPath(paths.Path3);
+                    intakeMotor.setPower(0);
+                    pathState++;
 
 
                 }
+            case 3:
+                if (!follower.isBusy()) {
+                    pathTimer.resetTimer();
+                    try {
+                        Thread.sleep(300);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    Flywheel.shooter(1500);
+                    // Flywheel and spindexer logic here momentarily THIS IS WHERE WE HAVE TO SHOOT AFTER INTAKING BALLS
+                    telemetry.addLine("UHH YES");
+                    intakeMotor.setPower(-1);
+                    follower.followPath(paths.Path4);
+                    pathState++;
+
+
+                }
+            case 4:
+                if (!follower.isBusy()) {
+                    pathTimer.resetTimer();
+                    try {
+                        Thread.sleep(300);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    intakeMotor.setPower(0);
+                    Flywheel.shooter(1500);
+                    // Flywheel and spindexer logic here momentarily
+                    telemetry.addLine("UHH YES");
+                    intakeMotor.setPower(0);
+                    follower.followPath(paths.Path5);
+                    pathState++;
+
+
+                }
+            case 5:
+                if(!follower.isBusy()){
+                    pathTimer.resetTimer();
+                    intakeMotor.setPower(-1);
+                    follower.followPath(paths.Path6);
+                    pathState++;
+                }
+            case 6:
+                if(!follower.isBusy()) {
+                    pathTimer.resetTimer();
+                    intakeMotor.setPower(0);
+                    Flywheel.shooter(1500);
+                    // Spindexer and sorting logic here
+                    follower.followPath(paths.Path7);
+                }
+            case 7:
+                if(!follower.isBusy()) {
+                    pathTimer.resetTimer();
+                    Flywheel.shooter(1500);
+                    telemetry.addLine("Auto is finished!");
+                    telemetry.update();
+                }
+
+
 
         }
 
@@ -188,6 +262,8 @@ public class AutoBlueNewPosition extends NextFTCOpMode {
 
         public PathChain Path7;
 
+        public PathChain Path8;
+
         public Paths(Follower follower) {
             //Path1 = follower.pathBuilder()
             //.addPath(new BezierLine(
@@ -203,8 +279,7 @@ public class AutoBlueNewPosition extends NextFTCOpMode {
 
                             PreloadLaunch
                     ))
-                    .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(130))
-
+                    .setLinearHeadingInterpolation(Math.toRadians(110), Math.toRadians(130))
 
                     .build();
             Path2 = follower.pathBuilder()
@@ -220,18 +295,13 @@ public class AutoBlueNewPosition extends NextFTCOpMode {
 
                     .build();
             Path3 = follower.pathBuilder()
-                    .addPath(new BezierCurve(
-                            intake1,
-
-                            ControlPose2,
-
-                            ControlPose3,
-
+                    .addPath(new BezierLine(
+                            ClassifierRamp,
                             Launch1
 
 
                     ))
-                    .setConstantHeadingInterpolation(Math.toRadians(130))
+                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(30))
 
                     .build();
             Path4 = follower.pathBuilder()
@@ -272,6 +342,15 @@ public class AutoBlueNewPosition extends NextFTCOpMode {
                             Launch1
                     ))
                     .setConstantHeadingInterpolation(Math.toRadians(130))
+
+                    .build();
+            Path8 = follower.pathBuilder()
+                    .addPath(new BezierCurve(
+                            intake2,
+                            ClassifierRampControl,
+                            ClassifierRamp
+                    ))
+                    .setLinearHeadingInterpolation(Math.toRadians(175), Math.toRadians(180))
 
                     .build();
 
