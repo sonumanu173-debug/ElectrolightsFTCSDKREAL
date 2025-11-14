@@ -15,9 +15,9 @@ public class MotifScanning implements Subsystem{
     public static final MotifScanning INSTANCE = new MotifScanning();
     private MotifScanning(){
     }
-    public int tagID;
-    private Limelight3A limelight;
-    LLResult llResult;
+    public static int tagID;
+    private static Limelight3A limelight;
+    static LLResult llResult;
     @Override
     public void initialize(){
 
@@ -26,7 +26,7 @@ public class MotifScanning implements Subsystem{
 
     }
 
-    public int findMotif(){
+    public static int findMotif(){
         tagID = -1;
         llResult = limelight.getLatestResult();
         limelight.pipelineSwitch(1);
