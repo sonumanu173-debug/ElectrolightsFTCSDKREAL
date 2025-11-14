@@ -99,6 +99,12 @@ public class DriveTrain implements Subsystem {
 
     public static float configvelocity = 1400; //far zone - ~1500. near zone - ~1200-1300
 
+    public static void SpinNormal() {
+        spindex.setPower(0.1);
+        spinr=false;
+
+    }
+
     public static void velocityControlWithFeedforwardExample(KineticState currentstate, float configtps) {
         ControlSystem controller = ControlSystem.builder()
                 .velPid(0.1, 0.01, 0.05) // Velocity PID with kP=0.1, kI=0.01, kD=0.05
@@ -208,10 +214,10 @@ public class DriveTrain implements Subsystem {
                 .whenFalse(() -> slowfalse());
         Gamepads.gamepad2().rightBumper().whenBecomesTrue(() -> spinstoptrue())
                 .whenFalse(() -> spinstopfalse());
-        Gamepads.gamepad2().leftTrigger().greaterThan(0).whenBecomesTrue(()-> intakeReverseTrue())
+        Gamepads.gamepad2().leftTrigger().greaterThan(0.2).whenBecomesTrue(()-> intakeReverseTrue())
                 .whenFalse(()-> intakeReverseFalse());
-        Gamepads.gamepad2().rightTrigger().greaterThan(0).whenBecomesTrue(()-> SpinReverse())
-                .whenFalse(()-> spinr=false);
+        Gamepads.gamepad2().rightTrigger().greaterThan(0.2).whenBecomesTrue(()-> SpinReverse())
+                .whenFalse(()-> SpinNormal());
         Gamepads.gamepad2().leftBumper().whenBecomesTrue(()-> spinstop1true())
                 .whenFalse(()-> spinstop1false());
 
@@ -227,22 +233,39 @@ public class DriveTrain implements Subsystem {
             intakeReverse = false;
             intakeMotor.setPower(0);
         }
-        if (spinstop == true) {
-            ColorSense1.detectedColor yes = bench.getDetectedColor(ActiveOpMode.telemetry());
-            ColorSense2.detectedColor ye = bench2.getDetectedColor(ActiveOpMode.telemetry());
-            if (yes!= ColorSense1.detectedColor.ERROR && ye!=ColorSense2.detectedColor.ERROR) {
-                spindex.setPower(0);
+        if (intakeReverse == true) {
+            intakeMotor.setPower(0.4);
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+
+            }
+            intakeReverse = false;
+            intakeMotor.setPower(0);
+        }
+        if(spinstop==true || spinstop1==true || spinr==true) {
+            if (spinstop == true) {
+                ColorSense1.detectedColor yes = bench.getDetectedColor(ActiveOpMode.telemetry());
+                ColorSense2.detectedColor ye = bench2.getDetectedColor(ActiveOpMode.telemetry());
+                if (yes != ColorSense1.detectedColor.ERROR && ye != ColorSense2.detectedColor.ERROR) {
+                    spindex.setPower(0);
+                }
+                ActiveOpMode.telemetry().addLine("spinstop");
+            }
+            if (spinstop1 == true) {
+                ColorSense1.detectedColor yes = bench.getDetectedColor(ActiveOpMode.telemetry());
+                ColorSense2.detectedColor ye = bench2.getDetectedColor(ActiveOpMode.telemetry());
+                if (yes != ColorSense1.detectedColor.ERROR || ye != ColorSense2.detectedColor.ERROR) {
+                    spindex.setPower(0);
+                }
+                ActiveOpMode.telemetry().addLine("spinstop1");
             }
         }
-        if (spinstop1 == true) {
-            ColorSense1.detectedColor yes = bench.getDetectedColor(ActiveOpMode.telemetry());
-            ColorSense2.detectedColor ye = bench2.getDetectedColor(ActiveOpMode.telemetry());
-            if (yes!= ColorSense1.detectedColor.ERROR || ye!=ColorSense2.detectedColor.ERROR) {
-                spindex.setPower(0);
-            }
-        }
-        if (spinstop1 == false && spinstop == false && spinr==false) {
+        else {
             spin(2);
+            ActiveOpMode.telemetry().addLine("normal");
+            //spin(2);
         }
         if (autolock == true) {
             limelight.pipelineSwitch(APRILTAG_PIPELINE);
@@ -306,7 +329,7 @@ public class DriveTrain implements Subsystem {
         limelight = ActiveOpMode.hardwareMap().get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(APRILTAG_PIPELINE);
         limelight.start();
-        //spin(2);
+        spin(2);
         follower = Constants.createFollower(ActiveOpMode.hardwareMap());
         follower.setStartingPose(new Pose(25, -4, Math.toRadians(90)));
         follower.update();

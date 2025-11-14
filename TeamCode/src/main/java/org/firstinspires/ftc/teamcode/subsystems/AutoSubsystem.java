@@ -39,7 +39,7 @@ public class AutoSubsystem implements Subsystem {
     private Limelight3A limelight;
 
     private Follower follower;
-    public static boolean spinstop;
+    public static boolean spinstop = false;
     private double tx;
     private boolean hasTag;
 
@@ -94,6 +94,13 @@ public class AutoSubsystem implements Subsystem {
         spinr=true;
 
     }
+
+    public static void SpinNormal() {
+        spindex.setPower(0.1);
+        spinr=false;
+
+    }
+
     private MotorEx intakeMotor;
 
 
@@ -152,6 +159,19 @@ public class AutoSubsystem implements Subsystem {
     @Override
     public Command getDefaultCommand() {
 
+        Gamepads.gamepad1().triangle().whenBecomesTrue(() -> autolocktrue())
+                .whenFalse(() -> autolockfalse());
+        Gamepads.gamepad1().leftBumper().whenBecomesTrue(() -> slowtrue())
+                .whenFalse(() -> slowfalse());
+        Gamepads.gamepad2().rightBumper().whenBecomesTrue(() -> spinstoptrue())
+                .whenFalse(() -> spinstopfalse());
+        Gamepads.gamepad2().leftTrigger().greaterThan(0).whenBecomesTrue(()-> intakeReverseTrue())
+                .whenFalse(()-> intakeReverseFalse());
+        Gamepads.gamepad2().rightTrigger().greaterThan(0).whenBecomesTrue(()-> SpinReverse())
+                .whenFalse(()-> SpinNormal());
+        Gamepads.gamepad2().leftBumper().whenBecomesTrue(()-> spinstop1true())
+                .whenFalse(()-> spinstop1false());
+
         if(shooting==true){
             if(indexing==true){
                 if(TeleOp.getBall1Color()==1){
@@ -193,24 +213,14 @@ public class AutoSubsystem implements Subsystem {
                 servoPos.setPosition(0.0);
             }
         }
-        Gamepads.gamepad1().triangle().whenBecomesTrue(() -> autolocktrue())
-                .whenFalse(() -> autolockfalse());
-        Gamepads.gamepad1().leftBumper().whenBecomesTrue(() -> slowtrue())
-                .whenFalse(() -> slowfalse());
-        Gamepads.gamepad2().rightBumper().whenBecomesTrue(() -> spinstoptrue())
-                .whenFalse(() -> spinstopfalse());
-        Gamepads.gamepad2().leftTrigger().greaterThan(0).whenBecomesTrue(()-> intakeReverseTrue())
-                .whenFalse(()-> intakeReverseFalse());
-        Gamepads.gamepad2().rightTrigger().greaterThan(0).whenBecomesTrue(()-> SpinReverse())
-                .whenFalse(()-> spinr=false);
-        Gamepads.gamepad2().leftBumper().whenBecomesTrue(()-> spinstop1true())
-                .whenFalse(()-> spinstop1false());
+
 
         //if(ColorSense1)
+
         if (intakeReverse == true) {
-            intakeMotor.setPower(1);
+            intakeMotor.setPower(0.4);
             try {
-                Thread.sleep(20);
+                Thread.sleep(50);
             } catch (InterruptedException e) {
                 e.printStackTrace();
 
@@ -218,22 +228,28 @@ public class AutoSubsystem implements Subsystem {
             intakeReverse = false;
             intakeMotor.setPower(0);
         }
-        if (spinstop == true) {
-            ColorSense1.detectedColor yes = bench.getDetectedColor(ActiveOpMode.telemetry());
-            ColorSense2.detectedColor ye = bench2.getDetectedColor(ActiveOpMode.telemetry());
-            if (yes!= ColorSense1.detectedColor.ERROR && ye!=ColorSense2.detectedColor.ERROR) {
-                spindex.setPower(0);
+        if(spinstop==true || spinstop1==true || spinr==true) {
+            if (spinstop == true) {
+                ColorSense1.detectedColor yes = bench.getDetectedColor(ActiveOpMode.telemetry());
+                ColorSense2.detectedColor ye = bench2.getDetectedColor(ActiveOpMode.telemetry());
+                if (yes != ColorSense1.detectedColor.ERROR && ye != ColorSense2.detectedColor.ERROR) {
+                    spindex.setPower(0);
+                }
+                ActiveOpMode.telemetry().addLine("spinstop");
+            }
+            if (spinstop1 == true) {
+                ColorSense1.detectedColor yes = bench.getDetectedColor(ActiveOpMode.telemetry());
+                ColorSense2.detectedColor ye = bench2.getDetectedColor(ActiveOpMode.telemetry());
+                if (yes != ColorSense1.detectedColor.ERROR || ye != ColorSense2.detectedColor.ERROR) {
+                    spindex.setPower(0);
+                }
+                ActiveOpMode.telemetry().addLine("spinstop1");
             }
         }
-        if (spinstop1 == true) {
-            ColorSense1.detectedColor yes = bench.getDetectedColor(ActiveOpMode.telemetry());
-            ColorSense2.detectedColor ye = bench2.getDetectedColor(ActiveOpMode.telemetry());
-            if (yes!= ColorSense1.detectedColor.ERROR || ye!=ColorSense2.detectedColor.ERROR) {
-                spindex.setPower(0);
-            }
-        }
-        if (spinstop1 == false && spinstop == false && spinr==false) {
-            spin(2);
+        else {
+            spindex.setPower(0.1);
+            ActiveOpMode.telemetry().addLine("normal");
+            //spin(2);
         }
 
 
