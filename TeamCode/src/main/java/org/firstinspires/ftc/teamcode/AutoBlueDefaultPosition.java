@@ -61,6 +61,11 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
 
     public Pose Intake3 = new Pose(9.81099, 35.4462);
 
+    public Pose ClassifierRampControl = new Pose(35.1297,72.474725374);
+
+    public Pose ClassifierRamp = new Pose(10.127473,69.94286);
+
+
 
 
 
@@ -114,10 +119,10 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
 
                     telemetry.addLine("Path 1 has been completed btw, that means it's going to launch in a couple of seconds");
                         // Im going to add spindexer logic here once its been done and spin the flywheel, we r so cooked
-                    //follower.turnToDegrees(75);
+                    follower.turnToDegrees(75);
 
                     try {
-                        Thread.sleep(300);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -142,9 +147,12 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
                         e.printStackTrace();
                     }
 
-                    telemetry.addLine("Moving onto path 3 momentarily");
+                    telemetry.addLine("Moving onto path 8 momentarily");
                     telemetry.update();
-                    follower.followPath(paths.Path3);
+                    intakeMotor.setPower(0);
+
+                    Flywheel.shooter(0);
+                    follower.followPath(paths.Path8);
                     pathState++;
                 }
                 break;
@@ -157,11 +165,73 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
                         e.printStackTrace();
                     }
                     Flywheel.shooter(1500);
-
+                    // Flywheel and spindexer logic here momentarily
                     telemetry.addLine("UHH YES");
+                    follower.followPath(paths.Path3);
+                    intakeMotor.setPower(0);
+                    pathState++;
 
 
                 }
+            case 3:
+                if (!follower.isBusy()) {
+                    pathTimer.resetTimer();
+                    try {
+                        Thread.sleep(300);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    Flywheel.shooter(1500);
+                    // Flywheel and spindexer logic here momentarily THIS IS WHERE WE HAVE TO SHOOT AFTER INTAKING BALLS
+                    telemetry.addLine("UHH YES");
+                    intakeMotor.setPower(-1);
+                    follower.followPath(paths.Path4);
+                    pathState++;
+
+
+                }
+            case 4:
+                if (!follower.isBusy()) {
+                    pathTimer.resetTimer();
+                    try {
+                        Thread.sleep(300);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    intakeMotor.setPower(0);
+                    Flywheel.shooter(1500);
+                    // Flywheel and spindexer logic here momentarily
+                    telemetry.addLine("UHH YES");
+                    intakeMotor.setPower(0);
+                    follower.followPath(paths.Path5);
+                    pathState++;
+
+
+                }
+            case 5:
+                if(!follower.isBusy()){
+                    pathTimer.resetTimer();
+                    intakeMotor.setPower(-1);
+                    follower.followPath(paths.Path6);
+                    pathState++;
+                }
+            case 6:
+                if(!follower.isBusy()) {
+                    pathTimer.resetTimer();
+                    intakeMotor.setPower(0);
+                    Flywheel.shooter(1500);
+                    // Spindexer and sorting logic here
+                    follower.followPath(paths.Path7);
+                }
+            case 7:
+                if(!follower.isBusy()) {
+                    pathTimer.resetTimer();
+                    Flywheel.shooter(1500);
+                    telemetry.addLine("Auto is finished!");
+                    telemetry.update();
+                }
+
+
 
         }
 
@@ -191,6 +261,8 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
         public PathChain Path6;
 
         public PathChain Path7;
+
+        public PathChain Path8;
 
         public Paths(Follower follower) {
             //Path1 = follower.pathBuilder()
@@ -223,18 +295,13 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
 
                     .build();
             Path3 = follower.pathBuilder()
-                    .addPath(new BezierCurve(
-                            intake1,
-
-                            ControlPose2,
-
-                            ControlPose3,
-
+                    .addPath(new BezierLine(
+                            ClassifierRamp,
                             Launch1
 
 
                     ))
-                    .setConstantHeadingInterpolation(Math.toRadians(130))
+                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(30))
 
                     .build();
             Path4 = follower.pathBuilder()
@@ -275,6 +342,15 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
                             Launch1
                     ))
                     .setConstantHeadingInterpolation(Math.toRadians(130))
+
+                    .build();
+            Path8 = follower.pathBuilder()
+                    .addPath(new BezierCurve(
+                            intake2,
+                            ClassifierRampControl,
+                            ClassifierRamp
+                    ))
+                    .setLinearHeadingInterpolation(Math.toRadians(175), Math.toRadians(180))
 
                     .build();
 
