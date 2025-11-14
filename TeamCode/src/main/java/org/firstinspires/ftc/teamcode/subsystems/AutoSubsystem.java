@@ -31,10 +31,10 @@ import java.util.function.Supplier;
 
 
 @Configurable
-public class DriveTrain implements Subsystem {
+public class AutoSubsystem implements Subsystem {
 
-    public static final DriveTrain INSTANCE = new DriveTrain();
-    private DriveTrain() { }
+    public static final AutoSubsystem INSTANCE = new AutoSubsystem();
+    private AutoSubsystem() { }
 
     private Limelight3A limelight;
 
@@ -139,16 +139,7 @@ public class DriveTrain implements Subsystem {
     private void slowfalse(){
         slow = false;
     }
-    public static final MotorEx fL = new MotorEx("frontLeft").brakeMode();
-    public static final MotorEx fR = new MotorEx("frontRight").brakeMode();
-    public static final MotorEx bL = new MotorEx("backLeft").brakeMode();
-    public static final MotorEx bR = new MotorEx("backRight").brakeMode();
 
-    public static double sensistivity = 1;
-
-    private IMUEx imu;
-
-    public Supplier<Double> yVCtx;
 
     ColorSense1 bench = new ColorSense1();
     ColorSense2 bench2 = new ColorSense2();
@@ -180,17 +171,17 @@ public class DriveTrain implements Subsystem {
                     yep = true;
                 }
                 if (yep==true){
-                if(ColorSense1.getDetectedColor(ActiveOpMode.telemetry())== ball1 && ColorSense2.getDetectedColor(ActiveOpMode.telemetry()) == ball3){
-                    //raise servo
-                    servoPos.setPosition(0.1);
-                    try {
-                        Thread.sleep(1500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    servoPos.setPosition(0.0);
-                    yep=false;
-                }}
+                    if(ColorSense1.getDetectedColor(ActiveOpMode.telemetry())== ball1 && ColorSense2.getDetectedColor(ActiveOpMode.telemetry()) == ball3){
+                        //raise servo
+                        servoPos.setPosition(0.1);
+                        try {
+                            Thread.sleep(1500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        servoPos.setPosition(0.0);
+                        yep=false;
+                    }}
             }
             else{
                 servoPos.setPosition(0.1);
@@ -244,72 +235,16 @@ public class DriveTrain implements Subsystem {
         if (spinstop1 == false && spinstop == false && spinr==false) {
             spin(2);
         }
-        if (autolock == true) {
-            limelight.pipelineSwitch(APRILTAG_PIPELINE);
-            LLResult result = limelight.getLatestResult();
-            hasTag = (result != null) && result.isValid() && !result.getFiducialResults().isEmpty();
 
-            if (hasTag) {
-                tx = result.getTx(); // deg
-                ActiveOpMode.telemetry().addData("Tx", tx);
-            } else {
-                tx = 0.0;
-            }
-            yVCtx = () -> visionYawCommand(tx);
-            return new MecanumDriverControlled(
-                    fL,
-                    fR,
-                    bL,
-                    bR,
-                    Gamepads.gamepad1().leftStickY().map(it -> -it),
-                    Gamepads.gamepad1().leftStickX().map(it -> it),
-                    yVCtx,
-                    new FieldCentric(imu)
-            );
-        }
-        else // IF AUTOLOCK IS NOT ON
-        {
-            if (slow == true) {
-                return new MecanumDriverControlled(
-                        fL,
-                        fR,
-                        bL,
-                        bR,
-                        Gamepads.gamepad1().leftStickY().map(it -> -it * 0.4),
-                        Gamepads.gamepad1().leftStickX().map(it -> it *0.4),
-                        Gamepads.gamepad1().rightStickX().map(it -> it * 0.4 * 0.75),
-                        new FieldCentric(imu)
-                );
-            }
-            else //IF SLOW IS OFF
-            {
-                //if doesnt work, remove else here
-                return new MecanumDriverControlled(
-                        fL,
-                        fR,
-                        bL,
-                        bR,
-                        Gamepads.gamepad1().leftStickY().map(it -> -it),
-                        Gamepads.gamepad1().leftStickX().map(it -> it),
-                        Gamepads.gamepad1().rightStickX().map(it -> it * 0.75),
-                        new FieldCentric(imu)
-                );
-            }
-        }
+
+        return null;
     }
 
     @Override
     public void initialize() {
-        imu = new IMUEx("imu", Direction.LEFT, Direction.FORWARD).zeroed();
         spindex = new MotorEx("spindexer");
         intakeMotor = new MotorEx("intake");
-        limelight = ActiveOpMode.hardwareMap().get(Limelight3A.class, "limelight");
-        limelight.pipelineSwitch(APRILTAG_PIPELINE);
-        limelight.start();
         //spin(2);
-        follower = Constants.createFollower(ActiveOpMode.hardwareMap());
-        follower.setStartingPose(new Pose(25, -4, Math.toRadians(90)));
-        follower.update();
         servoPos.setPosition(0.0);
         bench.init(ActiveOpMode.hardwareMap());
         bench2.init(ActiveOpMode.hardwareMap());
@@ -318,31 +253,5 @@ public class DriveTrain implements Subsystem {
     @Override
     public void periodic() {
 
-        LLResult result = limelight.getLatestResult();
-        hasTag = (result != null) && result.isValid() && !result.getFiducialResults().isEmpty();
-
-        if (hasTag) {
-            tx = result.getTx();
-        } else {
-            tx = 0.0;
-        }
-        yVCtx = () -> visionYawCommand(tx);
-        //ActiveOpMode.telemetry().update();
-
-        follower.update();
-        double x = follower.getPose().getX();
-        double y = follower.getPose().getY();
-        double distinch = Math.sqrt(Math.pow(x, 2)+Math.pow((y-144), 2));
-        double dist = distinch / 39.37;
-        ActiveOpMode.telemetry().addData("Distance", distinch);
-        ActiveOpMode.telemetry().addData("X", x);
-        ActiveOpMode.telemetry().addData("Y", y);
-        if(autolock==true)
-        {
-            float tps = findTPS((float) dist);
-            shooter(tps);
-            limelight.pipelineSwitch(APRILTAG_PIPELINE);
-        }
-        ActiveOpMode.telemetry().update();
     }
 }
