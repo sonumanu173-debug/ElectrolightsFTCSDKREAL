@@ -3,12 +3,19 @@
 package org.firstinspires.ftc.teamcode;
 
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.MotifScanning;
 
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
@@ -16,20 +23,11 @@ import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 import dev.nextftc.hardware.impl.MotorEx;
 
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
-import org.firstinspires.ftc.teamcode.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.subsystems.MotifScanning;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.bylazar.configurables.annotations.Configurable;
-
-
-
-@Autonomous(name = "New Position 2 Auto Blue", group = "Autonomous")
+@Autonomous(name = "Default(Pos 1) Red Auto", group = "Autonomous")
 @Configurable
-public class AutoBlueNewPosition extends NextFTCOpMode {
-    public AutoBlueNewPosition(){
+public class RedAutoDefaultPosition extends NextFTCOpMode {
+    public RedAutoDefaultPosition(){
         addComponents(
                 new SubsystemComponent(Flywheel.INSTANCE,  Intake.INSTANCE, MotifScanning.INSTANCE),
                 BulkReadComponent.INSTANCE,
@@ -41,7 +39,7 @@ public class AutoBlueNewPosition extends NextFTCOpMode {
     private Timer pathTimer, actionTimer, opmodeTimer;
     private int pathState;
     private Paths paths;
-    public Pose start = new Pose(56.018,5.6967033, Math.toRadians(90));
+    public Pose start = new Pose(28,120, Math.toRadians(110));
 
     public Pose PreloadLaunch = new Pose(54.871, 97.258, Math.toRadians(130));
 
@@ -87,10 +85,25 @@ public class AutoBlueNewPosition extends NextFTCOpMode {
         pathTimer = new Timer();
         actionTimer = new Timer();
         opmodeTimer = new Timer();
+        start.mirror();
+        PreloadLaunch.mirror();
+        controlPoint1.mirror();
+        intake1.mirror();
+        ControlPose2.mirror();
+        ControlPose3.mirror();
+        Launch1.mirror();
+        intake2ControlPose.mirror();
+        intake2.mirror();
+        Intake3ControlPoint.mirror();
+        Intake3.mirror();
+        ClassifierRampControl.mirror();
+        ClassifierRamp.mirror();
+
+
         follower.setStartingPose(start);
 
         pathState = 0;
-        telemetry.addLine("Follower + IMU + Odo Pods initialized successfully!");
+        telemetry.addLine("Follower + IMU + Odo Pods initialized successfully! The poses have also been succesfully mirrored");
         telemetry.addLine("Initialization complete!");
         telemetry.update();
     }
@@ -118,7 +131,7 @@ public class AutoBlueNewPosition extends NextFTCOpMode {
                     // WIhs follower.followPath(paths.Path2);
 
                     telemetry.addLine("Path 1 has been completed btw, that means it's going to launch in a couple of seconds");
-                    // Im going to add spindexer logic here once its been done and spin the flywheel, we r so cooked
+                        // Im going to add spindexer logic here once its been done and spin the flywheel, we r so cooked
                     follower.turnToDegrees(75);
 
                     try {
