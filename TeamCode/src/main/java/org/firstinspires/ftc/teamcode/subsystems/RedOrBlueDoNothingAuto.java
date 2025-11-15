@@ -100,11 +100,16 @@ public class RedOrBlueDoNothingAuto extends NextFTCOpMode {
 
         frontLeft.setPower(-0.5);
         frontRight.setPower(-0.5);
+        backLeft.setPower(-0.5);
+        backRight.setPower(-0.5);
 
         new Delay(1);
 
         frontLeft.setPower(0);
         frontRight.setPower(0);
+        backLeft.setPower(0);
+        backRight.setPower(0);
+
 
 
 
