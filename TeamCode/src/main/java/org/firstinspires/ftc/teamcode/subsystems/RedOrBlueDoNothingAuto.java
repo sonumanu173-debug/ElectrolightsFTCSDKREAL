@@ -7,6 +7,7 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
 
+import dev.nextftc.core.commands.delays.Delay;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
@@ -71,14 +72,42 @@ public class RedOrBlueDoNothingAuto extends NextFTCOpMode {
 
 
     private MotorEx intakeMotor;
-
     private MotorEx spindexerMotor;
+    private MotorEx frontLeft;
+    private MotorEx frontRight;
+
+
+
+    private MotorEx backLeft;
+    private MotorEx backRight;
+
+
 
     @Override
     public void onInit(){
+        backLeft = new MotorEx("backLeft");
+        backRight = new MotorEx("backRight");
+        frontLeft = new MotorEx("frontLeft");
+        frontRight = new MotorEx("frontRight");
+
+
+
+
         telemetry.addData("It's been initialized and nothing will happen", "WARNING TO DRIVERS: CHANGE THIS TO ANOTHER AUTO IF YOU DON'T INTEND OR IT TO DO NOTHING");
+
     }
     public void onUpdate(){
+
+        frontLeft.setPower(-0.5);
+        frontRight.setPower(-0.5);
+
+        new Delay(1);
+
+        frontLeft.setPower(0);
+        frontRight.setPower(0);
+
+
+
         telemetry.addLine("Bam its running nothing");
     }
 }
