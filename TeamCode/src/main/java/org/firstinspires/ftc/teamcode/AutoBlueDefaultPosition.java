@@ -3,6 +3,9 @@
 package org.firstinspires.ftc.teamcode;
 
 
+import static org.firstinspires.ftc.teamcode.subsystems.AutoSubsystem.servoPos;
+import static org.firstinspires.ftc.teamcode.subsystems.AutoSubsystem.spin;
+
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
@@ -17,6 +20,7 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 import dev.nextftc.hardware.impl.MotorEx;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.subsystems.AutoSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.MotifScanning;
@@ -31,7 +35,7 @@ import com.bylazar.configurables.annotations.Configurable;
 public class AutoBlueDefaultPosition extends NextFTCOpMode {
     public AutoBlueDefaultPosition(){
         addComponents(
-                new SubsystemComponent(Flywheel.INSTANCE,  Intake.INSTANCE, MotifScanning.INSTANCE),
+                new SubsystemComponent(Flywheel.INSTANCE,  Intake.INSTANCE, MotifScanning.INSTANCE, AutoSubsystem.INSTANCE),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
 
@@ -55,15 +59,15 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
 
     public Pose intake2ControlPose = new Pose(84.5011, 58.5495);
 
-    public Pose intake2 = new Pose(9.811, 59.499);
+    public Pose intake2 = new Pose(3.811, 59.499);
 
     public Pose Intake3ControlPoint = new Pose(85.1341, 25.635165);
 
-    public Pose Intake3 = new Pose(9.81099, 35.4462);
+    public Pose Intake3 = new Pose(-1.81099, 35.4462);
 
-    public Pose ClassifierRampControl = new Pose(35.1297,72.474725374);
+    public Pose ClassifierRampControl = new Pose(72.49061662198392,75.4745308310992);
 
-    public Pose ClassifierRamp = new Pose(4.3,70);
+    public Pose ClassifierRamp = new Pose(4.3,74);
 
 
 
@@ -130,7 +134,7 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
                     telemetry.addLine("The shooter has started btw");
                     intakeMotor.setPower(-1);
                     telemetry.addLine("The intake has started btw");
-                    spindexerMotor.setPower(0.3);
+                    spin(2);
                     telemetry.addLine("The spindexer motor has started btw");
                     telemetry.update();
                     follower.followPath(paths.Path2);
@@ -160,15 +164,21 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
                 if (!follower.isBusy()) {
                     pathTimer.resetTimer();
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(2000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     Flywheel.shooter(1500);
-                    // Flywheel and spindexer logic here momentarily
+                    servoPos.setPosition(0.1);
+                    try {
+                        Thread.sleep(1500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    servoPos.setPosition(0.0);
                     telemetry.addLine("UHH YES");
                     follower.followPath(paths.Path3);
-                    intakeMotor.setPower(0);
+
                     pathState++;
 
 
@@ -176,6 +186,7 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
             case 3:
                 if (!follower.isBusy()) {
                     pathTimer.resetTimer();
+                    intakeMotor.setPower(0);
                     try {
                         Thread.sleep(300);
                     } catch (InterruptedException e) {
@@ -291,7 +302,7 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
                             intake1
 
                     ))
-                    .setLinearHeadingInterpolation(Math.toRadians(175), Math.toRadians(180))
+                    .setLinearHeadingInterpolation(Math.toRadians(175), Math.toRadians(185))
 
                     .build();
             Path3 = follower.pathBuilder()
@@ -301,7 +312,7 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
 
 
                     ))
-                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(30))
+                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(80))
 
                     .build();
             Path4 = follower.pathBuilder()
