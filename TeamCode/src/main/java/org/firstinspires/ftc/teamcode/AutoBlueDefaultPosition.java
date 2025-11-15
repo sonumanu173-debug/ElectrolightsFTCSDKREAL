@@ -173,14 +173,14 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
                     telemetry.addLine("The shooter has started btw");
                     intakeMotor.setPower(-1);
                     telemetry.addLine("The intake has started btw");
-                    spin(2);
+                    spin(1);
                     telemetry.addLine("The spindexer motor has started btw");
                     telemetry.update();
                     follower.followPath(paths.Path2);
                     boolean flag = true;
 
                     telemetry.addLine("Started path 2 to intake the balls");
-
+                    pathState++;
 
                 }
                 break;
@@ -306,10 +306,9 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        spin(2);
+                        spindex.setPower(0.1);
 
                     }
-                    pathState++;
                 }
 
 
