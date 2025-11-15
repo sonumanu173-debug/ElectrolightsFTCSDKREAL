@@ -91,20 +91,23 @@ public class DriveTrain implements Subsystem {
     public static boolean spinning=true;
 
     public static void SpinReverse() {
-        //spindex.setPower(-0.2);
+        spindex.setPower(-0.2);
         spinr=true;
         spinning=false;
 
     }
     private MotorEx intakeMotor;
 
+    public static boolean spintrue = true;
 
-    public static float configv elocity = 1400; //far zone - ~1500. near zone - ~1200-1300
+
+    public static float configvelocity = 1400; //far zone - ~1500. near zone - ~1200-1300
 
     public static void SpinNormal() {
         //spindex.setPower(0.1);
         spinr=false;
-        spinning = true;
+        spintrue = true;
+
 
     }
 
@@ -233,7 +236,7 @@ public class DriveTrain implements Subsystem {
                 ColorSense1.detectedColor yes = bench.getDetectedColor(ActiveOpMode.telemetry());
                 ColorSense2.detectedColor ye = bench2.getDetectedColor(ActiveOpMode.telemetry());
                 if (yes != ColorSense1.detectedColor.ERROR && ye != ColorSense2.detectedColor.ERROR) {
-                    //spindex.setPower(0);
+                    spindex.setPower(0);
                     ActiveOpMode.telemetry().addLine("spinstopped for 2");
                 }
             }
@@ -241,15 +244,16 @@ public class DriveTrain implements Subsystem {
                 ColorSense1.detectedColor yes = bench.getDetectedColor(ActiveOpMode.telemetry());
                 ColorSense2.detectedColor ye = bench2.getDetectedColor(ActiveOpMode.telemetry());
                 if (yes != ColorSense1.detectedColor.ERROR || ye != ColorSense2.detectedColor.ERROR) {
-                    //spindex.setPower(0);
+                    spindex.setPower(0);
                     ActiveOpMode.telemetry().addLine("spinstopped for 1");
                 }
 
             }
         }
         else if(spinstop!=true && spinstop1!=true && spinr!=true && spinning==false) {
+            if(spintrue==true){
             spin(2);
-            ActiveOpMode.telemetry().addLine("normal");
+            ActiveOpMode.telemetry().addLine("normal");}
         }
         if (intakeReverse == true) {
             intakeMotor.setPower(0.4);
