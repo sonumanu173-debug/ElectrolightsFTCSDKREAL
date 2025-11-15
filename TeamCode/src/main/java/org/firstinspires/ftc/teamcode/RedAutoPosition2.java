@@ -200,7 +200,7 @@ public class RedAutoPosition2 extends NextFTCOpMode {
                     follower.turnToDegrees(75);
                     Flywheel.shooter(1500);
                     new Delay(1);
-                    servo.setPosition(0.2);
+                    servoPos.setPosition(0.2);
                     Flywheel.shooter(1500);
                     spindex.setPower(0.1);
                     new Delay(3);
@@ -258,7 +258,7 @@ public class RedAutoPosition2 extends NextFTCOpMode {
                 if (!follower.isBusy()) {
                     pathTimer.resetTimer();
                     intakeMotor.setPower(0);
-                    servo.setPosition(0.2);
+                    servoPos.setPosition(0.2);
                     Flywheel.shooter(1500);
                     spindex.setPower(0.1);
                     new Delay(3);
@@ -298,7 +298,7 @@ public class RedAutoPosition2 extends NextFTCOpMode {
             case 5:
                 if(!follower.isBusy()){
 
-                    servo.setPosition(0.2);
+                    servoPos.setPosition(0.2);
                     Flywheel.shooter(1500);
                     spindex.setPower(0.1);
                     new Delay(3);
@@ -327,7 +327,7 @@ public class RedAutoPosition2 extends NextFTCOpMode {
             case 7:
                 if(!follower.isBusy()) {
                     pathTimer.resetTimer();
-                    servo.setPosition(0.2);
+                    servoPos.setPosition(0.2);
                     Flywheel.shooter(1500);
                     spindex.setPower(0.1);
                     new Delay(3);

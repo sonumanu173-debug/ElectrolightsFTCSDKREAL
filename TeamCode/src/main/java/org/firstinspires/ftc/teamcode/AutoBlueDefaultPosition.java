@@ -188,10 +188,10 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
 
                     Flywheel.shooter(1500);
                     new Delay(1);
-                    servo.setPosition(0.2);
+                    servoPos.setPosition(0.2);
                     Flywheel.shooter(1500);
                     spindex.setPower(0.1);
-                    new Delay(3);
+                    new Delay(3.5);
                     servoPos.setPosition(0.0);
                     spindex.setPower(0);
                     Flywheel.shooter(0);
@@ -245,7 +245,7 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
                 if (!follower.isBusy()) {
                     pathTimer.resetTimer();
                     intakeMotor.setPower(0);
-                    servo.setPosition(0.2);
+                    servoPos.setPosition(0.2);
                     Flywheel.shooter(1500);
                     spindex.setPower(0.1);
                     new Delay(3);
@@ -285,7 +285,7 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
             case 5:
                 if(!follower.isBusy()){
 
-                    servo.setPosition(0.2);
+                    servoPos.setPosition(0.2);
                     Flywheel.shooter(1500);
                     spindex.setPower(0.1);
                     new Delay(3);
@@ -314,7 +314,7 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
             case 7:
                 if(!follower.isBusy()) {
                     pathTimer.resetTimer();
-                    servo.setPosition(0.2);
+                    servoPos.setPosition(0.2);
                     Flywheel.shooter(1500);
                     spindex.setPower(0.1);
                     new Delay(3);
