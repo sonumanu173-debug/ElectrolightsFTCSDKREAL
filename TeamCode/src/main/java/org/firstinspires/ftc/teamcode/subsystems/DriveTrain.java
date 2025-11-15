@@ -27,6 +27,7 @@ import dev.nextftc.hardware.impl.MotorEx;
 import dev.nextftc.hardware.impl.ServoEx;
 
 import org.firstinspires.ftc.teamcode.TeleOp;
+import org.firstinspires.ftc.teamcode.mechanisms.launchertestservo;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 import java.util.function.Supplier;
@@ -72,7 +73,7 @@ public class DriveTrain implements Subsystem {
     }
 
     public static void shootingfalse(){
-        new Delay(5);
+        //new Delay(5);
         shooting = false;
     }
 
@@ -142,8 +143,6 @@ public class DriveTrain implements Subsystem {
 
     }
 
-    private Servo servoPos;
-
     private double visionYawCommand(double txDeg) {
         if (Math.abs(txDeg) < YAW_DEADBAND_DEG) return 0.0;
         return 0.5*clip(YAW_KP * txDeg, -YAW_MAX, YAW_MAX);
@@ -154,7 +153,7 @@ public class DriveTrain implements Subsystem {
     }
 
     private void autolockfalse(){
-        new Delay(3);
+        new Delay(5);
         autolock = false;
     }
 
@@ -179,6 +178,8 @@ public class DriveTrain implements Subsystem {
     ColorSense1 bench = new ColorSense1();
     ColorSense2 bench2 = new ColorSense2();
 
+    launchertestservo bench3 = new launchertestservo();
+
     public ColorSense2.detectedColor ball3;
     public ColorSense1.detectedColor ball1;
     public boolean yep=false;
@@ -190,7 +191,9 @@ public class DriveTrain implements Subsystem {
     public Command getDefaultCommand() {
 
         if(shooting==true){
+            ActiveOpMode.telemetry().addLine("shooting");
             if(indexing==true){
+                ActiveOpMode.telemetry().addLine("indexing");
                 if(TeleOp.getBall1Color()==1){
                     ball1=ColorSense1.detectedColor.GREEN;
                     yep = true;
@@ -210,16 +213,17 @@ public class DriveTrain implements Subsystem {
                 if (yep==true){
                 if(ColorSense1.getDetectedColor(ActiveOpMode.telemetry())== ball1 && ColorSense2.getDetectedColor(ActiveOpMode.telemetry()) == ball3){
                     //raise servo
-                    servoPos.setPosition(0.1);
+                    bench3.setServoPos(0.1);
                     new Delay(1.5);
-                    servoPos.setPosition(0.0);
+                    bench3.setServoPos(0.0);
                     yep=false;
                 }}
             }
             else{
-                servoPos.setPosition(0.1);
+                ActiveOpMode.telemetry().addLine("launching");
+                bench3.setServoPos(0.1);
                 new Delay(1.5);
-                servoPos.setPosition(0.0);
+                bench3.setServoPos(0.0);
             }
         }
         Gamepads.gamepad1().triangle().whenBecomesTrue(() -> autolocktrue())
@@ -334,15 +338,15 @@ public class DriveTrain implements Subsystem {
         intakeMotor = new MotorEx("intake");
         limelight = ActiveOpMode.hardwareMap().get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(APRILTAG_PIPELINE);
-        servoPos = ActiveOpMode.hardwareMap().get(Servo.class, "servoPos");
         limelight.start();
         spin(2  );
         follower = Constants.createFollower(ActiveOpMode.hardwareMap());
         follower.setStartingPose(new Pose(56.967033, 94));
         follower.update();
-        servoPos.setPosition(0.0);
+        bench3.setServoPos(0.0);
         bench.init(ActiveOpMode.hardwareMap());
         bench2.init(ActiveOpMode.hardwareMap());
+        bench.init(ActiveOpMode.hardwareMap());
     }
 
     @Override
