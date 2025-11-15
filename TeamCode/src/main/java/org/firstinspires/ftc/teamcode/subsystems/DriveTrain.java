@@ -48,6 +48,7 @@ public class DriveTrain implements Subsystem {
     private boolean slow = false;
     private static boolean intakeReverse = false;
 
+    public static boolean stopped = false;
     // === AprilTag/Limelight align tuning ===
     private static final int APRILTAG_PIPELINE = 8;   // <-- set to your AprilTag pipeline index
     private static final double YAW_KP = 0.050;      // deg -> yaw power (flip sign if turning wrong way)
@@ -80,9 +81,9 @@ public class DriveTrain implements Subsystem {
         indexing = false;
     }
     public static void spinstoptrue() {spinstop = true; spinning=false;}
-    public static void spinstopfalse() {spinstop = false; spinning=true;}
-    public static void spinstop1true() {spinstop1 = true; spinning=false;}
-    public static void spinstop1false() {spinstop1 = false; spinning=true;}
+    public static void spinstopfalse() {spinstop = false; spinning=true; spindex.setPower(0.18);}
+    public static void spinstop1true() {spinstop1 = true; spinning=false; }
+    public static void spinstop1false() {spinstop1 = false; spinning=true; spindex.setPower(0.18);}
     public static void intakeReverseTrue() {intakeReverse = true;}
     public static void intakeReverseFalse() {intakeReverse = false;}
     public static double spindexvelocity;
@@ -90,23 +91,25 @@ public class DriveTrain implements Subsystem {
     public static boolean spinr=false;
     public static boolean spinning=true;
 
+    public static boolean rev=false;
+
     public static void SpinReverse() {
         spindex.setPower(-0.2);
         spinr=true;
         spinning=false;
 
+
     }
     private MotorEx intakeMotor;
 
-    public static boolean spintrue = true;
-
-
-    public static float configvelocity = 1400; //far zone - ~1500. near zone - ~1200-1300
 
     public static void SpinNormal() {
         //spindex.setPower(0.1);
         spinr=false;
-        spintrue = true;
+        if(stopped!=true){
+            spindex.setPower(0.18);
+        }
+
 
 
     }
@@ -127,6 +130,12 @@ public class DriveTrain implements Subsystem {
         spindexvelocity = spindex.getVelocity();
         KineticState currentState = new KineticState(0, spindexvelocity, 0.0);
         velocityControlWithFeedforwardExample(currentState, tps);
+        spinstop = false;
+        spinstop1 = false;
+        rev=false;
+        spinr=false;
+        spinning=true;
+
     }
 
     public static final ServoEx servoPos = new ServoEx("servoPos");
@@ -168,6 +177,8 @@ public class DriveTrain implements Subsystem {
     public ColorSense2.detectedColor ball3;
     public ColorSense1.detectedColor ball1;
     public boolean yep=false;
+
+
 
 
     @Override
@@ -219,13 +230,13 @@ public class DriveTrain implements Subsystem {
         Gamepads.gamepad1().leftBumper().whenBecomesTrue(() -> slowtrue())
                 .whenFalse(() -> slowfalse());
         Gamepads.gamepad2().rightBumper().whenBecomesTrue(() -> spinstoptrue())
-                .whenFalse(() -> spinstopfalse());
+                .whenBecomesFalse(() -> spinstopfalse());
         Gamepads.gamepad2().leftTrigger().greaterThan(0.2).whenBecomesTrue(()-> intakeReverseTrue())
-                .whenFalse(()-> intakeReverseFalse());
-        Gamepads.gamepad2().rightTrigger().greaterThan(0.2).whenBecomesTrue(()-> SpinReverse())
+                .whenBecomesFalse(()-> intakeReverseFalse());
+        Gamepads.gamepad2().rightTrigger().greaterThan(0.4).whenBecomesTrue(()-> SpinReverse())
                 .whenBecomesFalse(()-> SpinNormal());
         Gamepads.gamepad2().leftBumper().whenBecomesTrue(()-> spinstop1true())
-                .whenFalse(()-> spinstop1false());
+                .whenBecomesFalse(()-> spinstop1false());
         Gamepads.gamepad2().leftBumper().whenBecomesFalse(()-> spinstop1false());
         Gamepads.gamepad2().rightBumper().whenBecomesFalse(()-> spinstopfalse());
 
@@ -237,6 +248,7 @@ public class DriveTrain implements Subsystem {
                 ColorSense2.detectedColor ye = bench2.getDetectedColor(ActiveOpMode.telemetry());
                 if (yes != ColorSense1.detectedColor.ERROR && ye != ColorSense2.detectedColor.ERROR) {
                     spindex.setPower(0);
+                    stopped = true;
                     ActiveOpMode.telemetry().addLine("spinstopped for 2");
                 }
             }
@@ -245,14 +257,15 @@ public class DriveTrain implements Subsystem {
                 ColorSense2.detectedColor ye = bench2.getDetectedColor(ActiveOpMode.telemetry());
                 if (yes != ColorSense1.detectedColor.ERROR || ye != ColorSense2.detectedColor.ERROR) {
                     spindex.setPower(0);
+                    stopped = true;
                     ActiveOpMode.telemetry().addLine("spinstopped for 1");
                 }
 
             }
         }
         else if(spinstop!=true && spinstop1!=true && spinr!=true && spinning==false) {
-            if(spintrue==true){
-            spin(2);
+            if(rev!=true){
+                spindex.setPower(0.18);
             ActiveOpMode.telemetry().addLine("normal");}
         }
         if (intakeReverse == true) {
