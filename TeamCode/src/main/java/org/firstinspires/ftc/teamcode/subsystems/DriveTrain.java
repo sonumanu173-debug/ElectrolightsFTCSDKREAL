@@ -177,6 +177,8 @@ public class DriveTrain implements Subsystem {
 
     private IMUEx imu;
 
+    public boolean firsttime = true;
+
     public Supplier<Double> yVCtx;
 
     ColorSense1 bench = new ColorSense1();
@@ -353,26 +355,16 @@ public class DriveTrain implements Subsystem {
 
     @Override
     public void initialize() {
-        imu = new IMUEx("imu", Direction.LEFT, Direction.FORWARD).zeroed();
+        imu = new IMUEx("imu", Direction.LEFT, Direction.BACKWARD).zeroed();
         spindex = new MotorEx("spindexer");
         intakeMotor = new MotorEx("intake");
         servoPos = ActiveOpMode.hardwareMap().get(Servo.class, "servoPos");
         limelight = ActiveOpMode.hardwareMap().get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(APRILTAG_PIPELINE);
         limelight.start();
-        spin(2  );
-        follower = Constants.createFollower(ActiveOpMode.hardwareMap());
-        follower.setStartingPose(new Pose(56.967033, 94));
-        follower.update();
-        double x = follower.getPose().getX();
-        double y = follower.getPose().getY();
-        double distinch = Math.sqrt(Math.pow(x, 2)+Math.pow((y-144), 2)) - 8;
-        double dist = distinch / 39.37;
-        ActiveOpMode.telemetry().addData("Distance", distinch);
-        ActiveOpMode.telemetry().addData("X", x);
-        ActiveOpMode.telemetry().addData("Y", y);
-        float tps = findTPS((float) dist);
-        shooter(tps);
+
+
+
         servoPos.setPosition(-0.05);
         bench.init(ActiveOpMode.hardwareMap());
         bench2.init(ActiveOpMode.hardwareMap());
@@ -381,6 +373,22 @@ public class DriveTrain implements Subsystem {
 
     @Override
     public void periodic() {
+        if (firsttime==true){
+            spin(2  );
+            follower = Constants.createFollower(ActiveOpMode.hardwareMap());
+            follower.setStartingPose(new Pose(28,120, Math.toRadians(110)));
+            follower.update();
+            double x = follower.getPose().getX();
+            double y = follower.getPose().getY();
+            double distinch = Math.sqrt(Math.pow(x, 2)+Math.pow((y-144), 2)) - 8;
+            double dist = distinch / 39.37;
+            ActiveOpMode.telemetry().addData("Distance", distinch);
+            ActiveOpMode.telemetry().addData("X", x);
+            ActiveOpMode.telemetry().addData("Y", y);
+            float tps = findTPS((float) dist);
+            shooter(tps);
+            firsttime=false;
+        }
 
         LLResult result = limelight.getLatestResult();
         hasTag = (result != null) && result.isValid() && !result.getFiducialResults().isEmpty();

@@ -53,7 +53,7 @@ public class Flywheel implements Subsystem {
         //tune kP until error is small enough (graph error)
     }
     @Override public void initialize() {
-        flywheel.setPower(0.1);
+
     }
     /*@Override public void onUpdate() {
         configvelocity=findTPS(4.03);
