@@ -39,7 +39,7 @@ public class DriveTrain implements Subsystem {
     private Limelight3A limelight;
 
     private Follower follower;
-    public static boolean spinstop;
+    public static boolean spinstop = false;
     private double tx;
     private boolean hasTag;
 
@@ -79,19 +79,21 @@ public class DriveTrain implements Subsystem {
     public static void indexfalse(){
         indexing = false;
     }
-    public static void spinstoptrue() {spinstop = true;}
-    public static void spinstopfalse() {spinstop = false;}
-    public static void spinstop1true() {spinstop1 = true;}
-    public static void spinstop1false() {spinstop1 = false;}
+    public static void spinstoptrue() {spinstop = true; spinning=false;}
+    public static void spinstopfalse() {spinstop = false; spinning=true;}
+    public static void spinstop1true() {spinstop1 = true; spinning=false;}
+    public static void spinstop1false() {spinstop1 = false; spinning=true;}
     public static void intakeReverseTrue() {intakeReverse = true;}
     public static void intakeReverseFalse() {intakeReverse = false;}
     public static double spindexvelocity;
     public static MotorEx spindex = new MotorEx("spindexer");
     public static boolean spinr=false;
+    public static boolean spinning=true;
 
     public static void SpinReverse() {
         spindex.setPower(-0.2);
         spinr=true;
+        spinning=false;
 
     }
     private MotorEx intakeMotor;
@@ -217,22 +219,13 @@ public class DriveTrain implements Subsystem {
         Gamepads.gamepad2().leftTrigger().greaterThan(0.2).whenBecomesTrue(()-> intakeReverseTrue())
                 .whenFalse(()-> intakeReverseFalse());
         Gamepads.gamepad2().rightTrigger().greaterThan(0.2).whenBecomesTrue(()-> SpinReverse())
-                .whenFalse(()-> SpinNormal());
+                .whenBecomesFalse(()-> SpinNormal());
         Gamepads.gamepad2().leftBumper().whenBecomesTrue(()-> spinstop1true())
                 .whenFalse(()-> spinstop1false());
+        Gamepads.gamepad2().leftBumper().whenBecomesFalse(()-> spinstop1false());
+        Gamepads.gamepad2().rightBumper().whenBecomesFalse(()-> spinstopfalse());
 
         //if(ColorSense1)
-        if (intakeReverse == true) {
-            intakeMotor.setPower(1);
-            try {
-                Thread.sleep(20);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-
-            }
-            intakeReverse = false;
-            intakeMotor.setPower(0);
-        }
         if (intakeReverse == true) {
             intakeMotor.setPower(0.4);
             try {
@@ -250,21 +243,24 @@ public class DriveTrain implements Subsystem {
                 ColorSense2.detectedColor ye = bench2.getDetectedColor(ActiveOpMode.telemetry());
                 if (yes != ColorSense1.detectedColor.ERROR && ye != ColorSense2.detectedColor.ERROR) {
                     spindex.setPower(0);
+                    ActiveOpMode.telemetry().addLine("spinstopped for 2");
                 }
-                ActiveOpMode.telemetry().addLine("spinstop");
+                //ActiveOpMode.telemetry().addLine("spinstop");
             }
             if (spinstop1 == true) {
                 ColorSense1.detectedColor yes = bench.getDetectedColor(ActiveOpMode.telemetry());
                 ColorSense2.detectedColor ye = bench2.getDetectedColor(ActiveOpMode.telemetry());
                 if (yes != ColorSense1.detectedColor.ERROR || ye != ColorSense2.detectedColor.ERROR) {
                     spindex.setPower(0);
+                    ActiveOpMode.telemetry().addLine("spinstopped for 1");
                 }
-                ActiveOpMode.telemetry().addLine("spinstop1");
+
             }
         }
         else {
+            if (spinning = false){
             spin(2);
-            ActiveOpMode.telemetry().addLine("normal");
+            ActiveOpMode.telemetry().addLine("normal");}
             //spin(2);
         }
         if (autolock == true) {
