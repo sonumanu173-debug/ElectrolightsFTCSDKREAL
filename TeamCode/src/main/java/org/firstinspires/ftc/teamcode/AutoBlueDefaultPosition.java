@@ -2,10 +2,6 @@
 
 package org.firstinspires.ftc.teamcode;
 
-
-import static org.firstinspires.ftc.teamcode.subsystems.AutoSubsystem.servoPos;
-import static org.firstinspires.ftc.teamcode.subsystems.AutoSubsystem.spin;
-
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
@@ -13,14 +9,21 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
 
+import dev.nextftc.bindings.BindingManager;
+import dev.nextftc.control.ControlSystem;
+import dev.nextftc.control.KineticState;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
+import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 import dev.nextftc.hardware.impl.MotorEx;
+import dev.nextftc.hardware.impl.ServoEx;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.AutoSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.ColorSense1;
+import org.firstinspires.ftc.teamcode.subsystems.ColorSense2;
 import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.MotifScanning;
@@ -35,7 +38,7 @@ import com.bylazar.configurables.annotations.Configurable;
 public class AutoBlueDefaultPosition extends NextFTCOpMode {
     public AutoBlueDefaultPosition(){
         addComponents(
-                new SubsystemComponent(Flywheel.INSTANCE,  Intake.INSTANCE, MotifScanning.INSTANCE, AutoSubsystem.INSTANCE),
+                new SubsystemComponent(Flywheel.INSTANCE,  Intake.INSTANCE, MotifScanning.INSTANCE),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
 
@@ -44,6 +47,8 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
     private Follower follower;
     private Timer pathTimer, actionTimer, opmodeTimer;
     private int pathState;
+
+    public static final ServoEx servoPos = new ServoEx("servoPos");
     private Paths paths;
     public Pose start = new Pose(28,120, Math.toRadians(110));
 
@@ -51,7 +56,7 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
 
     public Pose controlPoint1 = new Pose(50.263, 76.015);
 
-    public Pose intake1 = new Pose(10.44396, 85.767033);
+    public Pose intake1 = new Pose(9.44396, 85.767033);
 
     public Pose ControlPose2 = new Pose(2.8484, 88.932);
     public Pose ControlPose3 = new Pose(3.48132, 113.934);
@@ -67,7 +72,7 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
 
     public Pose ClassifierRampControl = new Pose(72.49061662198392,75.4745308310992);
 
-    public Pose ClassifierRamp = new Pose(4.3,74);
+    public Pose ClassifierRamp = new Pose(2.3,74);
 
 
 
@@ -81,8 +86,39 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
 
     private MotorEx spindexerMotor;
 
+    private ServoEx servo = new ServoEx("servoPos");
+
+    public static double spindexvelocity;
+    public static MotorEx spindex = new MotorEx("spindexer");
+
+    ColorSense1 bench = new ColorSense1();
+    ColorSense2 bench2 = new ColorSense2();
+
+    public static void velocityControlWithFeedforwardExample(KineticState currentstate, float configtps) {
+        ControlSystem controller = ControlSystem.builder()
+                .velPid(0.1, 0.01, 0.05) // Velocity PID with kP=0.1, kI=0.01, kD=0.05
+                .basicFF(0.0067, 0.0, 0.01) // Basic feedforward with kV=0.02, kA=0.0, kS=0.01 //pid tuning
+                .build();
+
+        controller.setGoal(new KineticState(0.0, configtps, 0.0));
+
+        double power = controller.calculate(currentstate);
+        spindex.setPower(power);
+    }
+    public static void spin(float tps) {
+        BindingManager.update();
+        spindexvelocity = spindex.getVelocity();
+        KineticState currentState = new KineticState(0, spindexvelocity, 0.0);
+        velocityControlWithFeedforwardExample(currentState, tps);
+    }
+
+
+
     public void onInit() {
         telemetry.addLine("Initializing Follower...");
+
+        bench.init(ActiveOpMode.hardwareMap());
+        bench2.init(ActiveOpMode.hardwareMap());
         telemetry.update();
         follower = Constants.createFollower(hardwareMap);
         paths = new Paths(follower);
@@ -138,8 +174,26 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
                     telemetry.addLine("The spindexer motor has started btw");
                     telemetry.update();
                     follower.followPath(paths.Path2);
+                    boolean flag = true;
+
                     telemetry.addLine("Started path 2 to intake the balls");
                     pathState++;
+                    while(flag==true){
+                        ColorSense1.detectedColor yes = bench.getDetectedColor(ActiveOpMode.telemetry());
+                        ColorSense2.detectedColor ye = bench2.getDetectedColor(ActiveOpMode.telemetry());
+                        if (yes != ColorSense1.detectedColor.ERROR && ye != ColorSense2.detectedColor.ERROR) {
+                            spindex.setPower(0);
+                            ActiveOpMode.telemetry().addLine("spinstopped for 2");
+                            flag=false;
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            spin(2);
+
+                        }
+                    }
                 }
                 break;
             case 1:
@@ -168,15 +222,9 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    Flywheel.shooter(1500);
-                    servoPos.setPosition(0.1);
-                    try {
-                        Thread.sleep(1500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    servoPos.setPosition(0.0);
+
                     telemetry.addLine("UHH YES");
+                    Flywheel.shooter(1500);
                     follower.followPath(paths.Path3);
 
                     pathState++;
@@ -188,11 +236,20 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
                     pathTimer.resetTimer();
                     intakeMotor.setPower(0);
                     try {
-                        Thread.sleep(300);
+                        Thread.sleep(3000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    Flywheel.shooter(1500);
+
+
+
+                    servo.setPosition(0.2);
+                    try {
+                        Thread.sleep(1500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    servoPos.setPosition(0.0);
                     // Flywheel and spindexer logic here momentarily THIS IS WHERE WE HAVE TO SHOOT AFTER INTAKING BALLS
                     telemetry.addLine("UHH YES");
                     intakeMotor.setPower(-1);
@@ -229,6 +286,11 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
             case 6:
                 if(!follower.isBusy()) {
                     pathTimer.resetTimer();
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     intakeMotor.setPower(0);
                     Flywheel.shooter(1500);
                     // Spindexer and sorting logic here
