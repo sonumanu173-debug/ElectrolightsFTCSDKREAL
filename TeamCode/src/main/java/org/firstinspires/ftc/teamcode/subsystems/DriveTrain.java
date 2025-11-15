@@ -9,6 +9,7 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import dev.nextftc.bindings.BindingManager;
 import dev.nextftc.control.ControlSystem;
@@ -61,7 +62,7 @@ public class DriveTrain implements Subsystem {
 
     public static boolean shooting = false;
 
-    public static boolean indexing = true;
+    public static boolean indexing = false;
 
     public static boolean spinstop1 = false;
 
@@ -81,11 +82,12 @@ public class DriveTrain implements Subsystem {
         indexing = false;
     }
     public static void spinstoptrue() {spinstop = true; spinning=false;}
-    public static void spinstopfalse() {spinstop = false; spinning=true; spindex.setPower(0.18);}
+    public static void spinstopfalse() {spinstop = false; spinning=true; spindex.setPower(0.3);}
     public static void spinstop1true() {spinstop1 = true; spinning=false; }
-    public static void spinstop1false() {spinstop1 = false; spinning=true; spindex.setPower(0.18);}
+    public static void spinstop1false() {spinstop1 = false; spinning=true; spindex.setPower(0.3);}
     public static void intakeReverseTrue() {intakeReverse = true;}
     public static void intakeReverseFalse() {intakeReverse = false;}
+
     public static double spindexvelocity;
     public static MotorEx spindex = new MotorEx("spindexer");
     public static boolean spinr=false;
@@ -107,7 +109,7 @@ public class DriveTrain implements Subsystem {
         //spindex.setPower(0.1);
         spinr=false;
         if(stopped!=true){
-            spindex.setPower(0.18);
+            spindex.setPower(0.3);
         }
 
 
@@ -138,7 +140,7 @@ public class DriveTrain implements Subsystem {
 
     }
 
-    public static final ServoEx servoPos = new ServoEx("servoPos");
+    private Servo servoPos;
 
     private double visionYawCommand(double txDeg) {
         if (Math.abs(txDeg) < YAW_DEADBAND_DEG) return 0.0;
@@ -239,6 +241,8 @@ public class DriveTrain implements Subsystem {
                 .whenBecomesFalse(()-> spinstop1false());
         Gamepads.gamepad2().leftBumper().whenBecomesFalse(()-> spinstop1false());
         Gamepads.gamepad2().rightBumper().whenBecomesFalse(()-> spinstopfalse());
+        Gamepads.gamepad2().circle().whenBecomesTrue(()-> indextrue())
+                .whenBecomesFalse(()-> indexfalse());
 
         //if(ColorSense1)
 
@@ -265,7 +269,7 @@ public class DriveTrain implements Subsystem {
         }
         else if(spinstop!=true && spinstop1!=true && spinr!=true && spinning==false) {
             if(rev!=true){
-                spindex.setPower(0.18);
+                spindex.setPower(0.3);
             ActiveOpMode.telemetry().addLine("normal");}
         }
         if (intakeReverse == true) {
@@ -340,6 +344,7 @@ public class DriveTrain implements Subsystem {
         intakeMotor = new MotorEx("intake");
         limelight = ActiveOpMode.hardwareMap().get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(APRILTAG_PIPELINE);
+        servoPos = ActiveOpMode.hardwareMap().get(Servo.class, "servoPos");
         limelight.start();
         spin(2);
         follower = Constants.createFollower(ActiveOpMode.hardwareMap());
@@ -367,7 +372,7 @@ public class DriveTrain implements Subsystem {
         follower.update();
         double x = follower.getPose().getX();
         double y = follower.getPose().getY();
-        double distinch = Math.sqrt(Math.pow(x, 2)+Math.pow((y-144), 2));
+        double distinch = Math.sqrt(Math.pow(x, 2)+Math.pow((y-144), 2)) - 8;
         double dist = distinch / 39.37;
         ActiveOpMode.telemetry().addData("Distance", distinch);
         ActiveOpMode.telemetry().addData("X", x);

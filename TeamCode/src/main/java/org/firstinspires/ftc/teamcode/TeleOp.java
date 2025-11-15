@@ -81,10 +81,8 @@ public class TeleOp extends NextFTCOpMode {
 
     @Override
     public void onStartButtonPressed() {
-        Gamepads.gamepad1().rightTrigger().greaterThan(0.2).whenTrue(() -> DriveTrain.shootingtrue())
-                .whenFalse(() -> DriveTrain.shootingfalse());
-        Gamepads.gamepad1().leftTrigger().greaterThan(0.2).whenTrue(() -> DriveTrain.indextrue())
-                .whenFalse(() -> DriveTrain.indexfalse());
+        Gamepads.gamepad1().rightTrigger().greaterThan(0.2).whenBecomesTrue(() -> DriveTrain.shootingtrue())
+                .whenBecomesFalse(() -> DriveTrain.shootingfalse());
         Gamepads.gamepad1().rightBumper().whenBecomesTrue(() -> intakeMotor.setPower(1))
                 .whenFalse(() -> intakeMotor.setPower(0));
         Gamepads.gamepad2().triangle().whenBecomesTrue(() -> findMotif = true);

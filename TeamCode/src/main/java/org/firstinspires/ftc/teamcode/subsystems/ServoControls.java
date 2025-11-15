@@ -15,24 +15,22 @@ public class ServoControls extends NextFTCOpMode{
     @Override
     public void onInit() {
         bench.init(hardwareMap);
+        bench.setServoPos(0.8);
     }
 
     @Override
     public void onUpdate() {
         if (gamepad1.circle) {
 
-            double S = 0;
-           while (S < 0.05) {
-               bench.setServoPos(S);
+            double S = 0.1;
 
-               S = S + 0.005;
-
-           }
-           bench.setServoPos(0.0);
+           bench.setServoPos(S);
 
 
         }
-
+        else{
+            bench.setServoPos(0);
+        }
 
 
 
