@@ -15,6 +15,7 @@ import dev.nextftc.bindings.BindingManager;
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.KineticState;
 import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.delays.Delay;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.ftc.Gamepads;
@@ -208,22 +209,14 @@ public class DriveTrain implements Subsystem {
                 if(ColorSense1.getDetectedColor(ActiveOpMode.telemetry())== ball1 && ColorSense2.getDetectedColor(ActiveOpMode.telemetry()) == ball3){
                     //raise servo
                     servoPos.setPosition(0.1);
-                    try {
-                        Thread.sleep(1500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    new Delay(1.5);
                     servoPos.setPosition(0.0);
                     yep=false;
                 }}
             }
             else{
                 servoPos.setPosition(0.1);
-                try {
-                    Thread.sleep(1500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                new Delay(1.5);
                 servoPos.setPosition(0.0);
             }
         }
@@ -274,12 +267,7 @@ public class DriveTrain implements Subsystem {
         }
         if (intakeReverse == true) {
             intakeMotor.setPower(0.4);
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-
-            }
+            new Delay(0.2);
             intakeReverse = false;
             intakeMotor.setPower(0);
         }
