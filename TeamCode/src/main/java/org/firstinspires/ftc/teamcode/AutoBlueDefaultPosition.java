@@ -38,7 +38,7 @@ import com.bylazar.configurables.annotations.Configurable;
 
 
 
-@Autonomous(name = "Autonomous Test (NextFTC)", group = "Autonomous")
+@Autonomous(name = "Auto Blue Default", group = "Autonomous")
 @Configurable
 public class AutoBlueDefaultPosition extends NextFTCOpMode {
     public AutoBlueDefaultPosition(){
