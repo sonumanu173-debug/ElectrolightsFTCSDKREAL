@@ -99,7 +99,7 @@ public class DriveTrain implements Subsystem {
     private MotorEx intakeMotor;
 
 
-    public static float configvelocity = 1400; //far zone - ~1500. near zone - ~1200-1300
+    public static float configv elocity = 1400; //far zone - ~1500. near zone - ~1200-1300
 
     public static void SpinNormal() {
         spindex.setPower(0.1);
