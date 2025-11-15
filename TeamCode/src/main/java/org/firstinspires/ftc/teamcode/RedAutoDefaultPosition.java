@@ -197,13 +197,21 @@ public class RedAutoDefaultPosition extends NextFTCOpMode {
                     telemetry.addLine("Path 1 has been completed btw, that means it's going to launch in a couple of seconds");
                     // Im going to add spindexer logic here once its been done and spin the flywheel, we r so cooked
                     follower.turnToDegrees(75);
-
+                    Flywheel.shooter(1500);
                     new Delay(1);
+                    servo.setPosition(0.2);
+                    Flywheel.shooter(1500);
+                    spindex.setPower(0.1);
+                    new Delay(3);
+                    servoPos.setPosition(0.0);
+                    spindex.setPower(0);
                     Flywheel.shooter(0);
+
+
                     telemetry.addLine("The shooter has started btw");
                     intakeMotor.setPower(-1);
                     telemetry.addLine("The intake has started btw");
-                    spin(1);
+                    spindex.setPower(0.1);
                     telemetry.addLine("The spindexer motor has started btw");
                     telemetry.update();
                     new ParallelGroup(
