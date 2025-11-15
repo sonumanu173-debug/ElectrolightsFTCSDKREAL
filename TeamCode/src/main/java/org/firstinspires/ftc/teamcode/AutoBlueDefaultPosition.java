@@ -63,7 +63,7 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
 
     public Pose ClassifierRampControl = new Pose(35.1297,72.474725374);
 
-    public Pose ClassifierRamp = new Pose(10.127473,69.94286);
+    public Pose ClassifierRamp = new Pose(4.3,70);
 
 
 
@@ -130,7 +130,7 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
                     telemetry.addLine("The shooter has started btw");
                     intakeMotor.setPower(-1);
                     telemetry.addLine("The intake has started btw");
-                    spindexerMotor.setPower(0.4);
+                    spindexerMotor.setPower(0.3);
                     telemetry.addLine("The spindexer motor has started btw");
                     telemetry.update();
                     follower.followPath(paths.Path2);
@@ -142,7 +142,7 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
                 if (!follower.isBusy()) {
                     pathTimer.resetTimer();
                     try {
-                        Thread.sleep(2000);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -160,7 +160,7 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
                 if (!follower.isBusy()) {
                     pathTimer.resetTimer();
                     try {
-                        Thread.sleep(300);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -346,7 +346,7 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
                     .build();
             Path8 = follower.pathBuilder()
                     .addPath(new BezierCurve(
-                            intake2,
+                            intake1,
                             ClassifierRampControl,
                             ClassifierRamp
                     ))
