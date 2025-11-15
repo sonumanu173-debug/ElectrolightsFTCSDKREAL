@@ -165,6 +165,7 @@ public class RedAutoPosition2 extends NextFTCOpMode {
         Intake3.mirror();
         ClassifierRampControl.mirror();
         ClassifierRamp.mirror();
+        Flywheel.shooter(0);
 
         pathState = 0;
         telemetry.addLine("Follower + IMU + Odo Pods initialized successfully!");

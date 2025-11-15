@@ -170,6 +170,7 @@ public class RedAutoDefaultPosition extends NextFTCOpMode {
         Intake3.mirror();
         ClassifierRampControl.mirror();
         ClassifierRamp.mirror();
+        Flywheel.shooter(0);
     }
 
 

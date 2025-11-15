@@ -152,7 +152,7 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
         actionTimer = new Timer();
         opmodeTimer = new Timer();
         follower.setStartingPose(start);
-
+        Flywheel.shooter(0);
         pathState = 0;
         telemetry.addLine("Follower + IMU + Odo Pods initialized successfully!");
         telemetry.addLine("Initialization complete!");

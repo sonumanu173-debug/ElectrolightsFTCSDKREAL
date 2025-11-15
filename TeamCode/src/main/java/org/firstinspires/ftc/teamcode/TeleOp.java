@@ -55,6 +55,7 @@ public class TeleOp extends NextFTCOpMode {
         intakeMotor = new MotorEx("intake").reversed();
         Gamepads.gamepad1().rightBumper().whenBecomesTrue(() -> intakeMotor.setPower(1))
                 .whenFalse(() -> intakeMotor.setPower(0));
+        Flywheel.shooter(0);
 
     }
 
