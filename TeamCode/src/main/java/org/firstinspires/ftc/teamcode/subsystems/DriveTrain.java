@@ -221,7 +221,7 @@ public class DriveTrain implements Subsystem {
             }
         }
         Gamepads.gamepad1().triangle().whenBecomesTrue(() -> autolocktrue())
-                .whenFalse(() -> autolockfalse());
+                .whenBecomesFalse(() -> autolockfalse());
         Gamepads.gamepad1().leftBumper().whenBecomesTrue(() -> slowtrue())
                 .whenFalse(() -> slowfalse());
         Gamepads.gamepad2().rightBumper().whenBecomesTrue(() -> spinstoptrue())
