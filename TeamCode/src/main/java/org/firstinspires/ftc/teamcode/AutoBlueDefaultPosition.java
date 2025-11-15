@@ -193,6 +193,7 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
                         e.printStackTrace();
                     }
 
+
                     telemetry.addLine("Moving onto path 8 momentarily");
                     telemetry.update();
                     intakeMotor.setPower(0);
