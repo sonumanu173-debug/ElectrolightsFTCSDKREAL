@@ -12,6 +12,10 @@ import com.pedropathing.util.Timer;
 import dev.nextftc.bindings.BindingManager;
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.KineticState;
+import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.delays.Delay;
+import dev.nextftc.core.commands.groups.ParallelGroup;
+import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.ActiveOpMode;
@@ -27,6 +31,7 @@ import org.firstinspires.ftc.teamcode.subsystems.ColorSense2;
 import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.MotifScanning;
+import org.firstinspires.ftc.teamcode.subsystems.realAutoSubsystemCommand;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.bylazar.configurables.annotations.Configurable;
@@ -38,7 +43,7 @@ import com.bylazar.configurables.annotations.Configurable;
 public class AutoBlueDefaultPosition extends NextFTCOpMode {
     public AutoBlueDefaultPosition(){
         addComponents(
-                new SubsystemComponent(Flywheel.INSTANCE,  Intake.INSTANCE, MotifScanning.INSTANCE),
+                new SubsystemComponent(Flywheel.INSTANCE,  Intake.INSTANCE, MotifScanning.INSTANCE, realAutoSubsystemCommand.INSTANCE),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
 
@@ -95,6 +100,22 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
     public static MotorEx spindex = new MotorEx("spindexer");
 
     ColorSense1 bench = new ColorSense1();
+    Command pathCommand = new LambdaCommand()
+            .setStart(() -> follower.followPath(paths.Path2))
+            .setIsDone(() -> !follower.isBusy())
+            .named("Path2 Command");
+    Command pathCommand2 = new LambdaCommand()
+            .setStart(() -> follower.followPath(paths.Path4))
+            .setIsDone(() -> !follower.isBusy())
+            .named("Path4 Command");
+    Command pathCommand3 = new LambdaCommand()
+            .setStart(() -> follower.followPath(paths.Path6))
+            .setIsDone(() -> !follower.isBusy())
+            .named("Path4 Command");
+
+
+    private realAutoSubsystemCommand stopSpindexer = new realAutoSubsystemCommand();
+
     ColorSense2 bench2 = new ColorSense2();
 
     public static void velocityControlWithFeedforwardExample(KineticState currentstate, float configtps) {
@@ -164,11 +185,7 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
                         // Im going to add spindexer logic here once its been done and spin the flywheel, we r so cooked
                     follower.turnToDegrees(75);
 
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    new Delay(1);
                     Flywheel.shooter(0);
                     telemetry.addLine("The shooter has started btw");
                     intakeMotor.setPower(-1);
@@ -176,8 +193,10 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
                     spin(1);
                     telemetry.addLine("The spindexer motor has started btw");
                     telemetry.update();
-                    follower.followPath(paths.Path2);
-                    boolean flag = true;
+                    new ParallelGroup(
+                            pathCommand,
+                            realAutoSubsystemCommand.INSTANCE.stopSpinDexer()
+                    ).schedule();
 
                     telemetry.addLine("Started path 2 to intake the balls");
                     pathState++;
@@ -187,11 +206,7 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
             case 1:
                 if (!follower.isBusy()) {
                     pathTimer.resetTimer();
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    new Delay(1);
 
 
                     telemetry.addLine("Moving onto path 8 momentarily");
@@ -207,11 +222,7 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
                 if (!follower.isBusy()) {
                     pathTimer.resetTimer();
                     path2Following = false;
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    new Delay(2);
 
                     telemetry.addLine("UHH YES");
                     Flywheel.shooter(1500);
@@ -225,25 +236,23 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
                 if (!follower.isBusy()) {
                     pathTimer.resetTimer();
                     intakeMotor.setPower(0);
-                    try {
-                        Thread.sleep(3000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-
-
                     servo.setPosition(0.2);
-                    try {
-                        Thread.sleep(1500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    Flywheel.shooter(1500);
+                    spindex.setPower(0.1);
+                    new Delay(3);
                     servoPos.setPosition(0.0);
+                    spindex.setPower(0);
+                    Flywheel.shooter(0);
+
+
                     // Flywheel and spindexer logic here momentarily THIS IS WHERE WE HAVE TO SHOOT AFTER INTAKING BALLS
                     telemetry.addLine("UHH YES");
                     intakeMotor.setPower(-1);
-                    follower.followPath(paths.Path4);
+                    new ParallelGroup(
+                            pathCommand2,
+                            realAutoSubsystemCommand.INSTANCE.stopSpinDexer()
+                    ).schedule();
+
                     pathState++;
 
 
@@ -251,16 +260,14 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
             case 4:
                 if (!follower.isBusy()) {
                     pathTimer.resetTimer();
-                    try {
-                        Thread.sleep(300);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
                     intakeMotor.setPower(0);
+
+
+
                     Flywheel.shooter(1500);
                     // Flywheel and spindexer logic here momentarily
                     telemetry.addLine("UHH YES");
-                    intakeMotor.setPower(0);
+
                     follower.followPath(paths.Path5);
                     pathState++;
 
@@ -268,19 +275,28 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
                 }
             case 5:
                 if(!follower.isBusy()){
+
+                    servo.setPosition(0.2);
+                    Flywheel.shooter(1500);
+                    spindex.setPower(0.1);
+                    new Delay(3);
+                    servoPos.setPosition(0.0);
+                    spindex.setPower(0);
+                    Flywheel.shooter(0);
                     pathTimer.resetTimer();
                     intakeMotor.setPower(-1);
+                    new ParallelGroup(
+                            pathCommand3,
+                            realAutoSubsystemCommand.INSTANCE.stopSpinDexer()
+                    ).schedule();
+
                     follower.followPath(paths.Path6);
                     pathState++;
                 }
             case 6:
                 if(!follower.isBusy()) {
                     pathTimer.resetTimer();
-                    try {
-                        Thread.sleep(3000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    new Delay(3);
                     intakeMotor.setPower(0);
                     Flywheel.shooter(1500);
                     // Spindexer and sorting logic here
@@ -289,12 +305,19 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
             case 7:
                 if(!follower.isBusy()) {
                     pathTimer.resetTimer();
+                    servo.setPosition(0.2);
+                    Flywheel.shooter(1500);
+                    spindex.setPower(0.1);
+                    new Delay(3);
+                    servoPos.setPosition(0.0);
+                    spindex.setPower(0);
+                    Flywheel.shooter(0);
                     Flywheel.shooter(1500);
                     telemetry.addLine("Auto is finished!");
                     telemetry.update();
                 }
 
-                while(path2Following==true){
+               /* while(path2Following==true){
                     ColorSense1.detectedColor yes = bench.getDetectedColor(ActiveOpMode.telemetry());
                     ColorSense2.detectedColor ye = bench2.getDetectedColor(ActiveOpMode.telemetry());
                     if (yes != ColorSense1.detectedColor.ERROR && ye != ColorSense2.detectedColor.ERROR) {
@@ -309,7 +332,8 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
                         spindex.setPower(0.1);
 
                     }
-                }
+
+                }*/
 
 
 
