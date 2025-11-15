@@ -72,6 +72,7 @@ public class DriveTrain implements Subsystem {
     }
 
     public static void shootingfalse(){
+        new Delay(5);
         shooting = false;
     }
 
@@ -153,6 +154,7 @@ public class DriveTrain implements Subsystem {
     }
 
     private void autolockfalse(){
+        new Delay(3);
         autolock = false;
     }
 
@@ -334,9 +336,9 @@ public class DriveTrain implements Subsystem {
         limelight.pipelineSwitch(APRILTAG_PIPELINE);
         servoPos = ActiveOpMode.hardwareMap().get(Servo.class, "servoPos");
         limelight.start();
-        spin(2);
+        spin(2  );
         follower = Constants.createFollower(ActiveOpMode.hardwareMap());
-        follower.setStartingPose(new Pose(25, -4, Math.toRadians(90)));
+        follower.setStartingPose(new Pose(56.967033, 94));
         follower.update();
         servoPos.setPosition(0.0);
         bench.init(ActiveOpMode.hardwareMap());
