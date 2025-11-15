@@ -86,6 +86,9 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
 
     private MotorEx spindexerMotor;
 
+    private boolean path2Following= false;
+
+
     private ServoEx servo = new ServoEx("servoPos");
 
     public static double spindexvelocity;
@@ -177,23 +180,8 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
                     boolean flag = true;
 
                     telemetry.addLine("Started path 2 to intake the balls");
-                    pathState++;
-                    while(flag==true){
-                        ColorSense1.detectedColor yes = bench.getDetectedColor(ActiveOpMode.telemetry());
-                        ColorSense2.detectedColor ye = bench2.getDetectedColor(ActiveOpMode.telemetry());
-                        if (yes != ColorSense1.detectedColor.ERROR && ye != ColorSense2.detectedColor.ERROR) {
-                            spindex.setPower(0);
-                            ActiveOpMode.telemetry().addLine("spinstopped for 2");
-                            flag=false;
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            spin(2);
 
-                        }
-                    }
+
                 }
                 break;
             case 1:
@@ -217,6 +205,7 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
             case 2:
                 if (!follower.isBusy()) {
                     pathTimer.resetTimer();
+                    path2Following = false;
                     try {
                         Thread.sleep(2000);
                     } catch (InterruptedException e) {
@@ -302,6 +291,24 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
                     Flywheel.shooter(1500);
                     telemetry.addLine("Auto is finished!");
                     telemetry.update();
+                }
+
+                while(path2Following==true){
+                    ColorSense1.detectedColor yes = bench.getDetectedColor(ActiveOpMode.telemetry());
+                    ColorSense2.detectedColor ye = bench2.getDetectedColor(ActiveOpMode.telemetry());
+                    if (yes != ColorSense1.detectedColor.ERROR && ye != ColorSense2.detectedColor.ERROR) {
+                        spindex.setPower(0);
+                        ActiveOpMode.telemetry().addLine("spinstopped for 2");
+
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        spin(2);
+
+                    }
+                    pathState++;
                 }
 
 
