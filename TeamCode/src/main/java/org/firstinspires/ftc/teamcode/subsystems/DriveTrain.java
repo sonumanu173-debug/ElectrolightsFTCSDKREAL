@@ -245,7 +245,6 @@ public class DriveTrain implements Subsystem {
                     spindex.setPower(0);
                     ActiveOpMode.telemetry().addLine("spinstopped for 2");
                 }
-                //ActiveOpMode.telemetry().addLine("spinstop");
             }
             if (spinstop1 == true) {
                 ColorSense1.detectedColor yes = bench.getDetectedColor(ActiveOpMode.telemetry());
@@ -258,10 +257,8 @@ public class DriveTrain implements Subsystem {
             }
         }
         else {
-            if (spinning = false){
             spin(2);
-            ActiveOpMode.telemetry().addLine("normal");}
-            //spin(2);
+            ActiveOpMode.telemetry().addLine("normal");
         }
         if (autolock == true) {
             limelight.pipelineSwitch(APRILTAG_PIPELINE);
