@@ -12,7 +12,7 @@ public class ColorSense2 implements Subsystem {
     static NormalizedColorSensor colorSensor;
 
     public static final ColorSense2 INSTANCE = new ColorSense2();
-    ColorSense2() { }
+    public ColorSense2() { }
     static boolean isGreen;
     static boolean isPurple;
 

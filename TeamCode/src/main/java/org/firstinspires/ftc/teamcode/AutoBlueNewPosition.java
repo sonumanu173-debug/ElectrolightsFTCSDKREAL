@@ -63,7 +63,7 @@ public class AutoBlueNewPosition extends NextFTCOpMode {
 
     public Pose ClassifierRampControl = new Pose(35.1297,72.474725374);
 
-    public Pose ClassifierRamp = new Pose(10.127473,69.94286);
+    public Pose ClassifierRamp = new Pose(4.127473,69.94286);
 
 
 
@@ -265,13 +265,6 @@ public class AutoBlueNewPosition extends NextFTCOpMode {
         public PathChain Path8;
 
         public Paths(Follower follower) {
-            //Path1 = follower.pathBuilder()
-            //.addPath(new BezierLine(
-            // new Pose(56.000, 8.000),
-            // new Pose(57.078, 32.451)
-            //))
-            //.setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(180))
-            //.build();
 
             Path1 = follower.pathBuilder()
                     .addPath(new BezierLine(
@@ -297,6 +290,7 @@ public class AutoBlueNewPosition extends NextFTCOpMode {
             Path3 = follower.pathBuilder()
                     .addPath(new BezierLine(
                             ClassifierRamp,
+
                             Launch1
 
 
@@ -347,7 +341,9 @@ public class AutoBlueNewPosition extends NextFTCOpMode {
             Path8 = follower.pathBuilder()
                     .addPath(new BezierCurve(
                             intake2,
+
                             ClassifierRampControl,
+
                             ClassifierRamp
                     ))
                     .setLinearHeadingInterpolation(Math.toRadians(175), Math.toRadians(180))
