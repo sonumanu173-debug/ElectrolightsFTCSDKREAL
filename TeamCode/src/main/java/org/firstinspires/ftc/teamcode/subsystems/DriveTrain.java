@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
 import static org.firstinspires.ftc.teamcode.subsystems.Calculations.findTPS;
 import static org.firstinspires.ftc.teamcode.subsystems.Flywheel.shooter;
+import org.firstinspires.ftc.teamcode.mechanisms.launchertestservo;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.follower.Follower;
@@ -73,7 +74,11 @@ public class DriveTrain implements Subsystem {
     }
 
     public static void shootingfalse(){
-        //new Delay(5);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         shooting = false;
     }
 
@@ -153,8 +158,7 @@ public class DriveTrain implements Subsystem {
     }
 
     private void autolockfalse(){
-        new Delay(5);
-        autolock = false;
+           autolock = false;
     }
 
     private void slowtrue(){
@@ -178,7 +182,7 @@ public class DriveTrain implements Subsystem {
     ColorSense1 bench = new ColorSense1();
     ColorSense2 bench2 = new ColorSense2();
 
-    launchertestservo bench3 = new launchertestservo();
+    private Servo servoPos;
 
     public ColorSense2.detectedColor ball3;
     public ColorSense1.detectedColor ball1;
@@ -191,6 +195,7 @@ public class DriveTrain implements Subsystem {
     public Command getDefaultCommand() {
 
         if(shooting==true){
+            spindex.setPower(0.45);
             ActiveOpMode.telemetry().addLine("shooting");
             if(indexing==true){
                 ActiveOpMode.telemetry().addLine("indexing");
@@ -213,17 +218,28 @@ public class DriveTrain implements Subsystem {
                 if (yep==true){
                 if(ColorSense1.getDetectedColor(ActiveOpMode.telemetry())== ball1 && ColorSense2.getDetectedColor(ActiveOpMode.telemetry()) == ball3){
                     //raise servo
-                    bench3.setServoPos(0.1);
-                    new Delay(1.5);
-                    bench3.setServoPos(0.0);
+                    servoPos.setPosition(0.1);
+
+                    try {
+                        Thread.sleep(1500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    servoPos.setPosition(-0.05);
+                    spindex.setPower(0.3);
                     yep=false;
                 }}
             }
             else{
                 ActiveOpMode.telemetry().addLine("launching");
-                bench3.setServoPos(0.1);
-                new Delay(1.5);
-                bench3.setServoPos(0.0);
+                servoPos.setPosition(0.1);
+                try {
+                    Thread.sleep(1500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                servoPos.setPosition(-0.05);
+                spindex.setPower(0.3);
             }
         }
         Gamepads.gamepad1().triangle().whenBecomesTrue(() -> autolocktrue())
@@ -273,7 +289,11 @@ public class DriveTrain implements Subsystem {
         }
         if (intakeReverse == true) {
             intakeMotor.setPower(0.4);
-            new Delay(0.2);
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             intakeReverse = false;
             intakeMotor.setPower(0);
         }
@@ -336,6 +356,7 @@ public class DriveTrain implements Subsystem {
         imu = new IMUEx("imu", Direction.LEFT, Direction.FORWARD).zeroed();
         spindex = new MotorEx("spindexer");
         intakeMotor = new MotorEx("intake");
+        servoPos = ActiveOpMode.hardwareMap().get(Servo.class, "servoPos");
         limelight = ActiveOpMode.hardwareMap().get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(APRILTAG_PIPELINE);
         limelight.start();
@@ -343,7 +364,16 @@ public class DriveTrain implements Subsystem {
         follower = Constants.createFollower(ActiveOpMode.hardwareMap());
         follower.setStartingPose(new Pose(56.967033, 94));
         follower.update();
-        bench3.setServoPos(0.0);
+        double x = follower.getPose().getX();
+        double y = follower.getPose().getY();
+        double distinch = Math.sqrt(Math.pow(x, 2)+Math.pow((y-144), 2)) - 8;
+        double dist = distinch / 39.37;
+        ActiveOpMode.telemetry().addData("Distance", distinch);
+        ActiveOpMode.telemetry().addData("X", x);
+        ActiveOpMode.telemetry().addData("Y", y);
+        float tps = findTPS((float) dist);
+        shooter(tps);
+        servoPos.setPosition(-0.05);
         bench.init(ActiveOpMode.hardwareMap());
         bench2.init(ActiveOpMode.hardwareMap());
         bench.init(ActiveOpMode.hardwareMap());
@@ -371,10 +401,9 @@ public class DriveTrain implements Subsystem {
         ActiveOpMode.telemetry().addData("Distance", distinch);
         ActiveOpMode.telemetry().addData("X", x);
         ActiveOpMode.telemetry().addData("Y", y);
-        if(autolock==true)
-        {
-            float tps = findTPS((float) dist);
-            shooter(tps);
+        float tps = findTPS((float) dist);
+        shooter(tps);
+        if(autolock==true){
             limelight.pipelineSwitch(APRILTAG_PIPELINE);
         }
         ActiveOpMode.telemetry().update();
