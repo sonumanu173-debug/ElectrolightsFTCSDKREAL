@@ -386,7 +386,7 @@ public class DriveTrain implements Subsystem {
             ActiveOpMode.telemetry().addData("X", x);
             ActiveOpMode.telemetry().addData("Y", y);
             float tps = findTPS((float) dist);
-            shooter(tps);
+            shooter(1350);
             firsttime=false;
         }
 

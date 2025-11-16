@@ -96,14 +96,18 @@ public class RedOrBlueDoNothingAuto extends NextFTCOpMode {
         telemetry.addData("It's been initialized and nothing will happen", "WARNING TO DRIVERS: CHANGE THIS TO ANOTHER AUTO IF YOU DON'T INTEND OR IT TO DO NOTHING");
 
     }
-    public void onUpdate(){
+    public void onStartButtonPressed(){
 
         frontLeft.setPower(-0.5);
-        frontRight.setPower(-0.5);
+        frontRight.setPower(0.5);
+        backRight.setPower(0.5);
         backLeft.setPower(-0.5);
-        backRight.setPower(-0.5);
 
-        new Delay(1);
+        try{
+            Thread.sleep(400);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
 
         frontLeft.setPower(0);
         frontRight.setPower(0);
