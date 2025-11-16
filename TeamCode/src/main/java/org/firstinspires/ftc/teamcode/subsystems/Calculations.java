@@ -9,8 +9,6 @@ import dev.nextftc.core.subsystems.Subsystem;
 @Configurable
 public class Calculations implements Subsystem {
 
-    AprilTagDistance tagDistance = new AprilTagDistance();
-    AprilTagDistance targetArea = new AprilTagDistance();
     double ta;
     double distance;
     public static double v0;
