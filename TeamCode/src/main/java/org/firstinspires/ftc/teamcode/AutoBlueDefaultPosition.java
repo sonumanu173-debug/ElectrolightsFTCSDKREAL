@@ -36,6 +36,7 @@ import org.firstinspires.ftc.teamcode.subsystems.realAutoSubsystemCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.bylazar.configurables.annotations.Configurable;
 
+import java.time.Duration;
 
 
 @Autonomous(name = "Auto Blue Default", group = "Autonomous")
@@ -55,29 +56,33 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
 
     public static final ServoEx servoPos = new ServoEx("servoPos");
     private Paths paths;
-    public Pose start = new Pose(28,120, Math.toRadians(110));
+    public Pose start = new Pose(24.677419354838708,125.70967741935485, Math.toRadians(125));
 
-    public Pose PreloadLaunch = new Pose(54.871, 97.258, Math.toRadians(130));
+    public Pose PreLoadLaunch1 = new Pose(57.6,101.27472527472527);
 
-    public Pose controlPoint1 = new Pose(50.263, 76.015);
+    public Pose ControlPoint1 = new Pose(50.225806451612904,80.41935483870968);
 
-    public Pose intake1 = new Pose(9.44396, 85.767033);
+    public Pose Intake1 = new Pose(7.83871,84.48387096774194);
 
-    public Pose ControlPose2 = new Pose(2.8484, 88.932);
-    public Pose ControlPose3 = new Pose(3.48132, 113.934);
-    public Pose Launch1 = new Pose(56.967033, 94);// THIS will be used for launching all 3 times lol
+    public Pose ClassifierRampPoint = new Pose(69.38709677419355,69.67741935483872);
 
-    public Pose intake2ControlPose = new Pose(84.5011, 58.5495);
+    public Pose ClassifierRamp = new Pose(9,74.61290322580643);
 
-    public Pose intake2 = new Pose(3.811, 59.499);
+    public Pose Launch1 = new Pose(62.12903225806452, 96.67741935483872);
 
-    public Pose Intake3ControlPoint = new Pose(85.1341, 25.635165);
+    public Pose ControlPoint2 = new Pose(63.87096774193548,53.70967741935483);
 
-    public Pose Intake3 = new Pose(-1.81099, 35.4462);
+    public Pose Intake2 = new Pose(3.1935483870967745,59.516129032258064);
 
-    public Pose ClassifierRampControl = new Pose(72.49061662198392,75.4745308310992);
+    public Pose ControlPoint3 = new Pose(72.87096774193549,25.258064516129032);
 
-    public Pose ClassifierRamp = new Pose(2.3,74);
+    public Pose Intake3 = new Pose(4.35483870967742,37.16129032258064);
+
+    public Pose Teleop1 = new Pose(72.29032258064517,46.16129032258064);
+
+
+
+
 
 
 
@@ -92,8 +97,10 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
     private MotorEx spindexerMotor;
 
     private boolean path2Following= false;
-
-
+    int ball1Color = 0;
+    int ball2Color = 0;
+    int ball3Color = 0;
+    int tagId = 0;
     private ServoEx servo = new ServoEx("servoPos");
 
     public static double spindexvelocity;
@@ -101,19 +108,19 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
 
     ColorSense1 bench = new ColorSense1();
     Command pathCommand = new LambdaCommand()
-            .setStart(() -> follower.followPath(paths.Path2))
+            .setStart(() -> follower.followPath(paths.Intake1set))
             .setIsDone(() -> !follower.isBusy())
             .named("Path2 Command");
     Command pathCommand2 = new LambdaCommand()
-            .setStart(() -> follower.followPath(paths.Path4))
+            .setStart(() -> follower.followPath(paths.Intake2ndSet))
             .setIsDone(() -> !follower.isBusy())
             .named("Path4 Command");
     Command pathCommand3 = new LambdaCommand()
-            .setStart(() -> follower.followPath(paths.Path6))
+            .setStart(() -> follower.followPath(paths.Intake3rdSet))
             .setIsDone(() -> !follower.isBusy())
             .named("Path4 Command");
 
-
+    public static MotorEx flywheel = new MotorEx("launchingmotor").reversed();
     private realAutoSubsystemCommand stopSpindexer = new realAutoSubsystemCommand();
 
     ColorSense2 bench2 = new ColorSense2();
@@ -152,7 +159,7 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
         actionTimer = new Timer();
         opmodeTimer = new Timer();
         follower.setStartingPose(start);
-
+        Flywheel.shooter(0);
         pathState = 0;
         telemetry.addLine("Follower + IMU + Odo Pods initialized successfully!");
         telemetry.addLine("Initialization complete!");
@@ -161,11 +168,10 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
 
 
     public void onStartButtonPressed() {
-        Flywheel.shooter(0);
         opmodeTimer.resetTimer();
         pathTimer.resetTimer();
         int tag=MotifScanning.INSTANCE.findMotif();
-        follower.followPath(paths.Path1);
+        follower.followPath(paths.PreLoadLaunch);
         Flywheel.shooter(1500);
         telemetry.addLine("The shooter has started btw");
         telemetry.addLine("Started Path 1");
@@ -182,27 +188,43 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
                     pathTimer.resetTimer();
                     // WIhs follower.followPath(paths.Path2);
 
-                    telemetry.addLine("Path 1 has been completed btw, that means it's going to launch in a couple of seconds");
-                        // Im going to add spindexer logic here once its been done and spin the flywheel, we r so cooked
                     follower.turnToDegrees(75);
+                    tagId = MotifScanning.findMotif();
 
+                    /*if(tagId == 23){
+                        ball1Color = 2;
+                        ball2Color = 2;
+                        ball3Color = 1;
 
-                    Flywheel.shooter(1500);
-                    new Delay(1);
+                    }
+                    else if(tagId == 22){
+                        ball1Color = 2;
+                        ball2Color = 1;
+                        ball3Color = 2;
+
+                    }
+                    else if(tagId == 21){
+                        ball1Color = 1;
+                        ball2Color = 2;
+                        ball3Color = 2;
+
+                    }*/
+                    new Delay(1.5).schedule();
+
+                    telemetry.addLine("Path 1 has been completed btw, that means it's going to launch in a couple of seconds");
+                    // Im going to add spindexer logic here once its been done and spin the flywheel, we r so cooked
+                    follower.turnToDegrees(130);
+                    flywheel.setPower(0.3);
+
+                    spindex.setPower(0.1);
                     servoPos.setPosition(0.2);
-                    Flywheel.shooter(1500);
-                    spindex.setPower(0.1);
-                    new Delay(3.5);
-                    servoPos.setPosition(0.0);
-                    spindex.setPower(0);
-                    Flywheel.shooter(0);
 
-                    telemetry.addLine("The shooter has started btw");
-                    intakeMotor.setPower(-1);
-                    telemetry.addLine("The intake has started btw");
-                    spindex.setPower(0.1);
-                    telemetry.addLine("The spindexer motor has started btw");
-                    telemetry.update();
+                    new Delay(3).schedule();
+                    flywheel.setPower(0);
+
+                    spindex.setPower(0);
+                    servoPos.setPosition(0);
+
                     new ParallelGroup(
                             pathCommand,
                             realAutoSubsystemCommand.INSTANCE.stopSpinDexer()
@@ -216,116 +238,193 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
             case 1:
                 if (!follower.isBusy()) {
                     pathTimer.resetTimer();
-                    new Delay(1);
+                    String ballColor1 = String.valueOf(ColorSense1.getDetectedColor(telemetry));
+                    String ballColor2 = String.valueOf(ColorSense2.getDetectedColor(telemetry));
+                    if (tagId == 23) {
+                        if (ballColor1 != "isPurple" && ballColor2 != "isGreen") {
+                            spindex.setPower(0.05);
+                            new Delay(1).schedule();
+                            spindex.setPower(0);
 
 
-                    telemetry.addLine("Moving onto path 8 momentarily");
-                    telemetry.update();
-                    intakeMotor.setPower(0);
+                        }
 
-                    Flywheel.shooter(0);
-                    follower.followPath(paths.Path8);
+                    }
+                    if (tagId == 22) {
+                        if (ballColor1 != "isPurple" && ballColor2 != "isPurple") {
+                            spindex.setPower(0.05);
+                            new Delay(1).schedule();
+                            spindex.setPower(0);
+
+
+
+
+                        }
+
+
+                    }
+                    if (tagId == 21) {
+                        if (ballColor1 != "isGreen" && ballColor2 != "isPurple") {
+                            spindex.setPower(0.05);
+                            new Delay(1).schedule();
+                            spindex.setPower(0);
+
+
+
+
+                        }
+
+
+                    }
+                    follower.followPath(paths.ClassifierRamp1);
                     pathState++;
                 }
-                break;
             case 2:
-                if (!follower.isBusy()) {
+                if (!follower.isBusy()){
                     pathTimer.resetTimer();
-                    path2Following = false;
-                    new Delay(2);
-
-                    telemetry.addLine("UHH YES");
-                    Flywheel.shooter(1500);
-                    follower.followPath(paths.Path3);
-
+                    follower.followPath(paths.Launch1Real);
                     pathState++;
-
 
                 }
             case 3:
-                if (!follower.isBusy()) {
+                if(!follower.isBusy()){
                     pathTimer.resetTimer();
-                    intakeMotor.setPower(0);
-                    servoPos.setPosition(0.2);
-                    Flywheel.shooter(1500);
+                    servoPos.setPosition(0.1);
+                    flywheel.setPower(0.4);
                     spindex.setPower(0.1);
-                    new Delay(3);
-                    servoPos.setPosition(0.0);
+                    new Delay(2.5).schedule();
+                    servoPos.setPosition(0);
+                    flywheel.setPower(0);
                     spindex.setPower(0);
-                    Flywheel.shooter(0);
 
-
-                    // Flywheel and spindexer logic here momentarily THIS IS WHERE WE HAVE TO SHOOT AFTER INTAKING BALLS
-                    telemetry.addLine("UHH YES");
-                    intakeMotor.setPower(-1);
-                    new ParallelGroup(
-                            pathCommand2,
-                            realAutoSubsystemCommand.INSTANCE.stopSpinDexer()
-                    ).schedule();
-
+                    new ParallelGroup(pathCommand2,realAutoSubsystemCommand.INSTANCE.stopSpinDexer());
                     pathState++;
 
 
                 }
             case 4:
-                if (!follower.isBusy()) {
+                if(!follower.isBusy()){
                     pathTimer.resetTimer();
-                    intakeMotor.setPower(0);
+                    String ballColor1 = String.valueOf(ColorSense1.getDetectedColor(telemetry));
+                    String ballColor2 = String.valueOf(ColorSense2.getDetectedColor(telemetry));
+                    if (tagId == 23) {
+                        if (ballColor1 != "isPurple" && ballColor2 != "isGreen") {
+                            spindex.setPower(0.05);
+                            new Delay(1).schedule();
+                            spindex.setPower(0);
+
+
+                        }
+
+                    }
+                    if (tagId == 22) {
+                        if (ballColor1 != "isPurple" && ballColor2 != "isPurple") {
+                            spindex.setPower(0.05);
+                            new Delay(1).schedule();
+                            spindex.setPower(0);
 
 
 
-                    Flywheel.shooter(1500);
-                    // Flywheel and spindexer logic here momentarily
-                    telemetry.addLine("UHH YES");
 
-                    follower.followPath(paths.Path5);
+                        }
+
+
+                    }
+                    if (tagId == 21) {
+                        if (ballColor1 != "isGreen" && ballColor2 != "isPurple") {
+                            spindex.setPower(0.05);
+                            new Delay(1).schedule();
+                            spindex.setPower(0);
+
+
+
+
+                        }
+
+
+                    }
+                    follower.followPath(paths.Launch2);
                     pathState++;
 
 
                 }
             case 5:
                 if(!follower.isBusy()){
-
-                    servoPos.setPosition(0.2);
-                    Flywheel.shooter(1500);
-                    spindex.setPower(0.1);
-                    new Delay(3);
-                    servoPos.setPosition(0.0);
-                    spindex.setPower(0);
-                    Flywheel.shooter(0);
                     pathTimer.resetTimer();
-                    intakeMotor.setPower(-1);
-                    new ParallelGroup(
-                            pathCommand3,
-                            realAutoSubsystemCommand.INSTANCE.stopSpinDexer()
-                    ).schedule();
-
-                    follower.followPath(paths.Path6);
+                    servoPos.setPosition(0.1);
+                    flywheel.setPower(0.4);
+                    spindex.setPower(0.1);
+                    new Delay(2.5).schedule();
+                    servoPos.setPosition(0);
+                    flywheel.setPower(0);
+                    spindex.setPower(0);
+                    new ParallelGroup(pathCommand3,realAutoSubsystemCommand.INSTANCE.stopSpinDexer());
                     pathState++;
+
                 }
             case 6:
-                if(!follower.isBusy()) {
+                if (!follower.isBusy()) {
                     pathTimer.resetTimer();
-                    new Delay(3);
-                    intakeMotor.setPower(0);
-                    Flywheel.shooter(1500);
-                    // Spindexer and sorting logic here
-                    follower.followPath(paths.Path7);
+                    String ballColor1 = String.valueOf(ColorSense1.getDetectedColor(telemetry));
+                    String ballColor2 = String.valueOf(ColorSense2.getDetectedColor(telemetry));
+                    if (tagId == 23) {
+                        if (ballColor1 != "isPurple" && ballColor2 != "isGreen") {
+                            spindex.setPower(0.05);
+                            new Delay(1).schedule();
+                            spindex.setPower(0);
+
+
+                        }
+
+                    }
+                    if (tagId == 22) {
+                        if (ballColor1 != "isPurple" && ballColor2 != "isPurple") {
+                            spindex.setPower(0.05);
+                            new Delay(1).schedule();
+                            spindex.setPower(0);
+
+
+
+
+                        }
+
+
+                    }
+                    if (tagId == 21) {
+                        if (ballColor1 != "isGreen" && ballColor2 != "isPurple") {
+                            spindex.setPower(0.05);
+                            new Delay(1).schedule();
+                            spindex.setPower(0);
+
+
+
+
+                        }
+
+
+                    }
+                    follower.followPath(paths.Launch3);
+                    pathState++;
+
+
                 }
             case 7:
-                if(!follower.isBusy()) {
+                if(!follower.isBusy()){
                     pathTimer.resetTimer();
-                    servoPos.setPosition(0.2);
-                    Flywheel.shooter(1500);
+                    servoPos.setPosition(0.1);
+                    flywheel.setPower(0.4);
                     spindex.setPower(0.1);
-                    new Delay(3);
-                    servoPos.setPosition(0.0);
+                    new Delay(2.5).schedule();
+                    servoPos.setPosition(0);
+                    flywheel.setPower(0);
                     spindex.setPower(0);
-                    Flywheel.shooter(0);
-                    Flywheel.shooter(1500);
-                    telemetry.addLine("Auto is finished!");
+                    follower.followPath(paths.teleOp);
+                    telemetry.addLine("Auto is Finished!");
                     telemetry.update();
+
                 }
+
+
 
                /* while(path2Following==true){
                     ColorSense1.detectedColor yes = bench.getDetectedColor(ActiveOpMode.telemetry());
@@ -363,20 +462,22 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
     }
 
     public class Paths {
-        public PathChain Path1;
-        public PathChain Path2;
+        public PathChain PreLoadLaunch;
+        public PathChain Intake1set;
 
-        public PathChain Path3;
+        public PathChain ClassifierRamp1;
 
-        public PathChain Path4;
+        public PathChain Launch1Real;
 
-        public PathChain Path5;
+        public PathChain Intake2ndSet;
 
-        public PathChain Path6;
+        public PathChain Launch2;
 
-        public PathChain Path7;
+        public PathChain Intake3rdSet;
 
-        public PathChain Path8;
+        public PathChain Launch3;
+
+        public PathChain teleOp;
 
         public Paths(Follower follower) {
             //Path1 = follower.pathBuilder()
@@ -387,85 +488,86 @@ public class AutoBlueDefaultPosition extends NextFTCOpMode {
             //.setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(180))
             //.build();
 
-            Path1 = follower.pathBuilder()
+            PreLoadLaunch = follower.pathBuilder()
                     .addPath(new BezierLine(
                             start,
-
-                            PreloadLaunch
+                            PreLoadLaunch1
                     ))
-                    .setLinearHeadingInterpolation(Math.toRadians(110), Math.toRadians(130))
-
+                    .setLinearHeadingInterpolation(Math.toRadians(125), Math.toRadians(130))
+                    //.setVelocityConstraint(50)
                     .build();
-            Path2 = follower.pathBuilder()
+            Intake1set = follower.pathBuilder()
                     .addPath(new BezierCurve(
-                            PreloadLaunch,
-
-                            controlPoint1,
-
-                            intake1
+                            PreLoadLaunch1,
+                            ControlPoint1,
+                            Intake1
 
                     ))
-                    .setLinearHeadingInterpolation(Math.toRadians(175), Math.toRadians(185))
+                    .setLinearHeadingInterpolation(Math.toRadians(160), Math.toRadians(180))
 
                     .build();
-            Path3 = follower.pathBuilder()
+            ClassifierRamp1 = follower.pathBuilder()
+                    .addPath(new BezierCurve(
+                            Intake1,
+                            ClassifierRampPoint,
+                            ClassifierRamp
+
+
+                    ))
+                    .setConstantHeadingInterpolation(Math.toRadians(180))
+
+                    .build();
+            Launch1Real = follower.pathBuilder()
                     .addPath(new BezierLine(
                             ClassifierRamp,
                             Launch1
-
-
                     ))
-                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(80))
+                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(130))
 
                     .build();
-            Path4 = follower.pathBuilder()
+            Intake2ndSet = follower.pathBuilder()
                     .addPath(new BezierCurve(
                             Launch1,
+                            ControlPoint2,
+                            Intake2
 
-                            intake2ControlPose,
-
-                            intake2
                     ))
-                    .setLinearHeadingInterpolation(Math.toRadians(175), Math.toRadians(180))
+                    .setLinearHeadingInterpolation(Math.toRadians(160), Math.toRadians(180))
 
                     .build();
-            Path5 = follower.pathBuilder()
+            Launch2 = follower.pathBuilder()
                     .addPath(new BezierLine(
-                            intake2,
-
+                            Intake2,
                             Launch1
                     ))
-                    .setConstantHeadingInterpolation(Math.toRadians(130))
+                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(130))
 
                     .build();
-            Path6 = follower.pathBuilder()
+            Intake3rdSet = follower.pathBuilder()
                     .addPath(new BezierCurve(
                             Launch1,
-
-                            Intake3ControlPoint,
-
+                            ControlPoint3,
                             Intake3
+
                     ))
-                    .setLinearHeadingInterpolation(Math.toRadians(175), Math.toRadians(180))
+                    .setLinearHeadingInterpolation(Math.toRadians(160), Math.toRadians(180))
 
                     .build();
-            Path7 = follower.pathBuilder()
-                    .addPath(new BezierCurve(
+            Launch3 = follower.pathBuilder()
+                    .addPath(new BezierLine(
                             Intake3,
-
                             Launch1
                     ))
-                    .setConstantHeadingInterpolation(Math.toRadians(130))
+                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(130))
 
                     .build();
-            Path8 = follower.pathBuilder()
-                    .addPath(new BezierCurve(
-                            intake1,
-                            ClassifierRampControl,
-                            ClassifierRamp
-                    ))
-                    .setLinearHeadingInterpolation(Math.toRadians(175), Math.toRadians(180))
+            teleOp = follower.pathBuilder()
+                    .addPath(new BezierLine(
+                            Launch1,
+                            Teleop1
 
+                    ))
+                    .setConstantHeadingInterpolation(Math.toRadians(90))
                     .build();
 
         }
