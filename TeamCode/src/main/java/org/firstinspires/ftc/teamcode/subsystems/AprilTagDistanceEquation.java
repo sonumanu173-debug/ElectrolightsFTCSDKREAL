@@ -44,8 +44,10 @@ public class AprilTagDistanceEquation extends NextFTCOpMode {
             telemetry.addData("Target X", llResult.getTx());
             telemetry.addData("Target Area", llResult.getTa());
             telemetry.addData("Botpose", botpose.toString());
+        } else {
+            telemetry.addData("Error", distance);
         }
-
+        telemetry.update();
     }
 
 }
